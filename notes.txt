@@ -1,0 +1,9 @@
+Day 0
+
+HARDWARE
+
+SOC             Biostar J4105NHU
+Case            Kolink GEKL-006
+RAM             Crucial RAM 16GB Kit
+PSU             be quiet! 300 W system Power B9 BN206
+SSD             Crucial MX500 (250 GB + 2 TB)
