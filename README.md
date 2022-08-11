@@ -45,20 +45,22 @@ After some "back of the napkin calculations" I've estimated my system to draw be
 
 #### Approximating power consumption
 
-| Component | Power draw (_idle_) | Power draw (_active_) |
+| Component | Power draw (_W, idle_) | Power draw (_W, active_) |
 | :--- | ---: | ---: |
 | [Crucial MX500 1 TB](https://www.anandtech.com/show/12263/the-crucial-mx500-500gb-review/8) | 0.10 | 0.54 |
 | [Crucial MX500 250 GB](https://www.anandtech.com/show/12263/the-crucial-mx500-500gb-review/8) | 0.08[^1] | 0.54[^1] |
 | [Corsair Venegance 8 GB x2](https://www.tomshardware.com/reviews/intel-core-i7-5960x-haswell-e-cpu,3918-13.html) | 6.00[^2] | 6.00[^2] |
 | [intel J4105](https://uni.hi.is/helmut/2021/06/07/power-consumption-of-raspberry-pi-4-versus-intel-j4105-system/) | 0.70[^3] | 9.00[^3] |
 | __Total:__ | 6.88 | 16.08 |
-| __Total (_70% efficiency_):__ | 9.82 | 22.97 |
+| __Total (_70% efficiency_[^4]):__ | 9.82 | 22.97 |
 
 [^1]: Infered from the 500 GB model.
 
 [^2]: Which seems to agree with Crucials [own assessment](https://www.crucial.com/support/articles-faq-memory/how-much-power-does-memory-use).
 
 [^3]: Infered by subtracting 3 W from authors measurements.
+
+[^4]: Inferred from a 22.5 W test of Be quiet! Pure Power L8 300 W [measurement](https://web.archive.org/web/20131024051217/http://uk.hardware.info/reviews/4683/3/45-psus-tested-at-very-low-loads-which-one-is-the-most-efficient-225-watt-test).
 
 ### Case
 I wanted something cheap and discreet with some room for expandability. The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes.
@@ -108,16 +110,6 @@ I've opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cr
 --------------------
 ## Text templates in Markdown format
 
-This is normal text
-
-_This is italics_
-
-__This is bold__
-
-[This is a Hyperlink](https://en.wikipedia.org/wiki/Hyperlink)
-
-[This is a chapter link](#server-journey)
-
 `This is a code box`
 
 > This is a caption
@@ -126,11 +118,5 @@ __This is bold__
 | --- | :---: | ---: | :--- |
 | Normal| Centered | right-aligned | left-aligned |
 | []() |  |  |
-
-# This is a first-level header
-
-## This is a second-level header
-
-### This is a third-level header
 
 --------------------
