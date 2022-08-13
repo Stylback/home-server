@@ -62,12 +62,11 @@ I've opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cr
 
 ## Assembly
 
-![inside of the case](https://github.com/Stylback/server-journey/blob/main/media/inside.jpg?raw=true)
+|  |  |
+|:---:|:---:|
+| ![inside of the case](https://github.com/Stylback/server-journey/blob/main/media/inside.jpg?raw=true) | ![inside of the case](https://github.com/Stylback/server-journey/blob/main/media/cable_orientation.jpg?raw=true)|
+| ![inside of the case](https://github.com/Stylback/server-journey/blob/main/media/outside.jpg?raw=true) | ![inside of the case](https://github.com/Stylback/server-journey/blob/main/media/back.jpg?raw=true) |
 
-<div>
-    <img align=top src="![inside of the case](https://github.com/Stylback/server-journey/blob/main/media/inside.jpg?raw=true)"/>
-    <img align=top src="!https://github.com/Stylback/server-journey/blob/main/media/inside.jpg?raw=true"/>
-<div>
 --------------------
 
 ## Approximating power draw
