@@ -61,7 +61,7 @@ I've opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cr
 --------------------
 
 ## Assembly
-
+| Image | Text |
 |:---|:---|
 | ![inside of the case](https://github.com/Stylback/server-journey/blob/main/media/inside.jpg?raw=true) | The process of assembling the system was relatively painless. The case can be disassembled for easy access to the motherboard fittings and has plenty of room for cable managment without the presence of a GPU. |
 | ![inside of the case](https://github.com/Stylback/server-journey/blob/main/media/cable_orientation.jpg?raw=true) | The only gripe I had with the case was the power extender, it is aligned in such a way that the cable has to be forcefully twisted to slot into the PSU. This could have been easily amended by allowing the screwed-in end of the extender to be aligned in the opposite direction, allowing easy cable management no matter the PSU. |
