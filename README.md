@@ -41,7 +41,7 @@ Ideally, the server will be running 24/7, 365 days a year. As such, high PSU eff
 
 __What is the efficiency at 50% load?__ That is determined by the [80+ Rating](https://en.wikipedia.org/wiki/80_Plus). A 80+ White will be 80-85% efficient at 50% load while a 80+ Titanium will be 94-96% efficient.
 
-After some ["back of the napkin calculations"](##approximating-power-draw) I've estimated my system to draw between 10-23 W. As such my ideal PSU would be a power-brick style 50-100 W PSU. I've had no luck finding such a model with the right mix of power-cables (24-pin, 4-pin, SATA) and have instead opted for a [be quiet! SYSTEM POWER B9](https://www.bequiet.com/en/powersupply/1285). At 300 W, It offers a better low-load efficiency than its 450-500 W counterparts while still offering some head-room for upgrades. It also has all the power-cables I require.
+After some ["back of the napkin calculations"](#approximating-power-draw) I've estimated my system to draw between 10-23 W. As such my ideal PSU would be a power-brick style 50-100 W PSU. I've had no luck finding such a model with the right mix of power-cables (24-pin, 4-pin, SATA) and have instead opted for a [be quiet! SYSTEM POWER B9](https://www.bequiet.com/en/powersupply/1285). At 300 W, It offers a better low-load efficiency than its 450-500 W counterparts while still offering some head-room for upgrades. It also has all the power-cables I require.
 
 ### Case
 I wanted something cheap and discreet with some room for expandability. The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes.
@@ -63,6 +63,11 @@ I've opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cr
 ## Assembly
 
 ![inside of the case](https://github.com/Stylback/server-journey/blob/main/media/inside.jpg?raw=true)
+
+<div>
+    <img align=top src="![inside of the case](https://github.com/Stylback/server-journey/blob/main/media/inside.jpg?raw=true)"/>
+    <img align=top src="!https://github.com/Stylback/server-journey/blob/main/media/inside.jpg?raw=true"/>
+<div>
 --------------------
 
 ## Approximating power draw
