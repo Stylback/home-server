@@ -26,7 +26,7 @@ As I don't expect to be using resource-heavy services such as multiple desktop V
 
 - 12 execution units for parallel processing
 - Integrated Graphics for media and display capability
-- Intel Quick Sync Video support for encoding/decoding
+- Intel Quick Sync support for video encoding
 - 10 W TDP (_average power dissipation, a shorthand way to estimate power consumption_)
 
 The J-series is only available in "CPU-onboard"-motherboards. I've opted for a [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) due to its low cost, but you might consider the [ASRock ITX-J4105](https://www.asrock.com/mb/Intel/J4105-ITX/index.us.asp) if you want more SATA III-connectors.
@@ -62,7 +62,71 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 | ![rear view](https://github.com/Stylback/server-journey/blob/main/media/back.jpg?raw=true) | Rear-view and IO. |
 | ![assembled case](https://github.com/Stylback/server-journey/blob/main/media/outside.jpg?raw=true) | Assembled system. |
 
+### Verifying hardware in BIOS
+
+
 --------------------
+
+## Installing the OS
+
+[Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server)
+
+## Setting up SSH
+
+
+
+## Installing Docker
+
+[Docker](https://www.docker.com/)
+
+## Setting up services
+
+### NGINX Manager
+
+[NGINX manager](https://nginxproxymanager.com/)
+
+### Uptime Kuma
+
+[Uptime Kuma](https://github.com/louislam/uptime-kuma)
+
+### Nextcloud
+
+[Nextcloud](https://nextcloud.com/)
+
+### Jellyfin
+
+[Jellyfin](https://jellyfin.org/) 
+
+### Arr suite
+
+Lidarr/Sonarr/Radarr/Prowlarr
+
+[Wiki](https://wiki.servarr.com/docker-guide)
+
+--------------------
+
+#### Temporary software table
+
+| Service name | Service type | Note |
+| :--- | :--- | :--- |
+| [Static Web Server](https://sws.joseluisq.net/) | Static website server | Looks promising, will do more research before commiting. |
+| [Kopia](https://kopia.io/) | Backup solution | Looks good! Perhaps use it to schedule regular backups? |
+| [Standard Notes](https://standardnotes.com/) | End-to-End encrypted notes | Can be self hosted via Docker |
+
+## Security
+
+### Disaster prevention
+
+#### Data redundancy
+
+### Remote access
+
+#### Allowing authorized access
+
+
+#### Preventing unauthorized access
+
+Fail2Ban
 
 ## Approximating power draw
 
@@ -89,37 +153,6 @@ Which is almost exactly the same as the average [coffee maker](https://energyuse
 
 [^3]: [Dr. Helmut Neukirchen power consumption test](https://uni.hi.is/helmut/2021/06/07/power-consumption-of-raspberry-pi-4-versus-intel-j4105-system/). Inferred by subtracting 3 W from authors measurements (_estimated power consumption of a 8 GB stick of DDR4 RAM_).
 
-[^4]: [HardwareInfo low-load PSU test](https://web.archive.org/web/20131024051217/http://uk.hardware.info/reviews/4683/3/45-psus-tested-at-very-low-loads-which-one-is-the-most-efficient-225-watt-test). Inferred from the 22.5 W test of the _be quiet! Pure Power L8 300 W_.
-
-## Software
-
-### Services
-
-#### High priority (_Services I need to provide core functionality_)
-
-| Service name | Service type | Note |
-| :--- | :--- | :--- |
-| [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) | Operating System | Extensive documentation and community support. |
-| [Docker](https://www.docker.com/) | Application container | Comes in multiple flavors; Docker-Engine, Docker-Compose and Docker Desktop. |
-| [NGINX manager](https://nginxproxymanager.com/) | Reverse-proxy manager with SSL | Will be using in conjunction with a domain name. |
-| [Nextcloud](https://nextcloud.com/) | Cloud storage, file sync and more | Essential for every self-hoster. |
-| [Jellyfin](https://jellyfin.org/) | Media streaming |  |
-
-#### Low priority (_Services I might implement if there is enough headroom_)
-
-| Service name | Service type | Note |
-| :--- | :--- | :--- |
-| [Uptime Kuma](https://github.com/louislam/uptime-kuma) | Uptime monitor | Has both a Docker image and proxy support. |
-| [Static Web Server](https://sws.joseluisq.net/) | Static website server | Looks promising, will do more research before commiting. |
-| [Kopia](https://kopia.io/) | Backup solution | Looks good! Perhaps use it to schedule regular backups? |
-| [Standard Notes](https://standardnotes.com/) | End-to-End encrypted notes | Can be self hosted via Docker |
-
-## Security
-
-### Data redundancy
-
-### Authorized remote access
-
-### Unauthorized remote access
+[^4]: [HardwareInfo low-load PSU test](https://web.archive.org/web/20130812130505/http://uk.hardware.info:80/reviews/4683/3/45-psus-tested-at-very-low-loads-which-one-is-the-most-efficient-225-watt-test). Inferred from the 22.5 W test of the _be quiet! Pure Power L8 300 W_.
 
 **[Back to the top](#)**
