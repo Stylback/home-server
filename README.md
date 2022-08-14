@@ -62,8 +62,16 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 | ![rear view](https://github.com/Stylback/server-journey/blob/main/media/back.jpg?raw=true) | Rear-view and IO. |
 | ![assembled case](https://github.com/Stylback/server-journey/blob/main/media/outside.jpg?raw=true) | Assembled system. |
 
-### Verifying hardware in BIOS
+### Memory test
 
+Before installing the operating system I wanted to ensure that my RAM modules would not cause me any troubles.
+
+MemTest86 was specifically made for this, I made a bootable usb following their instructions. Below are the test results.
+
+| Image | Note |
+|:---|:---|
+| ![Ram modules detected by MemTest86](https://github.com/Stylback/server-journey/blob/main/media/memtest86_ram.bmp?raw=true) | Both sticks of RAM was detected by MemTest86 |
+| ![Test completion screen](https://github.com/Stylback/server-journey/blob/main/media/memtest86_pass.jpg?raw=true) | The sticks passed with flying colors. The test completed in 5 hours and 20 minutes with 0 errors.|
 
 --------------------
 
