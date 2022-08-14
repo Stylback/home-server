@@ -64,23 +64,54 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 
 ### Memory test
 
-Before installing the operating system I wanted to ensure that my RAM modules would not cause me any troubles.
+Before installing the operating system I wanted to ensure that my RAM modules would not cause system any instability.
 
-MemTest86 was specifically made for this, I made a bootable usb following their instructions. Below are the test results.
+MemTest86 is an industry staple in this regard. It has a multitude of tests designed to identify RAM stability under extreme conditions. If there is any conflict between the modules and the Biostar J4105NHU, it will be obvious in the result.
+
+I made a bootable USB following their [instructions](https://www.memtest86.com/tech_creating-linux-mac.html) and ran the standard configuration (13 tests, 4 passes), below are the results.
 
 | Image | Note |
 |:---|:---|
-| ![Ram modules detected by MemTest86](https://github.com/Stylback/server-journey/blob/main/media/memtest86_ram.bmp?raw=true) | Both sticks of RAM was detected by MemTest86 |
-| ![Test completion screen](https://github.com/Stylback/server-journey/blob/main/media/memtest86_pass.jpg?raw=true) | The sticks passed with flying colors. The test completed in 5 hours and 20 minutes with 0 errors.|
+| ![Ram modules detected by MemTest86](https://github.com/Stylback/server-journey/blob/main/media/memtest86_ram.bmp?raw=true) | Both sticks of RAM was detected. |
+| ![Test completion screen](https://github.com/Stylback/server-journey/blob/main/media/memtest86_pass.jpg?raw=true) | The sticks passed with flying colors. The test completed in 5 hours and 20 minutes with 0 errors, I was pleasantly surprised to see that the CPU was able to hold its maximum clockspeed of 1.5 GHz throughout the test without going over 75 °C. |
 
 --------------------
 
 ## Installing the OS
 
-[Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server)
+After confirming hardware stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to extensive [documentation](https://ubuntu.com/server/docs). The system was installed on the 250 GB SSD while the 2 TB SSD was left for data storage.
 
-## Setting up SSH
+I also encrypted them with LUKS for an added layer of security.
 
+## Setting up OpenSSH
+
+### Part 1: Prerequisite and basic access
+
+To be able to SSH from one a client to a server:
+- There must be a traversable network connection between them and
+- They both need to have a SSH service installed
+
+On desktop linux distribution OpenSSH usually comes shipped by default, if for some reason you do not have the client you can install it by running `sudo apt install openssh-client`.
+
+On the server we install it using `sudo apt install openssh-server`.
+
+This was however not necessary in my case as the Ubuntu installer provided me with the option during initial installation.
+
+From your server, run `ip a` to get information about your network connections and take note of current IPs. As I'm on the same local network as my server I wrote down the local IP of the server before continuing.
+
+On your client, run `ssh [username-on-server]@[server-ip-address]`, where _username-on-server_ is the username you picked for your server account and _server-ip-address_ is the IP you jotted down earlier.
+
+The terminal will prompt you for a password and connect you.
+
+### Part 2: Create a Hostname alias
+
+We don't want to remember [username-on-server]@[server-ip-address] so instead we are creating an alias, this will allow us to access the server by just running `ssh [alias]`.
+
+
+### Part 3: Generating and using SSH-keys
+
+
+### Part 4: Hardening
 
 
 ## Installing Docker
