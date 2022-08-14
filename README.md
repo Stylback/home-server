@@ -64,7 +64,7 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 
 ### Memory test
 
-Before installing the operating system I wanted to ensure that my RAM modules would not cause system any instability.
+Before installing the operating system I wanted to ensure that my RAM modules would not cause any system instability.
 
 MemTest86 is an industry staple in this regard. It has a multitude of tests designed to identify RAM stability under extreme conditions. If there is any conflict between the modules and the Biostar J4105NHU, it will be obvious in the result.
 
@@ -91,17 +91,15 @@ To be able to SSH from one a client to a server:
 - There must be a traversable network connection between them and
 - They both need to have a SSH service installed
 
-On desktop linux distribution OpenSSH usually comes shipped by default, if for some reason you do not have the client you can install it by running `sudo apt install openssh-client`.
+OpenSSH usually comes shipped by default on desktop Linux distributions, if for some reason you do not have the client you can install it by running `sudo apt install openssh-client`.
 
-On the server we install it using `sudo apt install openssh-server`.
+On the server we install it using `sudo apt install openssh-server`. This was however not necessary in my case as the Ubuntu installer provided me with the option during initial installation.
 
-This was however not necessary in my case as the Ubuntu installer provided me with the option during initial installation.
+From the server, run `ip a` to get information about your network connections and take note of current IPs. As I'm on the same local network as my server I wrote down the local IP of the server before continuing.
 
-From your server, run `ip a` to get information about your network connections and take note of current IPs. As I'm on the same local network as my server I wrote down the local IP of the server before continuing.
+On the client, run `ssh [username-on-server]@[server-ip-address]`, where _[username-on-server]_ is the username for your server account and _[server-ip-address]_ is the IP jotted down earlier.
 
-On your client, run `ssh [username-on-server]@[server-ip-address]`, where _username-on-server_ is the username you picked for your server account and _server-ip-address_ is the IP you jotted down earlier.
-
-The terminal will prompt you for a password and connect you.
+The terminal will prompt for a password and connect.
 
 ### Part 2: Create a Hostname alias
 
