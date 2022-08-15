@@ -85,11 +85,13 @@ After confirming hardware stability I installed [Ubuntu Server 22.04 LTS](https:
 
 I also encrypted the drives with LUKS for an added layer of security.
 
-## Setting up OpenSSH
+## Setting up SSH
+
+SSH is a protocol that allow remote login and command-line-execution, something that will be very convenient when we continue to set up the server. Both my client and server is using Ubuntu-derivative OSs, the commands used might differ on other OSs.
 
 ### Part 1: Prerequisite and basic access
 
-To be able to SSH from one a client to a server:
+To be able to SSH from a client to a server:
 - There must be a traversable network connection between them and
 - They both need to have a SSH service installed
 
@@ -127,7 +129,7 @@ You will be prompted for a name, you can chose a custom name or accept the defau
 
 This will create a keypair, one public key names _keyname.pub_ and one private key just named _keyname_. You can verify this by running `cd ~/.ssh` followed by `ls -la`.
 
-__NOTE:__ Always keep your private key secure, never share it with anyone! If you have reason to believe that your private key has been compromised, generate a new keypair and delete the old one.
+__NOTE:__ Always keep your private key secure, never share it with anyone! If you have reason to believe that your private key has been compromised, generate a new keypair and delete the old one from the servers Trusted_hosts file.
 
 Now lets copy the __public__ key to our server. On the client, run `ssh-copy-id -i ~/.ssh/keyname.pub alias`, replacing the _keyname_ and _alias_ with whatever you chose earlier. If you chose a passphrase for the key you will be prompted for it now.
 
@@ -175,7 +177,7 @@ It is now safe to close any other terminal instance.
 
 [Jellyfin](https://jellyfin.org/) 
 
-### Arr suite
+### ARR suite
 
 Lidarr/Sonarr/Radarr/Prowlarr
 
