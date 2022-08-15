@@ -81,7 +81,7 @@ I made a bootable USB following their [instructions](https://www.memtest86.com/t
 
 After confirming hardware stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to extensive [documentation](https://ubuntu.com/server/docs). The system was installed on the 250 GB SSD while the 2 TB SSD was left for data storage.
 
-I also encrypted them with LUKS for an added layer of security.
+I also encrypted the drives with LUKS for an added layer of security.
 
 ## Setting up OpenSSH
 
@@ -97,20 +97,55 @@ On the server we install it using `sudo apt install openssh-server`. This was ho
 
 From the server, run `ip a` to get information about your network connections and take note of current IPs. As I'm on the same local network as my server I wrote down the local IP of the server before continuing.
 
-On the client, run `ssh [username-on-server]@[server-ip-address]`, where _[username-on-server]_ is the username for your server account and _[server-ip-address]_ is the IP jotted down earlier.
+On the client, run `ssh username@server-ip`, where _username_ is the username on the server and _server-ip_ is the IP jotted down earlier.
 
 The terminal will prompt for a password and connect.
 
 ### Part 2: Create a Hostname alias
 
-We don't want to remember [username-on-server]@[server-ip-address] so instead we are creating an alias, this will allow us to access the server by just running `ssh [alias]`.
+We don't want to remember username@server-ip so instead we are creating an alias, this will allow us to access the server by just running `ssh _alias_`.
 
+On the client, run `cd ~/.ssh` and then `touch config` to make a SSH configuration file.
+Edit the file by running `nano config`. Write the following, replacing _alias_, _server-ip_ and _username_ with relevant information:
+
+`Host _alias_`
+
+`  Hostname _server-ip_`
+
+`  Port 22`
+
+`  User _username_`
+
+NOTE: The spaces before Hostanme, Port and User are required!
+
+Save and exit, you can now connect to your server by running `ssh _alias_`.
 
 ### Part 3: Generating and using SSH-keys
 
+On the client, run `ssh-keygen -t ed25519 -C "_comment_"`, replacing _comment_ with some information to help you remember what the key is used for.
+
+You will be prompted for a name, you can chose a custom name or accept the default `id_ed2559` by pressing enter. You will also be prompted for a passphrase, enter a passphrase (_recommended!_) or press enter.
+
+This will have created a keypair, one public key names _keyname.pub_ and one private key just named _keyname_. You can verify this by running `cd ~/.ssh` followed by `ls -la`.
+
+Now lets copy the __public__ key to our server. On the client, run `ssh-copy-id -i ~/.ssh/_keyname_.pub _alias_`, replacing the _keyname_ and _alias_ with whatever you chose earlier.
+
+If you chose a passphrase for the key you will be prompted for it now.
+
+Verify that the key works by connecting to the server with `ssh _alias_`. If the keys have been exchanged correctly you should not be prompted for a password.
 
 ### Part 4: Hardening
 
+Now that we can connect to the server using our SSH-key, we will make some security enhancement to prevent brute-forcing and root access.
+
+On your client, connect to the server and run `sudo nano /etc/ssh/sshd_config`.
+Search after the line with `PermitRootLogin`, uncomment it and change it to `PermitRootLogin no`. Then search for `PasswordAuthentication`, uncomment and change it to `PasswordAuthentication no`. Finally, find the line with Port, uncomment and change it from 22 to another port of your choice (__remember to change the port number for your alias aswell!__).
+
+Save and exit.
+
+Restart the ssh service by running `sudo systemctl restart ssh`.
+
+The server should now be accessible only by SSH-key and no user that access it by SSH can gain Root privileges.
 
 ## Installing Docker
 
@@ -121,6 +156,10 @@ We don't want to remember [username-on-server]@[server-ip-address] so instead we
 ### NGINX Manager
 
 [NGINX manager](https://nginxproxymanager.com/)
+
+### Flame
+
+[Flame](https://github.com/pawelmalak/flame)
 
 ### Uptime Kuma
 
@@ -140,15 +179,11 @@ Lidarr/Sonarr/Radarr/Prowlarr
 
 [Wiki](https://wiki.servarr.com/docker-guide)
 
+### Static Web Server
+
+[Static Web Server](https://sws.joseluisq.net/)
+
 --------------------
-
-#### Temporary software table
-
-| Service name | Service type | Note |
-| :--- | :--- | :--- |
-| [Static Web Server](https://sws.joseluisq.net/) | Static website server | Looks promising, will do more research before commiting. |
-| [Kopia](https://kopia.io/) | Backup solution | Looks good! Perhaps use it to schedule regular backups? |
-| [Standard Notes](https://standardnotes.com/) | End-to-End encrypted notes | Can be self hosted via Docker |
 
 ## Security
 
@@ -160,8 +195,7 @@ Lidarr/Sonarr/Radarr/Prowlarr
 
 #### Allowing authorized access
 
-
-#### Preventing unauthorized access
+#### Disallowing unauthorized access
 
 Fail2Ban
 
