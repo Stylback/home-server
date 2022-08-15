@@ -21,6 +21,7 @@ A collection of thoughts and notes as I build my home server. If you find anythi
   - [Part 3: Generating and using SSH-keys](#part-3-generating-and-using-ssh-keys)
   - [Part 4: Hardening](#part-4-hardening)
 - [Installing Docker](#installing-docker)
+- [Network security](#network-security)
 - [Setting up services](#setting-up-services)
 - [Approximating power draw](#approximating-power-draw)
 
@@ -214,15 +215,21 @@ Finally, verify that everything is working by running:
 sudo docker run hello-world
 ```
 
+## Network security
+
+Private domain-name for easier management.
+
+Dynamic DNS, as static IP can bring everyhting down if it changes.
+
+Reverse proxy manager with [NGINX manager](https://nginxproxymanager.com/).
+
+Ban malicious hosts with [Fail2Ban](https://github.com/fail2ban/fail2ban).
+
 ## Setting up services
-
-### NGINX Manager
-
-[NGINX manager](https://nginxproxymanager.com/)
 
 ### Flame
 
-[Flame](https://github.com/pawelmalak/flame)
+[Flame](https://github.com/pawelmalak/flame), a dashboard.
 
 ### Uptime Kuma
 
@@ -247,20 +254,6 @@ Lidarr/Sonarr/Radarr/Prowlarr
 [Static Web Server](https://sws.joseluisq.net/)
 
 --------------------
-
-## Security
-
-### Disaster prevention
-
-#### Data redundancy
-
-### Remote access
-
-#### Allowing authorized access
-
-#### Disallowing unauthorized access
-
-Fail2Ban
 
 ## Approximating power draw
 
