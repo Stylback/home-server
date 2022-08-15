@@ -6,7 +6,25 @@ A collection of thoughts and notes as I build my home server. If you find anythi
 
 ## Table of contents
 
-_Coming soon!_
+[Hardware](#hardware)
+  [CPU / Motherboard](#cpu--motherboard)
+  [Power supply (PSU)](#power-supply-psu)
+  [Case](#case)
+  [RAM](#ram)
+  [Storage](#storage)
+[Assembly](#assembly)
+  [Verifying hardware stability](#verifying-hardware-stability)
+[Installing the OS](#installing-the-os)
+[Setting up SSH](#setting-up-ssh)
+  [Part 1: Prerequisite and basic access](#part-1-prerequisite-and-basic-access)
+  [Part 2: Create a Hostname alias](#part-2-create-a-hostname-alias)
+  [Part 3: Generating and using SSH-keys](#part-3-generating-and-using-ssh-keys)
+  [Part 4: Hardening](#part-4-hardening)
+[Installing Docker](#installing-docker)
+[Setting up services](#setting-up-services)
+[Approximating power draw](#approximating-power-draw)
+
+_More coming soon!_
 
 -------------------
 
@@ -81,13 +99,13 @@ I made a bootable USB following their [instructions](https://www.memtest86.com/t
 
 ## Installing the OS
 
-After confirming hardware stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to extensive [documentation](https://ubuntu.com/server/docs). The system was installed on the 250 GB SSD while the 2 TB SSD was left for data storage.
+After confirming hardware stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to extensive [documentation](https://ubuntu.com/server/docs). 
 
-I also encrypted the drives with LUKS for an added layer of security.
+I assigned the 250 GB drive as a LUKS-encrypted boot drive, consuming about half of its available storage. The rest was partitioned and mounted to `/home` for any application or service that needs to store information there. As the 2 TB drive is going to be used as the primary storage unit it was partioned and mounted at the custom `/data` location.
 
 ## Setting up SSH
 
-SSH is a protocol that allow remote login and command-line-execution, something that will be very convenient when we continue to set up the server. Both my client and server is using Ubuntu-derivative OSs, the commands used might differ on other OSs.
+SSH is a protocol that allows remote login and command-line-execution, something that will be very convenient when we continue to set up the server. Both my client and server is using Ubuntu-derivative OSs, as such the commands might differ from your own.
 
 ### Part 1: Prerequisite and basic access
 
@@ -153,22 +171,26 @@ If everything worked correctly, the server should now be accessible only by your
 
 ## Installing Docker
 
-Get the prerequisite with 
+[Docker](https://www.docker.com/) lets us set up containers to hold our applications, making it easy to handle access and permissions. To install the necessary Docker components I followed their [official documentation](https://docs.docker.com/engine/install/) which can be summarized below as:
+
+Get the prerequisite with:
 
 ```
 sudo apt-get update
-
+```
+```
 sudo apt-get install \
     ca-certificates \
     curl \
     gnupg \
     lsb-release
 ```
-The add Dockers official GPG with
+Add Dockers official GPG with:
 
 ```
 sudo mkdir -p /etc/apt/keyrings
-
+```
+```
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 ```
 Now we can safely set up the repository with:
@@ -182,15 +204,15 @@ echo \
 Now we can install the Docker components: 
 ```
 sudo apt-get update
+```
+```
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 ```
-Verify that everything is working by running:
+Finally, verify that everything is working by running:
 
 ```
 sudo docker run hello-world
 ```
-
-[Docker](https://www.docker.com/)
 
 ## Setting up services
 
