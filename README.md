@@ -129,7 +129,7 @@ You will be prompted for a name, you can chose a name or accept the default `id_
 
 This will create a keypair, one public key named `keyname.pub` and one private key just named `keyname`. You can verify this by running `cd ~/.ssh` followed by `ls -la`.
 
-__NOTE:__ Always keep your private key secure, __never__ share it with anyone! If you have reason to believe that your private key has been compromised, generate a new keypair and delete the old one from the servers `trusted_hosts` file.
+__NOTE:__ Always keep your private key secure, __never__ share it with anyone! If you have reason to believe that your private key has been compromised, generate a new keypair and delete the old one from the servers `authorized_keys` file.
 
 Now lets copy the __public__ key to our server. On the client, run `ssh-copy-id -i ~/.ssh/keyname.pub alias`, replacing _keyname_ and _alias_ with whatever you chose earlier. If you chose a passphrase for the key you will be prompted for it now.
 
@@ -145,13 +145,50 @@ Finally, find the line with `Port 22`, uncomment and change it from 22 to anothe
 
 __NOTE:__ Do __NOT__ close the terminal window! Until we know everything works, ensure that you have atleast one other terminal instance running that is connected to the server. If something was entered incorrectly in the configuration file you might lose access to the server!
 
-Restart the ssh service by running `sudo systemctl restart ssh`.
+Restart the SSH service by running `sudo systemctl restart ssh`.
 
-Verify that everything works by first trying to connect to the server with `ssh alias`. Then try to access it using `ssh root@server-ip`, the server should deny this attempt.
+Verify that everything works by first trying to connect to the server with `ssh alias`, then try to access it using `ssh root@server-ip` (_the server should deny this attempt_).
 
 If everything worked correctly, the server should now be accessible only by your SSH-key and no user that access it by SSH can gain Root privileges. As we changed the port number from the default we gain some resistance against automated attacks, but a persistent actor could still find the correct port after some trial and error.
 
 ## Installing Docker
+
+Get the prerequisite with 
+
+```
+sudo apt-get update
+
+sudo apt-get install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+```
+The add Dockers official GPG with
+
+```
+sudo mkdir -p /etc/apt/keyrings
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+```
+Now we can safely set up the repository with:
+
+```
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+```
+Now we can install the Docker components: 
+```
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+```
+Verify that everything is working by running:
+
+```
+sudo docker run hello-world
+```
 
 [Docker](https://www.docker.com/)
 
