@@ -1,8 +1,14 @@
 # Server journey
 
-A collection of thoughts and notes as I build my home server. If you find anything useful, feel free to use it in your own project!
+A collection of thoughts and notes as I build my home server. If you find anything useful, feel free to use it in your own project.
 
 --------------------
+
+## Table of contents
+
+_Coming soon!_
+
+-------------------
 
 ## Hardware
 
@@ -25,7 +31,7 @@ As I don't expect to be using resource-heavy services such as multiple desktop V
 - Intel Quick Sync support for video encoding
 - 10 W TDP (_average power dissipation, a shorthand way to estimate power consumption_)
 
-The J-series is only available in "CPU-onboard"-motherboards. I've opted for a [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) due to its low cost, but you might consider the [ASRock ITX-J4105](https://www.asrock.com/mb/Intel/J4105-ITX/index.us.asp) if you want more SATA III-connectors.
+The J-series is only available in _CPU onboard_ motherboards. I've opted for a [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) due to its low cost, but you might consider the [ASRock ITX-J4105](https://www.asrock.com/mb/Intel/J4105-ITX/index.us.asp) for more SATA III-connectors.
 
 ### Power supply (PSU)
 Ideally, the server will be running 24/7, 365 days a year. As such, high efficiency is important to keep upkeep-cost down. __A power supply is at its most efficient at 50% of maximum rated load__, that means a PSU rated at 500 W max load will be at its most efficient when it provides 250 W of power.
@@ -58,13 +64,13 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 | ![rear view](https://github.com/Stylback/server-journey/blob/main/media/back.jpg?raw=true) | Rear-view and IO. |
 | ![assembled case](https://github.com/Stylback/server-journey/blob/main/media/outside.jpg?raw=true) | Assembled system. |
 
-### Memory test
+### Verifying hardware stability
 
 Before installing the operating system I wanted to ensure that my RAM modules would not cause any system instability.
 
 MemTest86 is an industry staple in this regard. It has a multitude of tests designed to coax RAM instability under extreme conditions. If there is any conflict between the modules and the Biostar J4105NHU, it will be obvious in the result.
 
-I made a bootable USB following their [instructions](https://www.memtest86.com/tech_creating-linux-mac.html) and ran the standard configuration (13 tests, 4 passes), below are the results.
+I made a bootable USB following their [instructions](https://www.memtest86.com/tech_creating-linux-mac.html) and ran the standard configuration (_13 tests, 4 passes_), below are the results.
 
 | Image | Note |
 |:---|:---|
@@ -91,15 +97,13 @@ OpenSSH usually comes shipped by default on desktop Linux distributions, if for 
 
 On the server we install it using `sudo apt install openssh-server`. This was however not necessary in my case as the Ubuntu installer provided me with the option during initial installation.
 
-From the server, run `ip a` to get information about your network connections and take note of current IPs. As I'm on the same local network as my server I wrote down the local IP of the server before continuing.
+From the server, run `ip a` to get information about your network connections and take note of current IPs. As I'm on the same local network as my server I wrote down itslocal IP before proceeding.
 
-On the client, run `ssh username@server-ip`, where _username_ is the username on the server and _server-ip_ is the IP jotted down earlier.
-
-The terminal will prompt for a password and connect.
+On the client, run `ssh username@server-ip`, where _username_ is the username on the server and _server-ip_ is the IP jotted down earlier. The terminal will prompt for a password and connect.
 
 ### Part 2: Create a Hostname alias
 
-We don't want to remember username@server-ip so instead we are creating an alias, this will allow us to access the server by just running `ssh alias`.
+We don't want to have to remember username@server-ip, so instead we are creating an alias which will allow us to access the server by just running `ssh alias`.
 
 On the client, run `cd ~/.ssh` and then `touch config` to make a SSH configuration file.
 Edit the file by running `nano config`. Write the following, replacing _alias_, _server-ip_ and _username_ with relevant information:
@@ -111,9 +115,9 @@ Host alias
   User username
 ```
 
-__NOTE__: The spaces before Hostname, Port and User are required!
+__NOTE__: The spaces before _Hostname_, _Port_ and _User_ are __required__!
 
-Save and exit, you can now connect to your server by running `ssh alias`.
+Save and exit, you should now be able to connect to your server by running `ssh alias`.
 
 ### Part 3: Generating and using SSH-keys
 
@@ -123,9 +127,9 @@ You will be prompted for a name, you can chose a custom name or accept the defau
 
 This will create a keypair, one public key names _keyname.pub_ and one private key just named _keyname_. You can verify this by running `cd ~/.ssh` followed by `ls -la`.
 
-Now lets copy the __public__ key to our server. On the client, run `ssh-copy-id -i ~/.ssh/keyname.pub alias`, replacing the _keyname_ and _alias_ with whatever you chose earlier.
+__NOTE:__ Always keep your private key secure, never share it with anyone! If you have reason to believe that your private key has been compromised, generate a new keypair and delete the old one.
 
-If you chose a passphrase for the key you will be prompted for it now.
+Now lets copy the __public__ key to our server. On the client, run `ssh-copy-id -i ~/.ssh/keyname.pub alias`, replacing the _keyname_ and _alias_ with whatever you chose earlier. If you chose a passphrase for the key you will be prompted for it now.
 
 Verify that the key works by connecting to the server with `ssh alias`. If the keys have been exchanged correctly you should not be prompted for a password.
 
@@ -135,13 +139,13 @@ Now that we can connect to the server using our SSH-key, we will make some secur
 
 On your client, connect to the server and run `sudo nano /etc/ssh/sshd_config`. Search after the line with `PermitRootLogin`, uncomment it and change it to `PermitRootLogin no`. Then search for `PasswordAuthentication`, uncomment and change it to `PasswordAuthentication no`. 
 
-Finally, find the line with Port, uncomment and change it from 22 to another port of your choice (_remember to change the port number for your alias aswell!_). Save and exit.
+Finally, find the line with `Port`, uncomment and change it from 22 to another port of your choice (_remember to change the port number for your alias aswell to reflect this_). Save and exit.
 
-__Warning!__ Do __NOT__ close the terminal window, ensure that you have atleast one other terminal instance running that is connected to the server. If something was entered incorrectly in the configuration file you might lose access to the server!
+__NOTE:__ Do __NOT__ close the terminal window, ensure that you have atleast one other terminal instance running that is connected to the server. If something was entered incorrectly in the configuration file you might lose access to the server!
 
 Restart the ssh service by running `sudo systemctl restart ssh`.
 
-The server should now be accessible only by SSH-key and no user that access it by SSH can gain Root privileges. As we changed the port number from the default we gain some resistance against automated attacks.
+The server should now be accessible only by SSH-key and no user that access it by SSH can gain Root privileges. As we changed the port number from the default we gain some resistance against automated attacks, but a persistent actor could still find the correct port after some trial and error.
 
 It is now safe to close any other terminal instance.
 
