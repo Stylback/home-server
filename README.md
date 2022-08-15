@@ -103,20 +103,19 @@ The terminal will prompt for a password and connect.
 
 ### Part 2: Create a Hostname alias
 
-We don't want to remember username@server-ip so instead we are creating an alias, this will allow us to access the server by just running `ssh _alias_`.
+We don't want to remember username@server-ip so instead we are creating an alias, this will allow us to access the server by just running `ssh alias`.
 
 On the client, run `cd ~/.ssh` and then `touch config` to make a SSH configuration file.
 Edit the file by running `nano config`. Write the following, replacing _alias_, _server-ip_ and _username_ with relevant information:
 
-`Host _alias_`
+```
+Host alias
+  Hostname server-ip
+  Port 22
+  User username
+```
 
-`  Hostname _server-ip_`
-
-`  Port 22`
-
-`  User _username_`
-
-NOTE: The spaces before Hostanme, Port and User are required!
+__NOTE__: The spaces before Hostname, Port and User are required!
 
 Save and exit, you can now connect to your server by running `ssh _alias_`.
 
@@ -128,18 +127,18 @@ You will be prompted for a name, you can chose a custom name or accept the defau
 
 This will have created a keypair, one public key names _keyname.pub_ and one private key just named _keyname_. You can verify this by running `cd ~/.ssh` followed by `ls -la`.
 
-Now lets copy the __public__ key to our server. On the client, run `ssh-copy-id -i ~/.ssh/_keyname_.pub _alias_`, replacing the _keyname_ and _alias_ with whatever you chose earlier.
+Now lets copy the __public__ key to our server. On the client, run `ssh-copy-id -i ~/.ssh/keyname.pub alias`, replacing the _keyname_ and _alias_ with whatever you chose earlier.
 
 If you chose a passphrase for the key you will be prompted for it now.
 
-Verify that the key works by connecting to the server with `ssh _alias_`. If the keys have been exchanged correctly you should not be prompted for a password.
+Verify that the key works by connecting to the server with `ssh alias`. If the keys have been exchanged correctly you should not be prompted for a password.
 
 ### Part 4: Hardening
 
 Now that we can connect to the server using our SSH-key, we will make some security enhancement to prevent brute-forcing and root access.
 
 On your client, connect to the server and run `sudo nano /etc/ssh/sshd_config`.
-Search after the line with `PermitRootLogin`, uncomment it and change it to `PermitRootLogin no`. Then search for `PasswordAuthentication`, uncomment and change it to `PasswordAuthentication no`. Finally, find the line with Port, uncomment and change it from 22 to another port of your choice (__remember to change the port number for your alias aswell!__).
+Search after the line with `PermitRootLogin`, uncomment it and change it to `PermitRootLogin no`. Then search for `PasswordAuthentication`, uncomment and change it to `PasswordAuthentication no`. Finally, find the line with Port, uncomment and change it from 22 to another port of your choice (_remember to change the port number for your alias aswell!_).
 
 Save and exit.
 
