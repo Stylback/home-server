@@ -24,7 +24,7 @@ _Coming soon!_
 [_*10 SEK = ~1 USD_ ](https://www.xe.com/currencyconverter/convert/?Amount=10&From=SEK&To=USD)
 
 ### CPU / Motherboard
-As I don't expect to be using resource-heavy services such as multiple desktop VM:s, 4K-encoding or multi-user streaming I've settled for an [intel Celeron J4105](https://www.intel.com/content/www/us/en/products/sku/128989/). It has some useful features for my use case, including:
+As I don't expect to be using resource-heavy services such as multiple desktop VM:s, 4K video encoding or multi-user streaming I've settled for an [intel Celeron J4105](https://www.intel.com/content/www/us/en/products/sku/128989/). It has some useful features for my use case, including:
 
 - 12 execution units for parallel processing
 - Integrated Graphics for media and display capability
@@ -95,17 +95,17 @@ To be able to SSH from a client to a server:
 - There must be a traversable network connection between them and
 - They both need to have a SSH service installed
 
-OpenSSH usually comes shipped by default on desktop Linux distributions, if for some reason you do not have the client you can install it by running `sudo apt install openssh-client`.
+OpenSSH usually comes shipped by default on desktop Linux distributions, if for some reason you do not have the client it can be installed by running `sudo apt install openssh-client`.
 
-On the server we install it using `sudo apt install openssh-server`. This was however not necessary in my case as the Ubuntu installer provided me with the option during initial installation.
+On the server we install it using `sudo apt install openssh-server`, this was however not necessary in my case as the Ubuntu installer provided me with the option during initial set-up.
 
-From the server, run `ip a` to get information about your network connections and take note of current IPs. As I'm on the same local network as my server I wrote down itslocal IP before proceeding.
+From the server, run `ip a` to get information about your network connections and take note of current IPs. As I'm on the same local network as my server I wrote down its local IP before proceeding.
 
 On the client, run `ssh username@server-ip`, where _username_ is the username on the server and _server-ip_ is the IP jotted down earlier. The terminal will prompt for a password and connect.
 
 ### Part 2: Create a Hostname alias
 
-We don't want to have to remember username@server-ip, so instead we are creating an alias which will allow us to access the server by just running `ssh alias`.
+We don't want to have to remember `username@server-ip`, so instead we are creating an alias which will allow us to access the server by just running `ssh alias`.
 
 On the client, run `cd ~/.ssh` and then `touch config` to make a SSH configuration file.
 Edit the file by running `nano config`. Write the following, replacing _alias_, _server-ip_ and _username_ with relevant information:
@@ -125,31 +125,31 @@ Save and exit, you should now be able to connect to your server by running `ssh 
 
 On the client, run `ssh-keygen -t ed25519 -C "comment"`, replacing _comment_ with some information to help you remember what the key is used for.
 
-You will be prompted for a name, you can chose a custom name or accept the default `id_ed2559` by pressing enter. You will also be prompted for a passphrase, enter a passphrase (_recommended!_) or press enter.
+You will be prompted for a name, you can chose a name or accept the default `id_ed2559` by pressing enter. You will also be prompted for a passphrase, enter a passphrase (_recommended!_) or press enter to skip.
 
-This will create a keypair, one public key names _keyname.pub_ and one private key just named _keyname_. You can verify this by running `cd ~/.ssh` followed by `ls -la`.
+This will create a keypair, one public key named `keyname.pub` and one private key just named `keyname`. You can verify this by running `cd ~/.ssh` followed by `ls -la`.
 
-__NOTE:__ Always keep your private key secure, never share it with anyone! If you have reason to believe that your private key has been compromised, generate a new keypair and delete the old one from the servers Trusted_hosts file.
+__NOTE:__ Always keep your private key secure, __never__ share it with anyone! If you have reason to believe that your private key has been compromised, generate a new keypair and delete the old one from the servers `trusted_hosts` file.
 
-Now lets copy the __public__ key to our server. On the client, run `ssh-copy-id -i ~/.ssh/keyname.pub alias`, replacing the _keyname_ and _alias_ with whatever you chose earlier. If you chose a passphrase for the key you will be prompted for it now.
+Now lets copy the __public__ key to our server. On the client, run `ssh-copy-id -i ~/.ssh/keyname.pub alias`, replacing _keyname_ and _alias_ with whatever you chose earlier. If you chose a passphrase for the key you will be prompted for it now.
 
-Verify that the key works by connecting to the server with `ssh alias`. If the keys have been exchanged correctly you should not be prompted for a password.
+Verify that the key works by connecting to the server with `ssh alias`. If the keys have been exchanged correctly you should __not__ be prompted for a password.
 
 ### Part 4: Hardening
 
 Now that we can connect to the server using our SSH-key, we will make some security enhancement to prevent brute-forcing and root access.
 
-On your client, connect to the server and run `sudo nano /etc/ssh/sshd_config`. Search after the line with `PermitRootLogin`, uncomment it and change it to `PermitRootLogin no`. Then search for `PasswordAuthentication`, uncomment and change it to `PasswordAuthentication no`. 
+On your client, connect to the server and run `sudo nano /etc/ssh/sshd_config`. Search after the line with `PermitRootLogin`, uncomment and change it to `PermitRootLogin no`. Then search for `PasswordAuthentication`, uncomment and change it to `PasswordAuthentication no`. 
 
-Finally, find the line with `Port`, uncomment and change it from 22 to another port of your choice (_remember to change the port number for your alias aswell to reflect this_). Save and exit.
+Finally, find the line with `Port 22`, uncomment and change it from 22 to another port of your choice (_just remember to change the port number for your alias to reflect this_). Save and exit.
 
-__NOTE:__ Do __NOT__ close the terminal window, ensure that you have atleast one other terminal instance running that is connected to the server. If something was entered incorrectly in the configuration file you might lose access to the server!
+__NOTE:__ Do __NOT__ close the terminal window! Until we know everything works, ensure that you have atleast one other terminal instance running that is connected to the server. If something was entered incorrectly in the configuration file you might lose access to the server!
 
 Restart the ssh service by running `sudo systemctl restart ssh`.
 
-The server should now be accessible only by SSH-key and no user that access it by SSH can gain Root privileges. As we changed the port number from the default we gain some resistance against automated attacks, but a persistent actor could still find the correct port after some trial and error.
+Verify that everything works by first trying to connect to the server with `ssh alias`. Then try to access it using `ssh root@server-ip`, the server should deny this attempt.
 
-It is now safe to close any other terminal instance.
+If everything worked correctly, the server should now be accessible only by your SSH-key and no user that access it by SSH can gain Root privileges. As we changed the port number from the default we gain some resistance against automated attacks, but a persistent actor could still find the correct port after some trial and error.
 
 ## Installing Docker
 
