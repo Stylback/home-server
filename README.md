@@ -1,12 +1,8 @@
-# Server-Journey
-A collection of thoughts and notes as I build my home server.
+# Server journey
 
-If you find anything useful, feel free to use it in your own project!
+A collection of thoughts and notes as I build my home server. If you find anything useful, feel free to use it in your own project!
 
 --------------------
-
-## The overall idea
-A budget-friendly, low maintance system running Ubuntu Server 22.04 LTS with Docker containers. Initially it will be used for cloud storage, file synchronisation and media streaming. Later on I hope to expand it to serve a static web page.
 
 ## Hardware
 
@@ -66,7 +62,7 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 
 Before installing the operating system I wanted to ensure that my RAM modules would not cause any system instability.
 
-MemTest86 is an industry staple in this regard. It has a multitude of tests designed to identify RAM stability under extreme conditions. If there is any conflict between the modules and the Biostar J4105NHU, it will be obvious in the result.
+MemTest86 is an industry staple in this regard. It has a multitude of tests designed to coax RAM instability under extreme conditions. If there is any conflict between the modules and the Biostar J4105NHU, it will be obvious in the result.
 
 I made a bootable USB following their [instructions](https://www.memtest86.com/tech_creating-linux-mac.html) and ran the standard configuration (13 tests, 4 passes), below are the results.
 
@@ -137,16 +133,17 @@ Verify that the key works by connecting to the server with `ssh alias`. If the k
 
 Now that we can connect to the server using our SSH-key, we will make some security enhancement to prevent brute-forcing and root access.
 
-On your client, connect to the server and run `sudo nano /etc/ssh/sshd_config`.
-Search after the line with `PermitRootLogin`, uncomment it and change it to `PermitRootLogin no`. Then search for `PasswordAuthentication`, uncomment and change it to `PasswordAuthentication no`. Finally, find the line with Port, uncomment and change it from 22 to another port of your choice (_remember to change the port number for your alias aswell!_).
+On your client, connect to the server and run `sudo nano /etc/ssh/sshd_config`. Search after the line with `PermitRootLogin`, uncomment it and change it to `PermitRootLogin no`. Then search for `PasswordAuthentication`, uncomment and change it to `PasswordAuthentication no`. 
 
-Save and exit.
+Finally, find the line with Port, uncomment and change it from 22 to another port of your choice (_remember to change the port number for your alias aswell!_). Save and exit.
 
-__Warning!__ Do NOT close the terminal window, ensure that you have atleast one other terminal instance running that is connected to the server. If something was entered incorrectly in the configuration file you might lose access to the server!
+__Warning!__ Do __NOT__ close the terminal window, ensure that you have atleast one other terminal instance running that is connected to the server. If something was entered incorrectly in the configuration file you might lose access to the server!
 
 Restart the ssh service by running `sudo systemctl restart ssh`.
 
-The server should now be accessible only by SSH-key and no user that access it by SSH can gain Root privileges (_It is now safe to close any other terminal instance_).
+The server should now be accessible only by SSH-key and no user that access it by SSH can gain Root privileges. As we changed the port number from the default we gain some resistance against automated attacks.
+
+It is now safe to close any other terminal instance.
 
 ## Installing Docker
 
