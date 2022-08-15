@@ -117,15 +117,15 @@ Host alias
 
 __NOTE__: The spaces before Hostname, Port and User are required!
 
-Save and exit, you can now connect to your server by running `ssh _alias_`.
+Save and exit, you can now connect to your server by running `ssh alias`.
 
 ### Part 3: Generating and using SSH-keys
 
-On the client, run `ssh-keygen -t ed25519 -C "_comment_"`, replacing _comment_ with some information to help you remember what the key is used for.
+On the client, run `ssh-keygen -t ed25519 -C "comment"`, replacing _comment_ with some information to help you remember what the key is used for.
 
 You will be prompted for a name, you can chose a custom name or accept the default `id_ed2559` by pressing enter. You will also be prompted for a passphrase, enter a passphrase (_recommended!_) or press enter.
 
-This will have created a keypair, one public key names _keyname.pub_ and one private key just named _keyname_. You can verify this by running `cd ~/.ssh` followed by `ls -la`.
+This will create a keypair, one public key names _keyname.pub_ and one private key just named _keyname_. You can verify this by running `cd ~/.ssh` followed by `ls -la`.
 
 Now lets copy the __public__ key to our server. On the client, run `ssh-copy-id -i ~/.ssh/keyname.pub alias`, replacing the _keyname_ and _alias_ with whatever you chose earlier.
 
@@ -142,9 +142,11 @@ Search after the line with `PermitRootLogin`, uncomment it and change it to `Per
 
 Save and exit.
 
+__Warning!__ Do NOT close the terminal window, ensure that you have atleast one other terminal instance running that is connected to the server. If something was entered incorrectly in the configuration file you might lose access to the server!
+
 Restart the ssh service by running `sudo systemctl restart ssh`.
 
-The server should now be accessible only by SSH-key and no user that access it by SSH can gain Root privileges.
+The server should now be accessible only by SSH-key and no user that access it by SSH can gain Root privileges (_It is now safe to close any other terminal instance_).
 
 ## Installing Docker
 
