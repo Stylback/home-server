@@ -129,7 +129,7 @@ We don't want to have to remember `username@server-ip`, so instead we are creati
 On the client, run `cd ~/.ssh` and then `touch config` to make a SSH configuration file.
 Edit the file by running `nano config`. Write the following, replacing _alias_, _server-ip_ and _username_ with relevant information:
 
-```
+```sh
 Host alias
   Hostname server-ip
   Port 22
@@ -176,10 +176,10 @@ If everything worked correctly, the server should now be accessible only by your
 
 Get the prerequisite with:
 
-```
+```sh
 sudo apt-get update
 ```
-```
+```sh
 sudo apt-get install \
     ca-certificates \
     curl \
@@ -188,30 +188,30 @@ sudo apt-get install \
 ```
 Add Dockers official GPG with:
 
-```
+```sh
 sudo mkdir -p /etc/apt/keyrings
 ```
-```
+```sh
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 ```
 Now we can safely set up the repository with:
 
-```
+```sh
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 ```
 Now we can install the Docker components: 
-```
+```sh
 sudo apt-get update
 ```
-```
+```sh
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 ```
 Finally, verify that everything is working by running:
 
-```
+```sh
 sudo docker run hello-world
 ```
 
@@ -219,7 +219,7 @@ sudo docker run hello-world
 
 Private domain-name for easier management.
 
-Dynamic DNS, as static IP can bring everyhting down if it changes.
+Dynamic DNS, as static IP can bring everything down if it changes.
 
 Reverse proxy manager with [NGINX manager](https://nginxproxymanager.com/).
 
@@ -282,4 +282,4 @@ Which is almost exactly the same as the average [coffee maker](https://energyuse
 
 [^4]: [HardwareInfo low-load PSU test](https://web.archive.org/web/20130812130505/http://uk.hardware.info:80/reviews/4683/3/45-psus-tested-at-very-low-loads-which-one-is-the-most-efficient-225-watt-test). Inferred from the 22.5 W test of the _be quiet! Pure Power L8 300 W_.
 
-**[Back to the top](#)**
+**[Back to top](#)**
