@@ -267,7 +267,7 @@ Lidarr/Sonarr/Radarr/Prowlarr
 | __Total (_70% efficiency_[^4]):__ | __9.82__ | __22.97__ |
 
 If we assume an average 2 hours of full system utilization per day, with the rest being equivalent to an idle power state, we can approximate the daily power consumption to: 
-$\frac{22.97*2+9.82*22}{1000} \approx 0.262 KWh/Day$
+$$\frac{22.97*2+9.82*22}{1000} \approx 0.262 KWh/Day$$
 
 Or a yearly power consumption of: $0.262*365 \approx 95.6 KWh/Year$
 
