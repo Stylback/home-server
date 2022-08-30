@@ -23,6 +23,8 @@ A collection of thoughts and notes as I build my home server. If you find anythi
 - [Installing Docker](#installing-docker)
 - [Setting up network security](#setting-up-network-security)
 - [Implementing services](#implementing-services)
+- [Issues and solutions](#issues-and-solutions)
+  - [Bricked motherboard](#bricked-motherboard)
 - [Reference tables](#reference-tables)
   - [Approximating power draw](#approximating-power-draw)
 
@@ -34,24 +36,25 @@ _More coming soon!_
 
 | Component type | Model name | Price (SEK*) |
 | :--- | :--- | ---: |
-| [CPU / Motherboard](#cpu--motherboard)| [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013)| 1320 |
+| [CPU / Motherboard](#cpu--motherboard)| [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp)| 1790 |
 | [Power supply](#power-supply-psu) | [be quiet! SYSTEM POWER B9 (_300 W_)](https://www.bequiet.com/en/powersupply/1285) | 440 |
 | [Case](#case) | [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html)| 380 |
-| [RAM](#ram) | [Corsair Venegance 2400 MHz 8 GB x 2](https://www.corsair.com/us/en/Categories/Products/Memory/VENGEANCE-LPX/p/CMK8GX4M1A2400C16)| 500 |
+| [RAM](#ram) | [G.SKILL Ripjaws SO-DIMM 16 GB, 2400 MHz Kit](https://www.gskill.com/product/2/197/1540865326/F4-2400C16D-16GRS)| 560 |
 | [Storage](#storage) | [Crucial MX500 (_250 GB + 2 TB_)](https://www.crucial.com/products/ssd/crucial-mx500-ssd) | 2180 |
-| __Total:__ |  | __4820__ |
+| Misc| Extension cables, cable ties and more | 270 |
+| __Total:__ |  | __5620__ |
 
 [_*10 SEK = ~1 USD_ ](https://www.xe.com/currencyconverter/convert/?Amount=10&From=SEK&To=USD)
 
 ### CPU / Motherboard
-As I don't expect to be using resource-heavy services such as multiple desktop VM:s, 4K video encoding or multi-user streaming I've settled for an [intel Celeron J4105](https://www.intel.com/content/www/us/en/products/sku/128989/). It has some useful features for my use case, including:
+As I don't expect to be using resource-heavy services such as multiple desktop VM:s, 4K video encoding or multi-user streaming I've settled for an [intel Pentium J5040](https://ark.intel.com/content/www/us/en/ark/products/197304/intel-pentium-silver-j5040-processor-4m-cache-up-to-3-20-ghz.html). It has some useful features for my use case, including:
 
-- 12 execution units for parallel processing
+- 18 execution units for parallel processing
 - Integrated Graphics for media and display capability
 - Intel Quick Sync support for video encoding
 - 10 W TDP (_average power dissipation, a shorthand way to estimate power consumption_)
 
-The J-series is only available in _CPU onboard_ motherboards. I've opted for a [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) due to its low cost, but you might consider the [ASRock ITX-J4105](https://www.asrock.com/mb/Intel/J4105-ITX/index.us.asp) for more SATA III-connectors.
+The J-series is only available as motherboard embedded CPU:s. I've opted for an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp) due to its rich feature-set, but you might consider the [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) [as long as you only want to use 8 GB of ram](#bricked-motherboard).
 
 ### Power supply (PSU)
 Ideally, the server will be running 24/7, 365 days a year. As such, high efficiency is important to keep upkeep-cost down. __A power supply is at its most efficient at 50% of maximum rated load__, that means a PSU rated at 500 W max load will be at its most efficient when it provides 250 W of power.
@@ -64,10 +67,10 @@ After some [back of the napkin calculations](#approximating-power-draw) I've est
 I wanted something cheap and discreet with some room for expandability. The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes and also included a 120 mm rear-mounted fan.
 
 ### RAM
-As stated on intel's, Biostar's and ASRock's websites, the J4105 _officially_ supports up to 8 GB of RAM.
-However, some reddit users report being able to use [16](https://libreddit.dcs0.hu/r/Hardware_for_Linux/comments/scp0p4/newest_desktop_of_the_day_with_bsd_biostar/) and even [32 GB](https://libreddit.dcs0.hu/r/homelab/comments/flqcs6/asrock_j4105itx_32gb_success/) with varying results.
+As stated on intel's and ASRock's websites; the J5040 _officially_ supports up to 8 GB of RAM.
+However, some reddit users report being able to use 16 and even 32 GB with [varying results](https://libreddit.dcs0.hu/r/ASRock/comments/k8hpww/how_can_a_motherboard_support_more_ram_than_the/).
 
-I decided to take a gamble with two sticks of [Corsair Venegance 2400 MHz 8 GB](https://www.corsair.com/us/en/Categories/Products/Memory/VENGEANCE-LPX/p/CMK8GX4M1A2400C16) for a total of 16 GB of RAM.
+I decided to take a gamble with a [G.SKILL Ripjaws SO-DIMM 16 GB, 2400 MHz Kit](https://www.gskill.com/product/2/197/1540865326/F4-2400C16D-16GRS).
 
 ### Storage
 Spinning hard-disk drives (HDD) are popular in home servers and NAS due to their high storage capacity and low price. However, they have reduced speeds and increased power draw compared to solid-state drives (SSD). Their moving parts also add noise and a [significant](https://en.wikipedia.org/wiki/Head_crash) point of failure.
@@ -80,7 +83,7 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 | Image | Note |
 |:---|:---|
 | ![inside of the case](https://github.com/Stylback/server-journey/blob/main/media/inside.jpg?raw=true) | The process of assembling the system was relatively painless. The case can be disassembled for easy access to the motherboard fittings and has plenty of room for cable managment without the presence of a GPU. |
-| ![power-extender cable](https://github.com/Stylback/server-journey/blob/main/media/cable_orientation.jpg?raw=true) | The only gripe I had with the case was the power-extender. It's aligned in such a way that the cable has to be forcefully twisted to slot into my specific PSU. I tried to screw the end out and flipping it 180°, allowing the cable to rest naturally on the case floor. It was however not possible to screw it in that way due to the shape of the cutout. |
+| ![power-extender cable](https://github.com/Stylback/server-journey/blob/main/media/psu_cable.jpg?raw=true) | The only gripe I had with the case was the power-extender. It's aligned in such a way that the cable has to be forcefully twisted to slot into my specific PSU. I tried to screw the end out and flipping it 180°, allowing the cable to rest naturally on the case floor. It was however not possible to screw it in that way due to the shape of the cutout. |
 | ![rear view](https://github.com/Stylback/server-journey/blob/main/media/back.jpg?raw=true) | Rear-view and IO. |
 | ![assembled case](https://github.com/Stylback/server-journey/blob/main/media/outside.jpg?raw=true) | Assembled system. |
 
@@ -90,12 +93,22 @@ Before installing the operating system I wanted to ensure that my RAM modules wo
 
 MemTest86 is an industry staple in this regard. It has a multitude of tests designed to coax RAM instability under extreme conditions. If there is any conflict between the modules and the Biostar J4105NHU, it will be obvious in the result.
 
-I made a bootable USB following their [instructions](https://www.memtest86.com/tech_creating-linux-mac.html) and ran the standard configuration (_13 tests, 4 passes_), below are the results.
+I made a bootable USB following their [instructions](https://www.memtest86.com/tech_creating-linux-mac.html) and ran the standard configuration (_13 tests, 4 passes_).
 
 | Image | Note |
 |:---|:---|
-| ![Ram modules detected by MemTest86](https://github.com/Stylback/server-journey/blob/main/media/memtest86_ram.bmp?raw=true) | Both sticks of RAM was detected. |
-| ![Test completion screen](https://github.com/Stylback/server-journey/blob/main/media/memtest86_pass.jpg?raw=true) | The sticks passed with flying colors. The test completed in 5 hours and 20 minutes with 0 errors, I was pleasantly surprised to see that the CPU was able to hold its maximum clockspeed of 1.5 GHz throughout the test without going over 75 °C. |
+| ![Ram modules detected by MemTest86](https://github.com/Stylback/server-journey/blob/main/media/memtest86_ram.bmp?raw=true) | Both sticks of RAM was detected by MemTest86. |
+| ![Test completion screen](https://github.com/Stylback/server-journey/blob/main/media/memtest86_pass.jpg?raw=true) | The sticks passed with 0 errors and a completion time of 4 hours and 37 minutes. |
+
+--------------------
+## BIOS tweaks
+
+The ASRock J5040-ITX comes with an extensive list of BIOS settings, I made the following changes:
+
+- SATA Aggressive Link Power Management -> Enabled, reduces power consumption while SATA devices are idle.
+- Onboard HD Audio -> Disabled, as I won't use any audio outputs.
+- Deep S5 -> Auto, reduces power consumption on a turned off system.
+- Restore on AC/Power -> Loss Power On, restarts the system after a power failure.
 
 --------------------
 
@@ -103,7 +116,7 @@ I made a bootable USB following their [instructions](https://www.memtest86.com/t
 
 After confirming hardware stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to extensive [documentation](https://ubuntu.com/server/docs). 
 
-I assigned the 250 GB drive as a LUKS-encrypted boot drive, consuming about half of its available storage. The rest was partitioned and mounted to `/home` for any application or service that needs to store information there. As the 2 TB drive is going to be used as the primary storage unit it was partioned and mounted at the custom `/data` location.
+I assigned the 250 GB drive as a LUKS-encrypted boot drive, consuming about half of its available storage. The rest was partitioned and mounted to `/home` for any application or service that needs to store information there. As the 2 TB drive is going to be used as the primary storage unit it was partioned and mounted at `/srv`.
 
 ## Setting up SSH
 
@@ -259,6 +272,12 @@ Lidarr/Sonarr/Radarr/Prowlarr
 [Static Web Server](https://sws.joseluisq.net/)
 
 --------------------
+
+## Issues and solutions
+
+### Bricked motherboard
+A BIOS-update bricked my Biostar J4105NHU, I have since replaced it with an ASRock J5040. I also had to replace my DIMM RAM modules with SO-DIMM due to board incompatability. I will write more about this at a later date.
+
 ## Reference tables
 
 ### Approximating power draw
@@ -268,7 +287,7 @@ Lidarr/Sonarr/Radarr/Prowlarr
 | Crucial MX500 1 TB | 0.10[^1] | 0.54[^1] |
 | Crucial MX500 250 GB | 0.08[^1] | 0.54[^1] |
 | Corsair Venegance 8 GB x2 | 6.00[^2] | 6.00[^2] |
-| Biostar J4105NHU | 0.70[^3] | 9.00[^3] |
+| ASRock J5040-ITX | 0.70[^3] | 10.00[^3] |
 | Total (_100% efficiency_): | 6.88 | 16.08 |
 | __Total (_70% efficiency_[^4]):__ | __9.82__ | __22.97__ |
 
@@ -282,7 +301,7 @@ Which is almost exactly the same as the average [coffee maker](https://energyuse
 
 [^2]: [TomsHardware i7-5960x review](https://www.tomshardware.com/reviews/intel-core-i7-5960x-haswell-e-cpu,3918-13.html). This number seems to agree with Crucials [own assessment](https://www.crucial.com/support/articles-faq-memory/how-much-power-does-memory-use).
 
-[^3]: [Dr. Helmut Neukirchen power consumption test](https://uni.hi.is/helmut/2021/06/07/power-consumption-of-raspberry-pi-4-versus-intel-j4105-system/). Inferred by subtracting 3 W from authors measurements (_estimated power consumption of a 8 GB stick of DDR4 RAM_).
+[^3]: Inferred from [Dr. Helmut Neukirchen power consumption test](https://uni.hi.is/helmut/2021/06/07/power-consumption-of-raspberry-pi-4-versus-intel-j4105-system/), as the J4105 have the same TDP as the J5040. I also subtracted 3 W from the authors measurements, which is the estimated power consumption of a 8 GB stick of DDR4 RAM.
 
 [^4]: [HardwareInfo low-load PSU test](https://web.archive.org/web/20130812130505/http://uk.hardware.info:80/reviews/4683/3/45-psus-tested-at-very-low-loads-which-one-is-the-most-efficient-225-watt-test). Inferred from the 22.5 W test of the _be quiet! Pure Power L8 300 W_.
 
