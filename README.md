@@ -287,7 +287,7 @@ A BIOS-update bricked my Biostar J4105NHU, I have since replaced it with an ASRo
 | :--- | ---: | ---: |
 | Crucial MX500 1 TB | 0.10[^1] | 0.54[^1] |
 | Crucial MX500 250 GB | 0.08[^1] | 0.54[^1] |
-| Corsair Venegance 8 GB x2 | 6.00[^2] | 6.00[^2] |
+| G.SKILL Ripjaws SO-DIMM 16 GB | 6.00[^2] | 6.00[^2] |
 | ASRock J5040-ITX | 0.70[^3] | 10.00[^3] |
 | Total (_100% efficiency_): | 6.88 | 16.08 |
 | __Total (_70% efficiency_[^4]):__ | __9.82__ | __22.97__ |
