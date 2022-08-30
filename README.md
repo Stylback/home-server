@@ -14,6 +14,7 @@ A collection of thoughts and notes as I build my home server. If you find anythi
   - [Storage](#storage)
 - [Assembly](#assembly)
   - [Verifying hardware stability](#verifying-hardware-stability)
+- [Bios tweaks](#bios-tweaks)
 - [Installing the OS](#installing-the-os)
 - [Setting up SSH](#setting-up-ssh)
   - [Part 1: Prerequisite and basic access](#part-1-prerequisite-and-basic-access)
@@ -91,7 +92,7 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 
 Before installing the operating system I wanted to ensure that my RAM modules would not cause any system instability.
 
-MemTest86 is an industry staple in this regard. It has a multitude of tests designed to coax RAM instability under extreme conditions. If there is any conflict between the modules and the Biostar J4105NHU, it will be obvious in the result.
+MemTest86 is an industry staple in this regard. It has a multitude of tests designed to coax RAM instability under extreme conditions. If there is any conflict between the modules and the ASROCK J5040-ITX, it will be obvious in the result.
 
 I made a bootable USB following their [instructions](https://www.memtest86.com/tech_creating-linux-mac.html) and ran the standard configuration (_13 tests, 4 passes_).
 
