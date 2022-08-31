@@ -90,9 +90,7 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 
 ### Testing hardware stability
 
-Before installing the operating system I wanted to ensure that my RAM modules would not cause any system instability.
-
-MemTest86 is an industry staple in this regard. It has a multitude of tests designed to coax RAM instability under extreme conditions.
+Before installing the operating system I wanted to ensure that my RAM modules would not cause any system instability. MemTest86 is an industry staple in this regard, it has a multitude of tests designed to coax RAM instability under extreme conditions.
 
 I made a bootable USB following their [instructions](https://www.memtest86.com/tech_creating-linux-mac.html) and ran the standard configuration (_13 tests, 4 passes_).
 
@@ -106,10 +104,10 @@ I made a bootable USB following their [instructions](https://www.memtest86.com/t
 
 The ASRock J5040-ITX comes with an extensive list of BIOS settings, I made the following changes:
 
-- SATA Aggressive Link Power Management -> Enabled, reduces power consumption while SATA devices are idle.
-- Onboard HD Audio -> Disabled, as I won't use any audio outputs.
-- Deep S5 -> Auto, reduces power consumption on a turned off system.
-- Restore on AC/Power -> Loss Power On, restarts the system after a power failure.
+- SATA Aggressive Link Power Management -> __Enabled__, reduces power consumption while SATA devices are idle.
+- Onboard HD Audio -> __Disabled__, as I won't use any audio outputs.
+- Deep S5 -> __Auto__, reduces power consumption on a turned off system.
+- Restore on AC/Power -> __Loss Power On__, restarts the system after a power failure.
 
 --------------------
 
@@ -117,7 +115,7 @@ The ASRock J5040-ITX comes with an extensive list of BIOS settings, I made the f
 
 After confirming hardware stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to extensive [documentation](https://ubuntu.com/server/docs). 
 
-I assigned the 250GB drive as the boot drive, consuming about half of its available storage. The rest was partitioned and mounted to `/home` for any application or service that needs to store information there. As the 2TB drive is going to be used as the primary storage unit it was partioned and mounted at `/srv`.
+I assigned the 250GB drive as boot drive, consuming about half of its available storage. The rest was partitioned and mounted to `/home` for any application or service that needs to store information there. As the 2TB drive is going to be used as the primary storage unit it was partioned and mounted at `/srv`.
 
 ## Setting up SSH
 
@@ -278,7 +276,7 @@ Lidarr/Sonarr/Radarr/Prowlarr
 
 ### Bricked motherboard
 
-__TL;DR:__ Initially made the build with a Biostar J4105NHU, a BIOS-update broke RAM-support and trying to revert back to the previously known working version bricked it.
+> __TL;DR:__ Initially made the build with a Biostar J4105NHU, a BIOS-update broke RAM-support and trying to revert back to the previously known working version bricked it.
 
 I initially used a Biostar J4105NHU, the motherboard shipped with BIOS-version __J41BW929.BSS__ and worked flawlessly with a pair of 8GB RAM-modules. 
 
