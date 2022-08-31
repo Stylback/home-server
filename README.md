@@ -55,7 +55,7 @@ As I don't expect to be using resource-heavy services such as multiple desktop V
 - Intel Quick Sync for extensive video encoding/decoding support
 - 10W TDP (_average power dissipation, a shorthand way to estimate power consumption_)
 
-The J-series is only available as motherboard embedded CPU:s. I've opted for an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp) due to its rich feature-set, but you might consider the [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) as long as you're OK with being limited to 8GB of ram (_or risk bricking your motherboard, _[_see here for more info_](#bricked-motherboard)).
+The J-series is only available as motherboard embedded CPU:s. I've opted for an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp) due to its rich feature-set, but you might consider the [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) as long as you're OK with being limited to 8GB of ram (_or risk bricking your motherboard,_ [_see here for more info_](#bricked-motherboard)).
 
 ### Power supply (PSU)
 Ideally, the server will be running 24/7, 365 days a year. As such, high efficiency is important to keep upkeep-cost down. __A power supply is at its most efficient at 50% of maximum rated load__, that means a PSU rated at 500W max load will be at its most efficient when it provides 250W of power.
@@ -277,7 +277,22 @@ Lidarr/Sonarr/Radarr/Prowlarr
 ## Issues and solutions
 
 ### Bricked motherboard
-A BIOS-update bricked my Biostar J4105NHU, I have since replaced it with an ASRock J5040. I also had to replace my DIMM RAM modules with SO-DIMM due to board incompatability. I will write more about this at a later date.
+
+__TL;DR:__ Initially made the build with a Biostar J4105NHU, a BIOS-update broke RAM-support and trying to revert back to the previously known working version bricked it.
+
+I initially used a Biostar J4105NHU, the motherboard shipped with BIOS-version __J41BW929.BSS__ and worked flawlessly with a pair of 8GB RAM-modules. 
+
+A couple of days go by and I shut the system down to do some cable-management, after which it refused to boot.
+
+I figured I messed something up with the cables and put everything back as it was, no luck.
+
+I removed one of the RAM-modules and tried again, nothing.
+
+Finally I popped the CMOS battery out, waited a bit and re-placed it. This seemed to have done the job as I was greeted with a login prompt. I shut it down and re-placed the other RAM-module, nothing happens.
+
+I pop the CMOS again, boot with a single module and see the BIOS-version was updated to __J41BWB22.BSS__. Determined to regain the ability to use both modules I tried to flash the __J41BW929.BSS__ version using Biostars provided flashing tool. The tool reported a successfull flash but the process had in fact _bricked_ the motherboard. I was unable to "CMOS-pop" my way out of this one.
+
+Lesson learned, think thrice before manually flashing your BIOS. I have since replaced the board with an ASRock J5040-ITX. I also had to replace my RAM-modules with SO-DIMM ones due to board incompatibility.
 
 ## Reference tables
 
