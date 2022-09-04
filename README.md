@@ -13,7 +13,7 @@ A collection of thoughts and notes as I build my home server. If you find anythi
   - [RAM](#ram)
   - [Storage](#storage)
 - [Assembly](#assembly)
-  - [Verifying hardware stability](#verifying-hardware-stability)
+  - [Testing hardware stability](#testing-hardware-stability)
   - [BIOS tweaks](#bios-tweaks)
   - [Installing the OS](#installing-the-os)
 - [Setting up SSH](#setting-up-ssh)
@@ -22,7 +22,12 @@ A collection of thoughts and notes as I build my home server. If you find anythi
   - [Part 3: Generating and using SSH-keys](#part-3-generating-and-using-ssh-keys)
   - [Part 4: Hardening](#part-4-hardening)
 - [Installing Docker](#installing-docker)
-- [Setting up network security](#setting-up-network-security)
+- [Setting up remote access](#setting-up-remote-access)
+  - [Part 1: Get a custom domain](#part-1-get-a-custom-domain)
+  - [Part 2: Configure Dynamic DNS](#part-2-configure-dynamic-dns)
+  - [Part 3: Configure NGINX proxy manager](#part-3-configure-nginx-proxy-manager)
+  - [Part 4: Set up remote SSH](#part-4-set-up-remote-ssh)
+  - [Part 5: Hardening](#part-5-hardening)
 - [Implementing services](#implementing-services)
 - [Issues and solutions](#issues-and-solutions)
   - [Bricked motherboard](#bricked-motherboard)
@@ -228,47 +233,158 @@ Finally, verify that everything is working by running:
 sudo docker run hello-world
 ```
 
-## Setting up network security
+## Setting up remote access
 
-Private domain-name for easier management.
+### Part 1: Get a custom domain
+A custom domain is great for...
 
-Dynamic DNS, as static IP can bring everything down if it changes.
+_more coming soon!_
+
+### Part 2: Configure Dynamic DNS
+Our custom domain can point to a static IP-adress, it's easy to set up and is good for testing that services have been deployed correctly. The danger however is what happens if our IP-adress were to change; our domain would no longer point to our service and it would become inaccessible! To avoid this we will utilize [ddns-updater](https://github.com/qdm12/ddns-updater), which is a dynamic DNS service that will regularly check our IP-address and convey any changes to our domain registrar.
+
+In your domain registrar, add a new DNS-record with Type: "Dynamic" and a name. If you've choosen Njalla, you will also get a key that you will need to update the record.
+
+To get started with ddns-updater we will pull it from docker using:
+
+```sh
+sudo docker pull qmcgaw/ddns-updater
+```
+
+We will then create a directory in /srv that will serve as our working folder:
+
+```sh
+sudo mkdir /srv/ddns-updater
+```
+
+And a directory that will serve as our configuration folder:
+
+```sh
+sudo mkdir /srv/ddns-updater/data
+```
+
+We will then create a configuration file in our folder:
+
+```sh
+sudo touch /srv/ddns-updater/data/config.json
+```
+
+And configure it according to the official [documentation](https://github.com/qdm12/ddns-updater/blob/master/docs/njalla.md):
+
+```sh
+sudo nano /srv/ddns-updater/data/config.json
+```
+
+Paste the following, replacing domain, host and key with your own:
+```json
+{
+  "settings": [
+    {
+      "provider": "njalla",
+      "domain": "domain.com",
+      "host": "@",
+      "key": "key",
+      "ip_version": "ipv4",
+      "provider_ip": true
+    }
+  ]
+}
+```
+
+Save and exit. Now lets create a docker compose file:
+
+```sh
+sudo touch /srv/ddns-updater/docker-compose.yml
+```
+Then we will configure it according to the [documentation](https://github.com/qdm12/ddns-updater/blob/master/docker-compose.yml):
+
+```sh
+sudo nano /srv/ddns-updater/docker-compose.yml
+```
+
+Paste the following:
+
+```yml
+version: "3.7"
+services:
+  ddns-updater:
+    image: qmcgaw/ddns-updater
+    container_name: ddns-updater
+    network_mode: bridge
+    ports:
+      - 8000:8000/tcp
+    volumes:
+      - ./data:/updater/data
+    environment:
+      - CONFIG=
+      - PERIOD=5m
+      - UPDATE_COOLDOWN_PERIOD=5m
+      - PUBLICIP_FETCHERS=all
+      - PUBLICIP_HTTP_PROVIDERS=all
+      - PUBLICIPV4_HTTP_PROVIDERS=all
+      - PUBLICIPV6_HTTP_PROVIDERS=all
+      - PUBLICIP_DNS_PROVIDERS=all
+      - PUBLICIP_DNS_TIMEOUT=3s
+      - HTTP_TIMEOUT=10s
+
+      # Web UI
+      - LISTENING_PORT=8000
+      - ROOT_URL=/
+
+      # Backup
+      - BACKUP_PERIOD=0 # 0 to disable
+      - BACKUP_DIRECTORY=/updater/data
+
+      # Other
+      - LOG_LEVEL=info
+      - LOG_CALLER=hidden
+      - SHOUTRRR_ADDRESSES=
+    restart: always
+```
+
+Save and exit. Now it's time to configure permissions:
+
+```sh
+cd /srv/ddns-updater
+```
+
+```sh
+sudo chown -R 1000 data
+```
+
+```sh
+sudo chmod 700 data
+```
+
+```sh
+sudo chmod 400 data/config.json
+```
+
+You should now be able to start ddns-updater by running:
+
+```sh
+sudo sudo docker compose up -d
+```
+
+Check that everything is working by visiting [local-IP]:8000 in your browser.
+
+(_Didn't work? It's probably a permission error, doublecheck the official documentation_)
+
+### Part 3: Configure NGINX Proxy manager
 
 Reverse proxy manager with [NGINX manager](https://nginxproxymanager.com/).
 
-Ban malicious hosts with [Fail2Ban](https://github.com/fail2ban/fail2ban).
+### Part 4: Set up remote SSH
 
-[SWAG - Secure Web Application Gateway](https://github.com/linuxserver/docker-swag) seems to combine NGINX, Fail2Ban and more in the same image.
+_coming soon!_
 
-[CrowdSec](https://www.crowdsec.net/), crowd-sourced IP blocklist.
+### Part 5: Hardening
+
+_coming soon!_
 
 ## Implementing services
 
-### Flame
-
-[Flame](https://github.com/pawelmalak/flame), a dashboard.
-
-### Uptime Kuma
-
-[Uptime Kuma](https://github.com/louislam/uptime-kuma)
-
-### Nextcloud
-
-[Nextcloud](https://nextcloud.com/)
-
-### Jellyfin
-
-[Jellyfin](https://jellyfin.org/) 
-
-### ARR suite
-
-Lidarr/Sonarr/Radarr/Prowlarr
-
-[Wiki](https://wiki.servarr.com/docker-guide)
-
-### Static Web Server
-
-[Static Web Server](https://sws.joseluisq.net/)
+_coming soon!_
 
 --------------------
 
