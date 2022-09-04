@@ -363,10 +363,12 @@ sudo chmod 400 data/config.json
 You should now be able to start ddns-updater by running:
 
 ```sh
-sudo sudo docker compose up -d
+sudo docker compose up -d
 ```
 
 Check that everything is working by visiting [local-IP]:8000 in your browser.
+
+![Screenshot of DDNS-updater web page](https://github.com/Stylback/server-journey/blob/main/media/ddns_screenshot.png?raw=true)
 
 (_Didn't work? It's probably a permission error, doublecheck the official documentation_)
 
