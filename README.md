@@ -13,7 +13,7 @@ A collection of thoughts and notes as I build my home server. If you find anythi
   - [RAM](#ram)
   - [Storage](#storage)
 - [Assembly](#assembly)
-  - [Testing hardware stability](#testing-hardware-stability)
+  - [Testing RAM stability](#testing-ram-stability)
   - [BIOS tweaks](#bios-tweaks)
   - [Installing the OS](#installing-the-os)
 - [Setting up SSH](#setting-up-ssh)
@@ -63,23 +63,23 @@ As I don't expect to be using resource-heavy services such as multiple desktop V
 The J-series is only available as motherboard embedded CPU:s. I've opted for an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp) due to its rich feature-set, but you might consider the [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) as long as you're OK with being limited to 8GB of ram (_or risk bricking your motherboard,_ [_see here for more info_](#bricked-motherboard)).
 
 ### Power supply (PSU)
-Ideally, the server will be running 24/7, 365 days a year. As such, high efficiency is important to keep upkeep-cost down. __A power supply is at its most efficient at 50% of maximum rated load__, that means a PSU rated at 500W max load will be at its most efficient when it provides 250W of power.
+Ideally, the server will be running 24/7, 365 days a year. As such, high efficiency is important to keep power consumption down. __A power supply is at its most efficient at 50% of maximum rated load__, that means a PSU rated at 500W max load will be at its most efficient when it provides 250W of power.
 
 __What is the efficiency at 50% load?__ That is determined by the [80+ Rating](https://en.wikipedia.org/wiki/80_Plus). A 80+ White will be 80-85% efficient at 50% load while a 80+ Titanium will be 94-96% efficient.
 
 After some [back of the napkin calculations](#approximating-power-draw) I've estimated my system to draw between 10 to 23W. As such my ideal PSU would be a power-brick style 50-100W PICO-PSU. I've had no luck finding such a model with the right mix of power-cables (_24-pin and SATA_) and have instead opted for a [be quiet! SYSTEM POWER B9](https://www.bequiet.com/en/powersupply/1285). Besides having all the cables I need, at 300W it offers a better low-load efficiency than a 450-500W model while still providing some head-room for upgrades.
 
 ### Case
-I wanted something cheap and discreet with some room for expandability. The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes and also included a 120 mm rear-mounted fan.
+I wanted something discreet, affordable and with some room for expandability. The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes and also included a 120 mm rear-mounted fan.
 
 ### RAM
 As stated on intel's and ASRock's websites; the J5040 _officially_ supports up to 8GB of RAM.
-However, some reddit users report being able to use 16 and even 32GB with [varying results](https://libreddit.dcs0.hu/r/ASRock/comments/k8hpww/how_can_a_motherboard_support_more_ram_than_the/).
+However, some reddit users report being able to use 16 or even 32GB with [varying results](https://libreddit.dcs0.hu/r/ASRock/comments/k8hpww/how_can_a_motherboard_support_more_ram_than_the/).
 
 I decided to take a gamble with a [G.SKILL Ripjaws SO-DIMM 16GB, 2400 MHz Kit](https://www.gskill.com/product/2/197/1540865326/F4-2400C16D-16GRS).
 
 ### Storage
-Spinning hard-disk drives (HDD) are popular in home servers and NAS due to their high storage capacity and low price. However, they have reduced speeds and increased power draw compared to solid-state drives (SSD). Their moving parts also add noise and a [significant](https://en.wikipedia.org/wiki/Head_crash) point of failure.
+Spinning hard-disk drives (HDD) are popular in home servers and NAS due to their high storage capacity and low price. However, they have reduced speeds and increased power draw compared to solid-state drives (SSD). Their moving parts also add noise and a significant [point of failure](https://en.wikipedia.org/wiki/Head_crash).
 
 I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/crucial-mx500-ssd) (_250GB bootdrive + 2TB storage drive_) as they provide a good balance between price and performance. They also support _Integrated Power Loss Immunity_ which aims to prevent data loss in case of a power outage.
 
@@ -93,7 +93,7 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 | ![rear view](https://github.com/Stylback/server-journey/blob/main/media/back.jpg?raw=true) | Rear-view and IO. |
 | ![assembled case](https://github.com/Stylback/server-journey/blob/main/media/outside.jpg?raw=true) | Assembled system. |
 
-### Testing hardware stability
+### Testing RAM stability
 
 Before installing the operating system I wanted to ensure that my RAM modules would not cause any system instability. MemTest86 is an industry staple in this regard, it has a multitude of tests designed to coax RAM instability under extreme conditions.
 
@@ -102,7 +102,7 @@ I made a bootable USB following their [instructions](https://www.memtest86.com/t
 | Image | Note |
 |:---|:---|
 | ![Ram modules detected by MemTest86](https://github.com/Stylback/server-journey/blob/main/media/memtest86_ram.bmp?raw=true) | Both sticks of RAM was detected by MemTest86. |
-| ![Test completion screen](https://github.com/Stylback/server-journey/blob/main/media/memtest86_pass.jpg?raw=true) | The sticks passed with 0 errors and a completion time of 4 hours and 37 minutes. |
+| ![Test completion screen](https://github.com/Stylback/server-journey/blob/main/media/memtest86_pass.jpg?raw=true) | The sticks passed with 0 errors, completing the tests in 4 hours and 37 minutes. |
 
 --------------------
 ### BIOS tweaks
@@ -118,13 +118,13 @@ The ASRock J5040-ITX comes with an extensive list of BIOS settings, I made the f
 
 ### Installing the OS
 
-After confirming hardware stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to extensive [documentation](https://ubuntu.com/server/docs). 
+After confirming RAM stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to extensive [documentation](https://ubuntu.com/server/docs). 
 
 I assigned the 250GB drive as boot drive, consuming about half of its available storage. The rest was partitioned and mounted to `/home` for any application or service that needs to store information there. As the 2TB drive is going to be used as the primary storage unit it was partioned and mounted at `/srv`.
 
 ## Setting up SSH
 
-SSH is a protocol that allows remote login and command-line-execution, something that will be very convenient when we continue to set up the server. Both my client and server is using Ubuntu-derivative OSs, as such the commands might differ from your own.
+SSH is a protocol that allows remote login and command line execution, something that will be very convenient when we continue to set up the server. Both my client and server is using Ubuntu-derivative OSs, as such the commands might differ from your own.
 
 ### Part 1: Prerequisite and basic access
 
@@ -258,7 +258,7 @@ To get started with ddns-updater we will pull it from docker using:
 sudo docker pull qmcgaw/ddns-updater
 ```
 
-We will then create a directory in /srv that will serve as our working folder:
+We will then create a directory in `/srv` that will serve as our working folder:
 
 ```sh
 sudo mkdir /srv/ddns-updater
@@ -383,16 +383,7 @@ Check that everything is working by visiting [local-IP]:8000 in your browser.
 
 _This part is incomplete!_
 
-Reverse proxy manager with [NGINX manager](https://nginxproxymanager.com/).
-
-cd /srv
-sudo mkdir ./npm
-sudo touch docker-compose.yml
-
-Edit the file
-sudo nano docker-compose.yml
-
-We will then create a directory in /srv that will serve as our working folder:
+Start with creating a directory in `/srv`:
 
 ```sh
 sudo mkdir /srv/npm
@@ -403,13 +394,13 @@ Now lets create a docker compose file:
 ```sh
 sudo touch /srv/npm/docker-compose.yml
 ```
-Then we will configure it according to the [documentation](https://nginxproxymanager.com/setup/):
+Lets configure it according to the [documentation](https://nginxproxymanager.com/setup/), open it with:
 
 ```sh
 sudo nano /srv/npm/docker-compose.yml
 ```
 
-Paste the following:
+And paste the following:
 
 ```yml
 version: "3"
@@ -450,14 +441,15 @@ services:
       - ./data/mysql:/var/lib/mysql
 ```
 
-You should now be able to start NGINX proxy manager by running:
+Save and exit. You should now be able to start NGINX proxy manager by running:
 
 ```sh
 sudo docker compose up -d
 ```
-Initial start might take awhile. If it didn't start, CD into the folder and try again.
 
-Check that everything is working by visiting [local-IP]:81 in your browser. Log in with the default email and password:
+_Initial start might take awhile. If it didn't start, CD into the folder and try again._
+
+Check that everything is working by visiting [your-local-IP]:81 in your browser. Log in with the default email and password:
 
 ```
 Email:    admin@example.com
@@ -470,9 +462,9 @@ Now it's time to make SSL-certificate. Navigate to "SSL Certificates", "Add SSL 
 
 Now navigate to "Proxy Hosts", "Add Proxy Host" and fill out the information. Go to "SSL" and add your certificate.
 
-Finally you need to enable port forwarding on your router, you will need to get this working yourself :)
+Finally you need to enable port forwarding on your router for port 80 and 443, you will need to get this working yourself :)
 
-Test that everything works by visiting www.name.domain.com.
+Test that everything works by visiting your domain.
 
 ### Part 4: Set up remote SSH
 
@@ -494,19 +486,17 @@ _coming soon!_
 
 > __TL;DR:__ Initially made the build with a Biostar J4105NHU, a BIOS-update broke RAM-support and trying to revert back to the previously known working version bricked it.
 
-I initially used a Biostar J4105NHU, the motherboard shipped with BIOS-version __J41BW929.BSS__ and worked flawlessly with a pair of 8GB RAM-modules. 
+I initially used a [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013), the motherboard shipped with BIOS-version __J41BW929.BSS__ and worked flawlessly with a pair of 8GB RAM-modules.
 
-A couple of days go by and I shut the system down to do some cable-management, after which it refused to boot.
-
-I figured I messed something up with the cables and put everything back as it was, no luck.
+A couple of days go by and I shut the system down to do some cable-management, after which it refused to boot. I figured I messed something up with the cables and put everything back as it was, no luck.
 
 I removed one of the RAM-modules and tried again, nothing.
 
 Finally I popped the CMOS battery out, waited a bit and re-placed it. This seemed to have done the job as I was greeted with a login prompt. I shut it down and re-placed the other RAM-module, nothing happens.
 
-I pop the CMOS again, boot with a single module and see the BIOS-version was updated to __J41BWB22.BSS__. Determined to regain the ability to use both modules I tried to flash the __J41BW929.BSS__ version using Biostars provided flashing tool. The tool reported a successfull flash but the process had in fact _bricked_ the motherboard. I was unable to "CMOS-pop" my way out of this one.
+I pop the CMOS again, boot with a single module and see the BIOS-version was updated to __J41BWB22.BSS__. Determined to regain the ability to use both modules I tried to flash the __J41BW929.BSS__ version using Biostars provided flashing tool. The tool reported a successfull flash but the process had in fact _bricked_ the motherboard.
 
-Lesson learned, think thrice before manually flashing your BIOS. I have since replaced the board with an ASRock J5040-ITX. I also had to replace my RAM-modules with SO-DIMM ones due to board incompatibility.
+Lesson learned, think thrice before manually flashing your BIOS. I have since replaced the board with an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp). I also had to replace my RAM-modules with SO-DIMM ones due to board incompatibility, all in all it made the build about 700 SEK more expensive.
 
 ## Reference tables
 
