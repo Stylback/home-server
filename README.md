@@ -236,9 +236,16 @@ sudo docker run hello-world
 ## Setting up remote access
 
 ### Part 1: Get a custom domain
-A custom domain is great for...
 
-_more coming soon!_
+Up until this point we have only been able to access our server while on the same local network. To be able to access it remotely we have the following choices:
+
+- Use a VPN tunnel access our local network remotely
+- Connect to our public facing IP-adress and access our server through port-forwarding
+- Connect to a custom domain and access our server through port-forwarding
+
+A custom domain makes it very easy to access multiple services as we can use subdomains (_www.service1.domain.com, www.service2.domain.com, www.service3.domain.com etc._), it also makes the process of using Dynamic DNS easier.
+
+To get a custom domain you will ned to purchase it from a domain registrar. There are many domain registrars but I've gone with [Njalla](https://njal.la/) due to their great track record, amazing privacy policy and hilarious [DMCA responses](https://njal.la/blog/dhlsucks/). Their pricing is somewhat higher than their competitors and you might consider something like [namecheap](https://www.namecheap.com/) if it is a dealbreaker.
 
 ### Part 2: Configure Dynamic DNS
 Our custom domain can point to a static IP-adress, it's easy to set up and is good for testing that services have been deployed correctly. The danger however is what happens if our IP-adress were to change; our domain would no longer point to our service and it would become inaccessible! To avoid this we will utilize [ddns-updater](https://github.com/qdm12/ddns-updater), which is a dynamic DNS service that will regularly check our IP-address and convey any changes to our domain registrar.
@@ -370,11 +377,102 @@ Check that everything is working by visiting [local-IP]:8000 in your browser.
 
 ![Screenshot of DDNS-updater web page](https://github.com/Stylback/server-journey/blob/main/media/ddns_screenshot.png?raw=true)
 
-(_Didn't work? It's probably a permission error, doublecheck the official documentation_)
+(_Didn't work? It's probably a permission error, double-check the directory/file permissions and restart the service._)
 
 ### Part 3: Configure NGINX Proxy manager
 
+_This part is incomplete!_
+
 Reverse proxy manager with [NGINX manager](https://nginxproxymanager.com/).
+
+cd /srv
+sudo mkdir ./npm
+sudo touch docker-compose.yml
+
+Edit the file
+sudo nano docker-compose.yml
+
+We will then create a directory in /srv that will serve as our working folder:
+
+```sh
+sudo mkdir /srv/npm
+```
+
+Now lets create a docker compose file:
+
+```sh
+sudo touch /srv/npm/docker-compose.yml
+```
+Then we will configure it according to the [documentation](https://nginxproxymanager.com/setup/):
+
+```sh
+sudo nano /srv/npm/docker-compose.yml
+```
+
+Paste the following:
+
+```yml
+version: "3"
+services:
+  app:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      # These ports are in format <host-port>:<container-port>
+      - '80:80' # Public HTTP Port
+      - '443:443' # Public HTTPS Port
+      - '81:81' # Admin Web Port
+      # Add any other Stream port you want to expose
+      # - '21:21' # FTP
+    environment:
+      DB_MYSQL_HOST: "db"
+      DB_MYSQL_PORT: 3306
+      DB_MYSQL_USER: "npm"
+      DB_MYSQL_PASSWORD: "npm"
+      DB_MYSQL_NAME: "npm"
+      # Uncomment this if IPv6 is not enabled on your host
+      # DISABLE_IPV6: 'true'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    depends_on:
+      - db
+
+  db:
+    image: 'jc21/mariadb-aria:latest'
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 'npm'
+      MYSQL_DATABASE: 'npm'
+      MYSQL_USER: 'npm'
+      MYSQL_PASSWORD: 'npm'
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+```
+
+You should now be able to start NGINX proxy manager by running:
+
+```sh
+sudo docker compose up -d
+```
+Initial start might take awhile. If it didn't start, CD into the folder and try again.
+
+Check that everything is working by visiting [local-IP]:81 in your browser. Log in with the default email and password:
+
+```
+Email:    admin@example.com
+Password: changeme
+```
+
+You will be prompted to change this to something more secure.
+
+Now it's time to make SSL-certificate. Navigate to "SSL Certificates", "Add SSL Certificate", "Let's Encrypt" and fill in you domain name. Test Server Reachability, agree to the privacy policy and save.
+
+Now navigate to "Proxy Hosts", "Add Proxy Host" and fill out the information. Go to "SSL" and add your certificate.
+
+Finally you need to enable port forwarding on your router, you will need to get this working yourself :)
+
+Test that everything works by visiting www.name.domain.com.
 
 ### Part 4: Set up remote SSH
 
