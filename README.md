@@ -72,7 +72,7 @@ __What is the efficiency at 50% load?__ That is determined by the [80+ Rating](h
 After some [back of the napkin calculations](#approximating-power-draw) I've estimated my system to draw between 10 to 23W. As such my ideal PSU would be a power-brick style 50-100W PICO-PSU. I've had no luck finding such a model with the right mix of power-cables (_24-pin and SATA_) and have instead opted for a [be quiet! SYSTEM POWER B9](https://www.bequiet.com/en/powersupply/1285). Besides having all the cables I need, at 300W it offers a better low-load efficiency than a 450-500W model while still providing some head-room for upgrades.
 
 ### Case
-I wanted something discreet, affordable and with some room for expandability. The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes and also included a 120 mm rear-mounted fan.
+The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes; discreet and affordable with some room for expandability. It also included a 120 mm rear-mounted fan, I might however replace it with a Noctua [NF-A12X25 ULN](https://noctua.at/en/products/fan/nf-a12x25-uln/specification) down the line to reduce noise.
 
 ### RAM
 As stated on intel's and ASRock's websites; the J5040 _officially_ supports up to 8GB of RAM.
@@ -109,7 +109,7 @@ I made a bootable USB following their [instructions](https://www.memtest86.com/t
 --------------------
 ### BIOS tweaks
 
-The ASRock J5040-ITX comes with an extensive list of BIOS settings, I made the following changes:
+The ASRock J5040-ITX comes with an extensive list of BIOS settings, so far I've made the following changes:
 
 - SATA Aggressive Link Power Management -> __Enabled__, reduces power consumption while SATA devices are idle.
 - Onboard HD Audio -> __Disabled__, as I won't use any audio outputs.
@@ -120,7 +120,7 @@ The ASRock J5040-ITX comes with an extensive list of BIOS settings, I made the f
 
 ### Installing the OS
 
-After confirming RAM stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to extensive [documentation](https://ubuntu.com/server/docs). 
+After confirming RAM stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to extensive [documentation](https://ubuntu.com/server/docs).
 
 I assigned the 250GB drive as boot drive, consuming about half of its available storage. The rest was partitioned and mounted to `/home` for any application or service that needs to store information there. As the 2TB drive is going to be used as the primary storage unit it was partioned and mounted at `/srv`.
 
@@ -375,7 +375,7 @@ You should now be able to start ddns-updater by running:
 sudo docker compose up -d
 ```
 
-> Didn't work? Check that you're CD:d into `/srv/ddns-updater` and try again.
+> Didn't start? Check that you're CD:d into `/srv/ddns-updater` and try again.
 
 Check that everything is working by typing `[local-IP]:8000` in your browser.
 
@@ -384,8 +384,6 @@ Check that everything is working by typing `[local-IP]:8000` in your browser.
 > Didn't work? It's probably a permission error, double-check the directory/file permissions with `ls -la` and restart the service.
 
 ### Part 3: Configure NGINX Proxy manager
-
-_This part is incomplete!_
 
 Start with creating a directory in `/srv`:
 
@@ -485,15 +483,20 @@ Now go back to your Proxy Host for `nginx.domain.tld` and click Edit, go to to S
 
 ### Part 4: Set up remote SSH
 
-_coming soon!_
+This wasn't as straight-forward as I'd hoped, exposing a port for SSH should've been made easy with the introduction of __Streams__ for NGINX Proxy Manager but I have yet to figure out how. Might need to change the compose file and add another port under "ports"? More to come.
 
 ### Part 5: Hardening
 
-_coming soon!_
+Adding [Fail2Ban](https://github.com/fail2ban/fail2ban) or perhaps [CrowdSec](https://www.crowdsec.net/). Will mention more about credentials and accessability lists in NGINX Proxy Manager.
 
 ## Implementing services
 
-_coming soon!_
+Current ideas: 
+- a static webpage on `blog.domain.tld` using [Static Web Server](https://sws.joseluisq.net/)
+- a landing page for managing all services with [Flame](https://github.com/pawelmalak/flame)
+- monitor uptime with [Uptime Kuma](https://github.com/louislam/uptime-kuma)
+- a data backup solution! Rsync, Restic and Kopia seems popular
+- media streaming with [Jellyfin](https://jellyfin.org/)
 
 --------------------
 
