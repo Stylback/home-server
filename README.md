@@ -242,17 +242,17 @@ sudo docker run hello-world
 Up until this point we have only been able to access our server while on the same local network. To be able to access it remotely we have the following choices:
 
 - Use a VPN tunnel access our local network remotely
-- Connect to our public facing IP-adress and access our server through port-forwarding
+- Connect to our public facing IP-address and access our server through port-forwarding
 - Connect to a custom domain and access our server through port-forwarding
 
-A custom domain makes it very easy to access multiple services as we can use subdomains (_www.service1.domain.com, www.service2.domain.com, www.service3.domain.com etc._), it also makes the process of using Dynamic DNS easier.
+A custom domain makes it very easy to access multiple services as we can use subdomains (_blog.domain.tld, server.domain.tld etc._), it also makes the process of using Dynamic DNS easier.
 
-To get a custom domain you will ned to purchase it from a domain registrar. There are many domain registrars but I've gone with [Njalla](https://njal.la/) due to their great track record, amazing privacy policy and hilarious [DMCA responses](https://njal.la/blog/dhlsucks/). Their pricing is somewhat higher than their competitors and you might consider something like [namecheap](https://www.namecheap.com/) if it is a dealbreaker.
+To get a custom domain you will ned to purchase it from a domain registrar. There are many domain registrars but I've gone with [Njalla](https://njal.la/) due to their great track record, amazing privacy policy and [DMCA responses](https://njal.la/blog/dhlsucks/). Their pricing is somewhat higher than their competitors and you might consider something like [namecheap](https://www.namecheap.com/) if you're looking for a cheaper alternative.
 
 ### Part 2: Configure Dynamic DNS
-Our custom domain can point to a static IP-adress, it's easy to set up and is good for testing that services have been deployed correctly. The danger however is what happens if our IP-adress were to change; our domain would no longer point to our service and it would become inaccessible! To avoid this we will utilize [ddns-updater](https://github.com/qdm12/ddns-updater), which is a dynamic DNS service that will regularly check our IP-address and convey any changes to our domain registrar.
+We want our domain to point to our routers IP-address, this address (_called a dynamic IP-address_) will change over and we will need to take this into account. To solve this we will utilize [ddns-updater](https://github.com/qdm12/ddns-updater), which is a dynamic DNS service that will regularly check our IP-address and convey any changes to our Njalla.
 
-In your domain registrar, add a new DNS-record with Type: "Dynamic" and a name. If you've choosen Njalla, you will also get a key that you will need to update the record.
+To get started, log into Njalla (_or your registrar of choice_) and add a new DNS record to your domain. This new record should be __DYNAMIC__ (_not A or AAAA_) and be named __*__, this will create a dynamic __wildcard__ domain. Njalla will provide you with a key that we need to update the IP-address of the DNS record, if you're using another registrar they might have other ways of conveying changes.
 
 To get started with ddns-updater we will pull it from docker using:
 
@@ -290,8 +290,8 @@ Paste the following, replacing domain, host and key with your own:
   "settings": [
     {
       "provider": "njalla",
-      "domain": "domain.com",
-      "host": "@",
+      "domain": "domain.tld",
+      "host": "*",
       "key": "key",
       "ip_version": "ipv4",
       "provider_ip": true
@@ -375,11 +375,13 @@ You should now be able to start ddns-updater by running:
 sudo docker compose up -d
 ```
 
-Check that everything is working by visiting [local-IP]:8000 in your browser.
+> Didn't work? Check that you're CD:d into `/srv/ddns-updater` and try again.
+
+Check that everything is working by typing `[local-IP]:8000` in your browser.
 
 ![Screenshot of DDNS-updater web page](https://github.com/Stylback/server-journey/blob/main/media/ddns_screenshot.png?raw=true)
 
-(_Didn't work? It's probably a permission error, double-check the directory/file permissions and restart the service._)
+> Didn't work? It's probably a permission error, double-check the directory/file permissions with `ls -la` and restart the service.
 
 ### Part 3: Configure NGINX Proxy manager
 
@@ -449,24 +451,37 @@ Save and exit. You should now be able to start NGINX proxy manager by running:
 sudo docker compose up -d
 ```
 
-_Initial start might take awhile. If it didn't start, CD into the folder and try again._
+> Initial start might take awhile. If it didn't start, CD into the folder and try again.
 
-Check that everything is working by visiting [your-local-IP]:81 in your browser. Log in with the default email and password:
+Check that everything is working by typing `[local-IP]:81` in your browser. Log in with the default email and password:
 
 ```
 Email:    admin@example.com
 Password: changeme
 ```
 
-You will be prompted to change this to something more secure.
+On your first log-in you will be prompted to change the username and password.
 
-Now it's time to make SSL-certificate. Navigate to "SSL Certificates", "Add SSL Certificate", "Let's Encrypt" and fill in you domain name. Test Server Reachability, agree to the privacy policy and save.
+Now let's make a remotely accessible log-in page for our NGINX Proxy Manager. First you need to enable port forwarding on your router for port 80 and 443 by following the manual provided with your router, it usually involves visiting `[router-IP]` in your browser and logging in with admin credentials.
 
-Now navigate to "Proxy Hosts", "Add Proxy Host" and fill out the information. Go to "SSL" and add your certificate.
+When you've configured port-forwarding you can go to the Proxy Hosts tab and add a new Proxy Host with something like this:
 
-Finally you need to enable port forwarding on your router for port 80 and 443, you will need to get this working yourself :)
+```
+Domain names:           nginx.domain.tld
+Scheme:                 http
+Forward Hostname / IP:  [local-ip]
+Forward Port:           81
+Cache Assets:           No
+Block Common Expolits:  Yes
+Websocket Support:      No
+Access List:            Publicly Accessible
+```
 
-Test that everything works by visiting your domain.
+Press save and visit `nginx.domain.tld`, you should be greeted by a log-in page.
+
+Now that we know that it works we will secure it against unwanted snooping using a SSL-certificate. Navigate to the SSL Certificates tab and add a new Let's Encrypt certificate with `Domain Names: nginx.domain.tld`. Test that the server is reachable by clicking on `Test Server Reachability`, agree to the privacy policy and save.
+
+Now go back to your Proxy Host for `nginx.domain.tld` and click Edit, go to to SSL and add your certificate from the drop-down list. For added security, enable __Force SSL__ and __HSTS__. Finally ensure that everything is working as intended by visiting `nginx.domain.tld` again.
 
 ### Part 4: Set up remote SSH
 
