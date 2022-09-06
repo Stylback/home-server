@@ -6,33 +6,35 @@ A collection of thoughts and notes as I build my home server. If you find anythi
 
 ## Table of contents
 
-- [Hardware](#hardware)
-  - [CPU / Motherboard](#cpu--motherboard)
-  - [Power supply (PSU)](#power-supply-psu)
-  - [Case](#case)
-  - [RAM](#ram)
-  - [Storage](#storage)
-- [Assembly](#assembly)
-  - [Testing RAM stability](#testing-ram-stability)
-  - [BIOS tweaks](#bios-tweaks)
-  - [Installing the OS](#installing-the-os)
-- [Setting up SSH](#setting-up-ssh)
-  - [Part 1: Prerequisite and basic access](#part-1-prerequisite-and-basic-access)
-  - [Part 2: Create a Hostname alias](#part-2-create-a-hostname-alias)
-  - [Part 3: Generating and using SSH-keys](#part-3-generating-and-using-ssh-keys)
-  - [Part 4: Hardening](#part-4-hardening)
-- [Installing Docker](#installing-docker)
-- [Setting up remote access](#setting-up-remote-access)
-  - [Part 1: Get a custom domain](#part-1-get-a-custom-domain)
-  - [Part 2: Configure Dynamic DNS](#part-2-configure-dynamic-dns)
-  - [Part 3: Configure NGINX proxy manager](#part-3-configure-nginx-proxy-manager)
-  - [Part 4: Set up remote SSH](#part-4-set-up-remote-ssh)
-  - [Part 5: Hardening](#part-5-hardening)
-- [Implementing services](#implementing-services)
-- [Issues and solutions](#issues-and-solutions)
-  - [Bricked motherboard](#bricked-motherboard)
-- [Reference tables](#reference-tables)
-  - [Approximating power draw](#approximating-power-draw)
+- [Server journey](#server-journey)
+  - [Table of contents](#table-of-contents)
+  - [Hardware](#hardware)
+    - [CPU / Motherboard](#cpu--motherboard)
+    - [Power supply (PSU)](#power-supply-psu)
+    - [Case](#case)
+    - [RAM](#ram)
+    - [Storage](#storage)
+  - [Assembly](#assembly)
+    - [Testing RAM stability](#testing-ram-stability)
+    - [BIOS tweaks](#bios-tweaks)
+    - [Installing the OS](#installing-the-os)
+  - [Setting up SSH](#setting-up-ssh)
+    - [Part 1: Prerequisite and basic access](#part-1-prerequisite-and-basic-access)
+    - [Part 2: Create a Hostname alias](#part-2-create-a-hostname-alias)
+    - [Part 3: Generating and using SSH-keys](#part-3-generating-and-using-ssh-keys)
+    - [Part 4: Hardening](#part-4-hardening)
+  - [Installing Docker](#installing-docker)
+  - [Setting up remote access](#setting-up-remote-access)
+    - [Part 1: Get a custom domain](#part-1-get-a-custom-domain)
+    - [Part 2: Configure Dynamic DNS](#part-2-configure-dynamic-dns)
+    - [Part 3: Configure NGINX Proxy manager](#part-3-configure-nginx-proxy-manager)
+    - [Part 4: Set up remote SSH](#part-4-set-up-remote-ssh)
+    - [Part 5: Hardening](#part-5-hardening)
+  - [Implementing services](#implementing-services)
+  - [Issues and solutions](#issues-and-solutions)
+    - [Bricked motherboard](#bricked-motherboard)
+  - [Reference tables](#reference-tables)
+    - [Approximating power draw](#approximating-power-draw)
 
 _More coming soon!_
 
@@ -521,7 +523,7 @@ For comparison, running an [average dishwasher](https://energyusecalculator.com/
 
 [^2]: [TomsHardware i7-5960x review](https://www.tomshardware.com/reviews/intel-core-i7-5960x-haswell-e-cpu,3918-13.html). This number seems to agree with Crucials [own assessment](https://www.crucial.com/support/articles-faq-memory/how-much-power-does-memory-use).
 
-[^3]: Inferred from [Dr. Helmut Neukirchen power consumption test](https://uni.hi.is/helmut/2021/06/07/power-consumption-of-raspberry-pi-4-versus-intel-j4105-system/) as the J4105 have the same TDP as the J5040. I also subtracted 3 W from the authors measurements which is the estimated power consumption of a 8GB stick of DDR4 RAM.
+[^3]: Inferred from Dr. Helmut Neukirchen's [power consumption test](https://uni.hi.is/helmut/2021/06/07/power-consumption-of-raspberry-pi-4-versus-intel-j4105-system/) of the J4105, as it has the same TDP as the J5040. I also subtracted 3 W from the authors measurements which is the estimated power consumption of a 8GB stick of DDR4 RAM.
 
 [^4]: [HardwareInfo low-load PSU test](https://web.archive.org/web/20130812130505/http://uk.hardware.info:80/reviews/4683/3/45-psus-tested-at-very-low-loads-which-one-is-the-most-efficient-225-watt-test). Inferred from the 22.5 W test of the _be quiet! Pure Power L8 300 W_.
 
