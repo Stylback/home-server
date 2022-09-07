@@ -14,7 +14,9 @@ A collection of thoughts and notes as I build my home server. If you find anythi
     - [Case](#case)
     - [RAM](#ram)
     - [Storage](#storage)
+    - [Costs](#costs)
   - [Assembly](#assembly)
+    - [The build](#the-build)
     - [Testing RAM stability](#testing-ram-stability)
     - [BIOS tweaks](#bios-tweaks)
     - [Installing the OS](#installing-the-os)
@@ -38,6 +40,77 @@ A collection of thoughts and notes as I build my home server. If you find anythi
 
 ## Hardware choice
 
+### CPU / Motherboard
+
+<details><summary>Click to reveal</summary>
+<p>
+
+As I don't expect to be using resource-heavy services such as multiple desktop VM:s, 4K video encoding or multi-user streaming I've settled for an [intel Pentium J5040](https://ark.intel.com/content/www/us/en/ark/products/197304/intel-pentium-silver-j5040-processor-4m-cache-up-to-3-20-ghz.html). It has some useful features for my use case, including:
+
+- 18 execution units for parallel processing
+- Integrated Graphics for media and display capability
+- Intel Quick Sync for extensive video encoding/decoding support
+- 10W TDP (_Thermal Design Power, a shorthand way of estimating power consumption_)
+
+The J-series is only available as motherboard embedded CPU:s. I've opted for an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp) due to its rich feature-set, but you might consider the [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) as long as you're OK with being limited to 8GB of ram (_or risk bricking your motherboard,_ [_see here for more info_](#issues-and-solutions)).
+
+</p>
+</details>
+
+### Power supply (PSU)
+
+<details><summary>Click to reveal</summary>
+<p>
+
+Ideally, the server will be running 24/7, 365 days a year. As such, high efficiency is important to keep power consumption down. __A power supply is at its most efficient at 50% of maximum rated load__, that means a PSU rated at 500W max load will be at its most efficient when it provides 250W of power.
+
+__What is the efficiency at 50% load?__ That is determined by the [80+ Rating](https://en.wikipedia.org/wiki/80_Plus). A 80+ White will be 80-85% efficient at 50% load while a 80+ Titanium will be 94-96% efficient.
+
+After some [back of the napkin calculations](#reference-tables) I've estimated my system to draw between 10 to 23W. As such my ideal PSU would be a power-brick style 50-100W PICO-PSU. I've had no luck finding such a model with the right mix of power-cables (_24-pin and SATA_) and have instead opted for a [be quiet! SYSTEM POWER B9](https://www.bequiet.com/en/powersupply/1285). Besides having all the cables I need, at 300W it offers a better low-load efficiency than a 450-500W model while still providing some head-room for upgrades.
+
+</p>
+</details>
+
+### Case
+
+<details><summary>Click to reveal</summary>
+<p>
+
+The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes; discreet and affordable with some room for expandability. It also included a 120 mm rear-mounted fan, I might however replace it with a Noctua [NF-A12X25 ULN](https://noctua.at/en/products/fan/nf-a12x25-uln/specification) down the line to reduce noise.
+
+</p>
+</details>
+
+### RAM
+
+<details><summary>Click to reveal</summary>
+<p>
+
+As stated on intel's and ASRock's websites; the J5040 _officially_ supports up to 8GB of RAM.
+However, some reddit users report being able to use 16 or even 32GB with [varying results](https://libreddit.dcs0.hu/r/ASRock/comments/k8hpww/how_can_a_motherboard_support_more_ram_than_the/).
+
+I decided to take a gamble with a [G.SKILL Ripjaws SO-DIMM 16GB, 2400 MHz Kit](https://www.gskill.com/product/2/197/1540865326/F4-2400C16D-16GRS).
+
+</p>
+</details>
+
+### Storage
+
+<details><summary>Click to reveal</summary>
+<p>
+
+Spinning hard-disk drives (HDD) are popular in home servers and NAS due to their high storage capacity and low price. However, they have reduced speeds and increased power draw compared to solid-state drives (SSD). Their moving parts also add noise and a significant [point of failure](https://en.wikipedia.org/wiki/Head_crash).
+
+I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/crucial-mx500-ssd) (_250GB bootdrive + 2TB storage drive_) as they provide a good balance between price and performance. They also support _Integrated Power Loss Immunity_ which aims to prevent data loss in case of a power outage.
+
+</p>
+</details>
+
+### Costs
+
+<details><summary>Click to reveal</summary>
+<p>
+
 | Component type | Model name | Price (SEK*) |
 | :--- | :--- | ---: |
 | CPU / Motherboard | [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp)| 1790 |
@@ -52,40 +125,17 @@ A collection of thoughts and notes as I build my home server. If you find anythi
 
 [_*10 SEK = ~1 USD_ ](https://www.xe.com/currencyconverter/convert/?Amount=10&From=SEK&To=USD)
 
-### CPU / Motherboard
-As I don't expect to be using resource-heavy services such as multiple desktop VM:s, 4K video encoding or multi-user streaming I've settled for an [intel Pentium J5040](https://ark.intel.com/content/www/us/en/ark/products/197304/intel-pentium-silver-j5040-processor-4m-cache-up-to-3-20-ghz.html). It has some useful features for my use case, including:
-
-- 18 execution units for parallel processing
-- Integrated Graphics for media and display capability
-- Intel Quick Sync for extensive video encoding/decoding support
-- 10W TDP (_Thermal Design Power, a shorthand way of estimating power consumption_)
-
-The J-series is only available as motherboard embedded CPU:s. I've opted for an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp) due to its rich feature-set, but you might consider the [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) as long as you're OK with being limited to 8GB of ram (_or risk bricking your motherboard,_ [_see here for more info_](#bricked-motherboard)).
-
-### Power supply (PSU)
-Ideally, the server will be running 24/7, 365 days a year. As such, high efficiency is important to keep power consumption down. __A power supply is at its most efficient at 50% of maximum rated load__, that means a PSU rated at 500W max load will be at its most efficient when it provides 250W of power.
-
-__What is the efficiency at 50% load?__ That is determined by the [80+ Rating](https://en.wikipedia.org/wiki/80_Plus). A 80+ White will be 80-85% efficient at 50% load while a 80+ Titanium will be 94-96% efficient.
-
-After some [back of the napkin calculations](#approximating-power-draw) I've estimated my system to draw between 10 to 23W. As such my ideal PSU would be a power-brick style 50-100W PICO-PSU. I've had no luck finding such a model with the right mix of power-cables (_24-pin and SATA_) and have instead opted for a [be quiet! SYSTEM POWER B9](https://www.bequiet.com/en/powersupply/1285). Besides having all the cables I need, at 300W it offers a better low-load efficiency than a 450-500W model while still providing some head-room for upgrades.
-
-### Case
-The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes; discreet and affordable with some room for expandability. It also included a 120 mm rear-mounted fan, I might however replace it with a Noctua [NF-A12X25 ULN](https://noctua.at/en/products/fan/nf-a12x25-uln/specification) down the line to reduce noise.
-
-### RAM
-As stated on intel's and ASRock's websites; the J5040 _officially_ supports up to 8GB of RAM.
-However, some reddit users report being able to use 16 or even 32GB with [varying results](https://libreddit.dcs0.hu/r/ASRock/comments/k8hpww/how_can_a_motherboard_support_more_ram_than_the/).
-
-I decided to take a gamble with a [G.SKILL Ripjaws SO-DIMM 16GB, 2400 MHz Kit](https://www.gskill.com/product/2/197/1540865326/F4-2400C16D-16GRS).
-
-### Storage
-Spinning hard-disk drives (HDD) are popular in home servers and NAS due to their high storage capacity and low price. However, they have reduced speeds and increased power draw compared to solid-state drives (SSD). Their moving parts also add noise and a significant [point of failure](https://en.wikipedia.org/wiki/Head_crash).
-
-I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/crucial-mx500-ssd) (_250GB bootdrive + 2TB storage drive_) as they provide a good balance between price and performance. They also support _Integrated Power Loss Immunity_ which aims to prevent data loss in case of a power outage.
+</p>
+</details>
 
 --------------------
 
 ## Assembly
+
+### The build
+<details><summary>Click to reveal</summary>
+<p>
+
 | Image | Note |
 |:---|:---|
 | ![inside of the case](https://github.com/Stylback/home-server/blob/main/media/inside.jpg?raw=true) | The process of assembling the system was relatively painless. The case can be disassembled for easy access to the motherboard fittings and has plenty of room for cable managment without the presence of a GPU. |
@@ -93,7 +143,13 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 | ![rear view](https://github.com/Stylback/home-server/blob/main/media/back.jpg?raw=true) | Rear-view and IO. |
 | ![assembled case](https://github.com/Stylback/home-server/blob/main/media/outside.jpg?raw=true) | Assembled system. |
 
+</p>
+</details>
+
 ### Testing RAM stability
+
+<details><summary>Click to reveal</summary>
+<p>
 
 Before installing the operating system I wanted to ensure that my RAM modules would not cause any system instability. MemTest86 is an industry staple in this regard, it has a multitude of tests designed to coax RAM instability under extreme conditions.
 
@@ -104,8 +160,13 @@ I made a bootable USB following their [instructions](https://www.memtest86.com/t
 | ![Ram modules detected by MemTest86](https://github.com/Stylback/home-server/blob/main/media/memtest86_ram.bmp?raw=true) | Both sticks of RAM was detected by MemTest86. |
 | ![Test completion screen](https://github.com/Stylback/home-server/blob/main/media/memtest86_pass.jpg?raw=true) | The sticks passed with 0 errors, completing the tests in 4 hours and 37 minutes. |
 
---------------------
+</p>
+</details>
+
 ### BIOS tweaks
+
+<details><summary>Click to reveal</summary>
+<p>
 
 The ASRock J5040-ITX comes with an extensive list of BIOS settings, so far I've made the following changes:
 
@@ -114,21 +175,32 @@ The ASRock J5040-ITX comes with an extensive list of BIOS settings, so far I've 
 - `Deep S5 -> Auto`, reduces power consumption on a turned off system.
 - `Restore on AC/Power -> Loss Power On`, restarts the system after a power failure.
 
---------------------
+</p>
+</details>
 
 ### Installing the OS
+
+<details><summary>Click to reveal</summary>
+<p>
 
 After confirming RAM stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to extensive [documentation](https://ubuntu.com/server/docs).
 
 I assigned the 250GB drive as boot drive, consuming about half of its available storage. The rest was partitioned and mounted to `/home` for any application or service that needs to store information there. As the 2TB drive is going to be used as the primary storage unit it was partioned and mounted at `/srv`.
 
+
+</p>
+</details>
+
 --------------------
 
 ## Setting up SSH
 
-SSH is a protocol that allows remote login and command line execution, something that will be very convenient when we continue to set up the server. Both my client and server is using Ubuntu-derivative OSs, as such the commands might differ from your own.
-
 ### Part 1: Prerequisite and basic access
+
+<details><summary>Click to reveal</summary>
+<p>
+
+SSH is a protocol that allows remote login and command line execution, something that will be very convenient when we continue to set up the server. Both my client and server is using Ubuntu-derivative OSs, as such the commands might differ from your own.
 
 To be able to SSH from a client to a server:
 - There must be a traversable network connection between them and
@@ -154,7 +226,13 @@ ssh username@server-ip
 ```
 Where `username` is the username on the server and `server-ip` is your servers local IP-address. The terminal will prompt for a password and connect.
 
+</p>
+</details>
+
 ### Part 2: Create a Hostname alias
+
+<details><summary>Click to reveal</summary>
+<p>
 
 We don't want to have to remember `username@server-ip`, so instead we will create an alias which will allow us to access the server by just running `ssh alias`. On the client, run:
 
@@ -180,7 +258,13 @@ __NOTE__: The whitespace before `Hostname`, `Port` and `User` are __required__!
 
 Save and exit, you should now be able to connect to your server by running `ssh alias`.
 
+</p>
+</details>
+
 ### Part 3: Generate and use SSH-keys
+
+<details><summary>Click to reveal</summary>
+<p>
 
 On the client, run the following, replacing `comment` with some information to help you remember what the key is for:
 
@@ -206,7 +290,13 @@ Verify that the key works by connecting to the server with `ssh alias`. If the k
 
 __NOTE:__ Always keep your private key secure, __never__ share it with anyone! If you have reason to believe that your private key has been compromised, generate a new keypair and delete the old one from the servers `authorized_keys` file.
 
+</p>
+</details>
+
 ### Part 4: Hardening
+
+<details><summary>Click to reveal</summary>
+<p>
 
 Now that we can connect to the server using our SSH-key, we will make some security enhancement to prevent brute-forcing and root access.
 
@@ -232,9 +322,15 @@ Verify that everything works by first trying to connect to the server with `ssh 
 
 If everything worked correctly, the server should now be accessible only by your SSH-key and no user that access it by SSH can gain Root privileges. As we changed the port number from the default we gain some resistance against automated attacks, but a persistent actor could still find the correct port after some trial and error.
 
+</p>
+</details>
+
 --------------------
 
 ## Installing Docker
+
+<details><summary>Click to reveal</summary>
+<p>
 
 [Docker](https://www.docker.com/) lets us set up containers to hold our applications, making it easy to handle access and permissions. To install the necessary Docker components I followed their [official documentation](https://docs.docker.com/engine/install/) which can be summarized below as:
 
@@ -279,11 +375,17 @@ Finally, verify that everything is working by running:
 sudo docker run hello-world
 ```
 
+</p>
+</details>
+
 --------------------
 
 ## Setting up remote access
 
 ### Part 1: Get a custom domain
+
+<details><summary>Click to reveal</summary>
+<p>
 
 Up until this point we have only been able to access our server while on the same local network. To be able to access it remotely we have the following choices:
 
@@ -295,7 +397,14 @@ A custom domain makes it very easy to access multiple services as we can use sub
 
 To get a custom domain you will ned to purchase it from a domain registrar. There are many domain registrars but I've gone with [Njalla](https://njal.la/) due to their great track record, amazing privacy policy and [DMCA responses](https://njal.la/blog/dhlsucks/). Their pricing is somewhat higher than their competitors and you might consider something like [namecheap](https://www.namecheap.com/) if you're looking for a cheaper alternative.
 
+</p>
+</details>
+
 ### Part 2: Configure Dynamic DNS
+
+<details><summary>Click to reveal</summary>
+<p>
+
 We want our domain to point to our routers IP-address, this address (_called a dynamic IP-address_) will change over and we will need to take this into account. To solve this we will utilize [ddns-updater](https://github.com/qdm12/ddns-updater), which is a dynamic DNS service that will regularly check our IP-address and convey any changes to our Njalla.
 
 To get started, log into Njalla (_or your registrar of choice_) and add a new DNS record to your domain. This new record should be __DYNAMIC__ (_not A or AAAA_) and be named __*__, this will create a dynamic __wildcard__ domain. Njalla will provide you with a key that we need to update the IP-address of the DNS record, if you're using another registrar they might have other ways of conveying changes.
@@ -429,7 +538,13 @@ Check that everything is working by typing `[local-IP]:8000` in your browser.
 
 > Didn't work? It's probably a permission error, double-check the directory/file permissions with `ls -la` and restart the service.
 
+</p>
+</details>
+
 ### Part 3: Configure NGINX Proxy manager
+
+<details><summary>Click to reveal</summary>
+<p>
 
 Start with creating a directory in `/srv`:
 
@@ -527,7 +642,13 @@ Now that we know that it works we will secure it against unwanted snooping using
 
 Now go back to your Proxy Host for `nginx.domain.tld` and click Edit, go to to SSL and add your certificate from the drop-down list. For added security, enable __Force SSL__ and __HSTS__. Finally ensure that everything is working as intended by visiting `nginx.domain.tld` again.
 
+</p>
+</details>
+
 ### Part 4: Set up remote SSH
+
+<details><summary>Click to reveal</summary>
+<p>
 
 First we need to decide on a port we will expose, look through the [list](https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers) and add a port-forwarding rule for that port in your router. Next, visit `nginx.domain.tld`. Log in and navigate to `Streams`, add a new stream with:
 
@@ -614,9 +735,18 @@ sudo systemctl restart ssh
 
 The connection will now be kept alive for 600 seconds of inactivity, you can change this to your liking.
 
+</p>
+</details>
+
 ### Part 5: Hardening
 
+<details><summary>Click to reveal</summary>
+<p>
+
 Adding [Fail2Ban](https://github.com/fail2ban/fail2ban) or perhaps [CrowdSec](https://www.crowdsec.net/). Will mention more about credentials and accessability lists in NGINX Proxy Manager.
+
+</p>
+</details>
 
 --------------------
 
