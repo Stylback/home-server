@@ -529,9 +529,7 @@ Now go back to your Proxy Host for `nginx.domain.tld` and click Edit, go to to S
 
 ### Part 4: Set up remote SSH
 
-First we need to decide on a port we will expose, look through the [list](https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers) and add a port-forwarding rule for that port in your router.
-
-Next, visit `nginx.domain.tld`. Log in and navigate to `Streams`, add a new stream with:
+First we need to decide on a port we will expose, look through the [list](https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers) and add a port-forwarding rule for that port in your router. Next, visit `nginx.domain.tld`. Log in and navigate to `Streams`, add a new stream with:
 
 ```
 Incoming port:          [your new port]
@@ -595,17 +593,26 @@ ssh alias-remote
 
 By deafult our remote connection will time out after a period of inactivity, to keep the connection alive we need to make an adjustment in our config file. On your server, run:
 
+
 ```sh
 sudo nano /etc/ssh/sshd_config
 ```
 
-Find `TCPKeepAlive yes` and uncomment it, save and exit. Restart the SSH service by running:
+Find, uncomment and change the following:
+
+```
+TCPKeepAlive yes
+ClientAliveInterval 600
+ClientAliveCountMax 1
+```
+
+Save and exit. Restart the SSH service by running:
 
 ```sh
 sudo systemctl restart ssh
 ```
 
-The connection should now only end when you disconnect.
+The connection will now be kept alive for 600 seconds of inactivity, you can change this to your liking.
 
 ### Part 5: Hardening
 
