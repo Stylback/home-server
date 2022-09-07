@@ -6,6 +6,9 @@ A collection of thoughts and notes as I build my home server. If you find anythi
 
 ## Table of contents
 
+<details><summary>Click to reveal</summary>
+<p>
+
 - [Home Server](#home-server)
   - [Table of contents](#table-of-contents)
   - [Hardware choice](#hardware-choice)
@@ -14,9 +17,9 @@ A collection of thoughts and notes as I build my home server. If you find anythi
     - [Case](#case)
     - [RAM](#ram)
     - [Storage](#storage)
-    - [Costs](#costs)
-  - [Assembly](#assembly)
-    - [The build](#the-build)
+    - [Final build costs](#final-build-costs)
+  - [Assembly and initial setup](#assembly-and-initial-setup)
+    - [Assembly](#assembly)
     - [Testing RAM stability](#testing-ram-stability)
     - [BIOS tweaks](#bios-tweaks)
     - [Installing the OS](#installing-the-os)
@@ -34,7 +37,12 @@ A collection of thoughts and notes as I build my home server. If you find anythi
     - [Part 5: Hardening](#part-5-hardening)
   - [Implementing services](#implementing-services)
   - [Issues and solutions](#issues-and-solutions)
+    - [Bricked motherboard](#bricked-motherboard)
   - [Reference tables](#reference-tables)
+    - [Approximating power draw](#approximating-power-draw)
+
+</p>
+</details>
 
 --------------------
 
@@ -106,7 +114,7 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 </p>
 </details>
 
-### Costs
+### Final build costs
 
 <details><summary>Click to reveal</summary>
 <p>
@@ -130,9 +138,9 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 
 --------------------
 
-## Assembly
+## Assembly and initial setup
 
-### The build
+### Assembly
 <details><summary>Click to reveal</summary>
 <p>
 
@@ -373,6 +381,12 @@ Finally, verify that everything is working by running:
 
 ```sh
 sudo docker run hello-world
+```
+
+Finally, run the following to enable Docker to run on boot:
+
+```sh
+sudo systemctl enable docker
 ```
 
 </p>
@@ -752,6 +766,9 @@ Adding [Fail2Ban](https://github.com/fail2ban/fail2ban) or perhaps [CrowdSec](ht
 
 ## Implementing services
 
+<details><summary>Click to reveal</summary>
+<p>
+
 Current ideas: 
 - a static webpage on `blog.domain.tld` using [Static Web Server](https://sws.joseluisq.net/)
 - a landing page for managing all services with [Flame](https://github.com/pawelmalak/flame)
@@ -759,11 +776,16 @@ Current ideas:
 - a data backup solution! Rsync, Restic and Kopia seems popular
 - media streaming with [Jellyfin](https://jellyfin.org/)
 
+</p>
+</details>
+
 --------------------
 
 ## Issues and solutions
 
-<details><summary>Bricked motherboard</summary>
+### Bricked motherboard
+
+<details><summary>Click to reveal</summary>
 <p>
 
 > __TL;DR:__ Initially made the build with a Biostar J4105NHU, a BIOS-update broke RAM-support and trying to revert back to the previously known working version bricked it.
@@ -785,7 +807,9 @@ Lesson learned, think thrice before manually flashing your BIOS. I have since re
 
 ## Reference tables
 
-<details><summary>Approximating power draw</summary>
+### Approximating power draw
+
+<details><summary>Click to reveal</summary>
 <p>
 
 | Component | Power draw (_idle_) [W] | Power draw (_active_) [W] |
