@@ -529,7 +529,83 @@ Now go back to your Proxy Host for `nginx.domain.tld` and click Edit, go to to S
 
 ### Part 4: Set up remote SSH
 
-This wasn't as straight-forward as I'd hoped, exposing a port for SSH should've been made easy with the introduction of __Streams__ for NGINX Proxy Manager but I have yet to figure out how. Might need to change the compose file and add another port under "ports"? More to come.
+First we need to decide on a port we will expose, look through the [list](https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers) and add a port-forwarding rule for that port in your router.
+
+Next, visit `nginx.domain.tld`. Log in and navigate to `Streams`, add a new stream with:
+
+```
+Incoming port:          [your new port]
+Forward Hostname / IP:  [local-ip]
+Forward Port:           [your local SSH port]
+TCP Forwarding:         Yes
+UDP Forwarding:         No
+```
+Save and exit. Now we need to add our new port in our `docker-compose.yml` for NGINX Proxy Manager. Run:
+
+```sh
+sudo nano /srv/npm/docker-compose.yml
+```
+
+Add the new port as such:
+
+```yml
+    ports:
+      - '80:80' # Public HTTP Port
+      - '443:443' # Public HTTPS Port
+      - '81:81' # Admin Web Port
+      - '[new port]:[new port]' # Remote SSH port
+```
+
+Save and exit. Find the container name of NGINX with:
+
+```sh
+sudo docker ps
+```
+
+Now lets restart it by running:
+
+```sh
+sudo docker stop [container]
+```
+
+```sh
+sudo docker compose up -d
+```
+
+Now we will create a new host entry in our SSH config file. On your client, run:
+
+```sh
+sudo nano ~/.ssh/config
+```
+
+Below your existing alias, add:
+
+```
+Host alias-remote
+  Hostname ssh.domain.tld
+  Port port
+  User username
+```
+
+Save and exit. Now test that everything works by running:
+
+```sh
+ssh alias-remote
+```
+
+By deafult our remote connection will time out after a period of inactivity, to keep the connection alive we need to make an adjustment in our config file. On your server, run:
+
+```sh
+sudo nano /etc/ssh/sshd_config
+```
+
+Find `TCPKeepAlive yes` and uncomment it, save and exit. Restart the SSH service by running:
+
+```sh
+sudo systemctl restart ssh
+```
+
+The connection should now only end when you disconnect.
 
 ### Part 5: Hardening
 
