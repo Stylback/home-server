@@ -6,9 +6,9 @@ A collection of thoughts and notes as I build my home server. If you find anythi
 
 ## Table of contents
 
-- [Server journey](#server-journey)
+- [Home Server](#home-server)
   - [Table of contents](#table-of-contents)
-  - [Hardware](#hardware)
+  - [Hardware choice](#hardware-choice)
     - [CPU / Motherboard](#cpu--motherboard)
     - [Power supply (PSU)](#power-supply-psu)
     - [Case](#case)
@@ -21,7 +21,7 @@ A collection of thoughts and notes as I build my home server. If you find anythi
   - [Setting up SSH](#setting-up-ssh)
     - [Part 1: Prerequisite and basic access](#part-1-prerequisite-and-basic-access)
     - [Part 2: Create a Hostname alias](#part-2-create-a-hostname-alias)
-    - [Part 3: Generating and using SSH-keys](#part-3-generating-and-using-ssh-keys)
+    - [Part 3: Generate and use SSH-keys](#part-3-generate-and-use-ssh-keys)
     - [Part 4: Hardening](#part-4-hardening)
   - [Installing Docker](#installing-docker)
   - [Setting up remote access](#setting-up-remote-access)
@@ -32,15 +32,11 @@ A collection of thoughts and notes as I build my home server. If you find anythi
     - [Part 5: Hardening](#part-5-hardening)
   - [Implementing services](#implementing-services)
   - [Issues and solutions](#issues-and-solutions)
-    - [Bricked motherboard](#bricked-motherboard)
   - [Reference tables](#reference-tables)
-    - [Approximating power draw](#approximating-power-draw)
 
-_More coming soon!_
+--------------------
 
--------------------
-
-## Hardware
+## Hardware choice
 
 | Component type | Model name | Price (SEK*) |
 | :--- | :--- | ---: |
@@ -49,7 +45,9 @@ _More coming soon!_
 | Case | [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html)| 380 |
 | RAM | [G.SKILL Ripjaws SO-DIMM 16GB, 2400MHz Kit](https://www.gskill.com/product/2/197/1540865326/F4-2400C16D-16GRS)| 560 |
 | Storage | [Crucial MX500 (_250GB + 2TB_)](https://www.crucial.com/products/ssd/crucial-mx500-ssd) | 2180 |
-| Misc| Extension cables, cable ties and more | 270 |
+| Cable| [Power cable 5m](https://www.amazon.se/gp/product/B07Y1VHRPT/) | 110 |
+| Cable| [Cat 5e cable 5m](https://www.amazon.se/gp/product/B00I7XX1BC/) | 60 |
+| Misc | [Cable ties](https://www.amazon.se/gp/product/B09GFMN616/) | 100 |
 | __Total:__ |  | __5620__ |
 
 [_*10 SEK = ~1 USD_ ](https://www.xe.com/currencyconverter/convert/?Amount=10&From=SEK&To=USD)
@@ -60,7 +58,7 @@ As I don't expect to be using resource-heavy services such as multiple desktop V
 - 18 execution units for parallel processing
 - Integrated Graphics for media and display capability
 - Intel Quick Sync for extensive video encoding/decoding support
-- 10W TDP (_average power dissipation, a shorthand way to estimate power consumption_)
+- 10W TDP (_Thermal Design Power, a shorthand way of estimating power consumption_)
 
 The J-series is only available as motherboard embedded CPU:s. I've opted for an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp) due to its rich feature-set, but you might consider the [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) as long as you're OK with being limited to 8GB of ram (_or risk bricking your motherboard,_ [_see here for more info_](#bricked-motherboard)).
 
@@ -111,10 +109,10 @@ I made a bootable USB following their [instructions](https://www.memtest86.com/t
 
 The ASRock J5040-ITX comes with an extensive list of BIOS settings, so far I've made the following changes:
 
-- SATA Aggressive Link Power Management -> __Enabled__, reduces power consumption while SATA devices are idle.
-- Onboard HD Audio -> __Disabled__, as I won't use any audio outputs.
-- Deep S5 -> __Auto__, reduces power consumption on a turned off system.
-- Restore on AC/Power -> __Loss Power On__, restarts the system after a power failure.
+- `SATA Aggressive Link Power Management -> Enabled`, reduces power consumption while SATA devices are idle.
+- `Onboard HD Audio -> Disabled`, as I won't use any audio input/output.
+- `Deep S5 -> Auto`, reduces power consumption on a turned off system.
+- `Restore on AC/Power -> Loss Power On`, restarts the system after a power failure.
 
 --------------------
 
@@ -123,6 +121,8 @@ The ASRock J5040-ITX comes with an extensive list of BIOS settings, so far I've 
 After confirming RAM stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to extensive [documentation](https://ubuntu.com/server/docs).
 
 I assigned the 250GB drive as boot drive, consuming about half of its available storage. The rest was partitioned and mounted to `/home` for any application or service that needs to store information there. As the 2TB drive is going to be used as the primary storage unit it was partioned and mounted at `/srv`.
+
+--------------------
 
 ## Setting up SSH
 
@@ -134,20 +134,40 @@ To be able to SSH from a client to a server:
 - There must be a traversable network connection between them and
 - They both need to have a SSH service installed
 
-OpenSSH usually comes shipped by default on desktop Linux distributions, if for some reason you do not have the client it can be installed by running `sudo apt install openssh-client`.
+OpenSSH usually comes shipped by default on desktop Linux distributions, if for some reason you do not have the client installed you can install it by running:
 
-On the server we install it using `sudo apt install openssh-server`, this was however not necessary in my case as the Ubuntu installer provided me with the option during initial set-up.
+```sh
+sudo apt install openssh-client
+```
 
-From the server, run `ip a` to get information about your network connections and take note of current IPs. As I'm on the same local network as my server I wrote down its local IP before proceeding.
+On the server we install it using:
+```sh
+sudo apt install openssh-server
+```
+This was however not necessary in my case as the Ubuntu installer provided me with the option during initial set-up.
+From the server, run `ip a` to get information about your network connections and take note of your servers local IP-address.
 
-On the client, run `ssh username@server-ip`, where _username_ is the username on the server and _server-ip_ is the IP jotted down earlier. The terminal will prompt for a password and connect.
+On the client, run:
+
+```sh
+ssh username@server-ip
+```
+Where `username` is the username on the server and `server-ip` is your servers local IP-address. The terminal will prompt for a password and connect.
 
 ### Part 2: Create a Hostname alias
 
-We don't want to have to remember `username@server-ip`, so instead we are creating an alias which will allow us to access the server by just running `ssh alias`.
+We don't want to have to remember `username@server-ip`, so instead we will create an alias which will allow us to access the server by just running `ssh alias`. On the client, run:
 
-On the client, run `cd ~/.ssh` and then `touch config` to make a SSH configuration file.
-Edit the file by running `nano config`. Write the following, replacing _alias_, _server-ip_ and _username_ with relevant information:
+```sh
+touch ~/.ssh/config
+```
+
+Which will make a SSH configuration file. Edit the file by running:
+```sh
+sudo nano ~/.ssh/config
+```
+
+Write the following, replacing `alias`, `server-ip` and `username` with relevant information:
 
 ```sh
 Host alias
@@ -156,39 +176,63 @@ Host alias
   User username
 ```
 
-__NOTE__: The spaces before _Hostname_, _Port_ and _User_ are __required__!
+__NOTE__: The whitespace before `Hostname`, `Port` and `User` are __required__!
 
 Save and exit, you should now be able to connect to your server by running `ssh alias`.
 
-### Part 3: Generating and using SSH-keys
+### Part 3: Generate and use SSH-keys
 
-On the client, run `ssh-keygen -t ed25519 -C "comment"`, replacing _comment_ with some information to help you remember what the key is used for.
+On the client, run the following, replacing `comment` with some information to help you remember what the key is for:
 
-You will be prompted for a name, you can chose a name or accept the default `id_ed2559` by pressing enter. You will also be prompted for a passphrase, enter a passphrase (_recommended!_) or press enter to skip.
+```sh
+ssh-keygen -t ed25519 -C "comment"
+```
 
-This will create a keypair, one public key named `keyname.pub` and one private key just named `keyname`. You can verify this by running `cd ~/.ssh` followed by `ls -la`.
+You will be prompted for a name, you can chose a name or accept the default `id_ed2559` by pressing enter. You will also be prompted for a passphrase, enter a passphrase or press enter to skip. This will create a keypair, one public key named `keyname.pub` and one private key named `keyname`. You can verify that they are there by running:
 
-__NOTE:__ Always keep your private key secure, __never__ share it with anyone! If you have reason to believe that your private key has been compromised, generate a new keypair and delete the old one from the servers `authorized_keys` file.
+```sh
+ls ~/.ssh -la
+```
 
-Now lets copy the __public__ key to our server. On the client, run `ssh-copy-id -i ~/.ssh/keyname.pub alias`, replacing _keyname_ and _alias_ with whatever you chose earlier. If you chose a passphrase for the key you will be prompted for it now.
+Now lets copy the __public__ key to our server. On the client, run: 
+
+```sh
+ssh-copy-id -i ~/.ssh/keyname.pub alias
+```
+
+Replacing _keyname_ and _alias_ with whatever you chose earlier. If you chose a passphrase for the key you will be prompted for it now.
 
 Verify that the key works by connecting to the server with `ssh alias`. If the keys have been exchanged correctly you should __not__ be prompted for a password.
+
+__NOTE:__ Always keep your private key secure, __never__ share it with anyone! If you have reason to believe that your private key has been compromised, generate a new keypair and delete the old one from the servers `authorized_keys` file.
 
 ### Part 4: Hardening
 
 Now that we can connect to the server using our SSH-key, we will make some security enhancement to prevent brute-forcing and root access.
 
-On your client, connect to the server and run `sudo nano /etc/ssh/sshd_config`. Search after the line with `PermitRootLogin`, uncomment and change it to `PermitRootLogin no`. Then search for `PasswordAuthentication`, uncomment and change it to `PasswordAuthentication no`. 
+On your client, connect to the server and run:
+
+```sh
+sudo nano /etc/ssh/sshd_config
+```
+
+Search after the line with `PermitRootLogin`, uncomment and change it to `PermitRootLogin no`. Then search for `PasswordAuthentication`, uncomment and change it to `PasswordAuthentication no`. 
 
 Finally, find the line with `Port 22`, uncomment and change it from 22 to [another](https://serverfault.com/questions/509294/what-are-valid-ports-to-use-for-ssh) port of your choice. Save and exit. Remember to change the port number for your alias to reflect your choice.
 
 __NOTE:__ Do __NOT__ close the terminal window! Until we know everything works, ensure that you have atleast one other terminal instance running that is connected to the server. If something was entered incorrectly in the configuration file you might lose access to the server!
 
-Restart the SSH service by running `sudo systemctl restart ssh`.
+Restart the SSH service by running:
+
+```sh
+sudo systemctl restart ssh
+```
 
 Verify that everything works by first trying to connect to the server with `ssh alias`, then try to access it using `ssh root@server-ip` (_the server should deny this attempt_).
 
 If everything worked correctly, the server should now be accessible only by your SSH-key and no user that access it by SSH can gain Root privileges. As we changed the port number from the default we gain some resistance against automated attacks, but a persistent actor could still find the correct port after some trial and error.
+
+--------------------
 
 ## Installing Docker
 
@@ -234,6 +278,8 @@ Finally, verify that everything is working by running:
 ```sh
 sudo docker run hello-world
 ```
+
+--------------------
 
 ## Setting up remote access
 
@@ -475,7 +521,7 @@ Websocket Support:      No
 Access List:            Publicly Accessible
 ```
 
-Press save and visit `nginx.domain.tld`, you should be greeted by a log-in page.
+Press save and visit `nginx.domain.tld`, you should be greeted with a log-in page.
 
 Now that we know that it works we will secure it against unwanted snooping using a SSL-certificate. Navigate to the SSL Certificates tab and add a new Let's Encrypt certificate with `Domain Names: nginx.domain.tld`. Test that the server is reachable by clicking on `Test Server Reachability`, agree to the privacy policy and save.
 
@@ -488,6 +534,8 @@ This wasn't as straight-forward as I'd hoped, exposing a port for SSH should've 
 ### Part 5: Hardening
 
 Adding [Fail2Ban](https://github.com/fail2ban/fail2ban) or perhaps [CrowdSec](https://www.crowdsec.net/). Will mention more about credentials and accessability lists in NGINX Proxy Manager.
+
+--------------------
 
 ## Implementing services
 
@@ -502,7 +550,8 @@ Current ideas:
 
 ## Issues and solutions
 
-### Bricked motherboard
+<details><summary>Bricked motherboard</summary>
+<p>
 
 > __TL;DR:__ Initially made the build with a Biostar J4105NHU, a BIOS-update broke RAM-support and trying to revert back to the previously known working version bricked it.
 
@@ -518,9 +567,13 @@ I pop the CMOS again, boot with a single module and see the BIOS-version was upd
 
 Lesson learned, think thrice before manually flashing your BIOS. I have since replaced the board with an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp). I also had to replace my RAM-modules with SO-DIMM ones due to board incompatibility, all in all it made the build about 700 SEK more expensive.
 
+</p>
+</details>
+
 ## Reference tables
 
-### Approximating power draw
+<details><summary>Approximating power draw</summary>
+<p>
 
 | Component | Power draw (_idle_) [W] | Power draw (_active_) [W] |
 | :--- | ---: | ---: |
@@ -544,5 +597,8 @@ For comparison, running an [average dishwasher](https://energyusecalculator.com/
 [^3]: Inferred from Dr. Helmut Neukirchen's [power consumption test](https://uni.hi.is/helmut/2021/06/07/power-consumption-of-raspberry-pi-4-versus-intel-j4105-system/) of the J4105, as it has the same TDP as the J5040. I also subtracted 3 W from the authors measurements which is the estimated power consumption of a 8GB stick of DDR4 RAM.
 
 [^4]: [HardwareInfo low-load PSU test](https://web.archive.org/web/20130812130505/http://uk.hardware.info:80/reviews/4683/3/45-psus-tested-at-very-low-loads-which-one-is-the-most-efficient-225-watt-test). Inferred from the 22.5 W test of the _be quiet! Pure Power L8 300 W_.
+
+</p>
+</details>
 
 **[Back to top](#)**
