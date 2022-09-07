@@ -11,7 +11,7 @@ A collection of thoughts and notes as I build my home server. If you find anythi
 
 - [Home Server](#home-server)
   - [Table of contents](#table-of-contents)
-  - [Hardware choice](#hardware-choice)
+  - [Hardware choices](#hardware-choices)
     - [CPU / Motherboard](#cpu--motherboard)
     - [Power supply (PSU)](#power-supply-psu)
     - [Case](#case)
@@ -46,7 +46,7 @@ A collection of thoughts and notes as I build my home server. If you find anythi
 
 --------------------
 
-## Hardware choice
+## Hardware choices
 
 ### CPU / Motherboard
 
@@ -770,6 +770,7 @@ Adding [Fail2Ban](https://github.com/fail2ban/fail2ban) or perhaps [CrowdSec](ht
 <p>
 
 Current ideas: 
+- handle Docker image updates with [Watchtower](https://containrrr.dev/watchtower/)
 - a static webpage on `blog.domain.tld` using [Static Web Server](https://sws.joseluisq.net/)
 - a landing page for managing all services with [Flame](https://github.com/pawelmalak/flame)
 - monitor uptime with [Uptime Kuma](https://github.com/louislam/uptime-kuma)
