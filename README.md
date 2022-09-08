@@ -36,6 +36,7 @@ A collection of thoughts and notes as I build my home server. If you find anythi
     - [Part 4: Set up remote SSH](#part-4-set-up-remote-ssh)
     - [Part 5: Hardening](#part-5-hardening)
   - [Implementing services](#implementing-services)
+    - [Homarr](#homarr)
   - [Issues and solutions](#issues-and-solutions)
     - [Bricked motherboard](#bricked-motherboard)
   - [Reference tables](#reference-tables)
@@ -387,6 +388,31 @@ Finally, run the following to enable Docker to run on boot:
 
 ```sh
 sudo systemctl enable docker
+```
+
+For easy overview and management of our docker containers we can install [ctop](https://github.com/bcicen/ctop). To do it, run the commands below:
+
+```sh
+sudo apt-get install ca-certificates curl gnupg lsb-release
+```
+
+```sh
+echo "deb [signed-by=/usr/share/keyrings/azlux-archive-keyring.gpg] http://packages.azlux.fr/debian/ bullseye main" | sudo tee /etc/apt/sources.list.d/azlux.list
+    sudo wget -O /usr/share/keyrings/azlux-archive-keyring.gpg  https://azlux.fr/repo.gpg
+```
+
+```sh
+sudo apt-get update
+```
+
+```sh
+sudo apt-get install docker-ctop
+```
+
+Launch it by simply running:
+
+```sh
+sudo ctop
 ```
 
 </p>
@@ -776,6 +802,73 @@ Current ideas:
 - monitor uptime with [Uptime Kuma](https://github.com/louislam/uptime-kuma)
 - a data backup solution! Rsync, Restic and Kopia seems popular
 - media streaming with [Jellyfin](https://jellyfin.org/)
+
+</p>
+</details>
+
+### Homarr
+
+<details><summary>Click to reveal</summary>
+<p>
+
+[Homarr](https://homarr.vercel.app/docs/about) is an easy to use dashboard for our services. First, lets create a `docker-compose.yml` and a directory to house it:
+
+```sh
+sudo mkdir /srv/homarr 
+```
+
+```sh
+sudo touch /srv/homarr/docker-compose.yml 
+```
+
+```sh
+sudo nano /srv/homarr/docker-compose.yml 
+```
+
+Paste the following:
+
+```yml
+ ---
+version: '3'
+#---------------------------------------------------------------------#
+#                Homarr -  A homepage for your server.                #
+#---------------------------------------------------------------------#
+services:
+  homarr:
+    container_name: homarr
+    image: ghcr.io/ajnart/homarr:latest
+    restart: unless-stopped
+    volumes:
+      - ./homarr/configs:/app/data/configs
+      - ./homarr/icons:/app/public/icons
+    ports:
+      - '7575:7575' 
+```
+
+Save and exit. You can now start it by running:
+
+```sh
+cd /srv/homarr 
+```
+
+```sh
+sudo docker compose up -d 
+```
+
+Now go to your NGINX Proxy Manager and add another Proxy Host with something like this:
+
+```
+Domain names:           homarr.domain.tld
+Scheme:                 http
+Forward Hostname / IP:  [local-ip]
+Forward Port:           7575
+Cache Assets:           No
+Block Common Expolits:  Yes
+Websocket Support:      No
+Access List:            Publicly Accessible
+```
+
+Save and check that Homarr is accessible at `homarr.domain.tld`. For increased security, add a SSL-certificate and assign it a unique Access List entry.
 
 </p>
 </details>
