@@ -348,6 +348,7 @@ Get the prerequisite with:
 ```sh
 sudo apt-get update
 ```
+
 ```sh
 sudo apt-get install \
     ca-certificates \
@@ -355,14 +356,17 @@ sudo apt-get install \
     gnupg \
     lsb-release
 ```
+
 Add Dockers official GPG with:
 
 ```sh
 sudo mkdir -p /etc/apt/keyrings
 ```
+
 ```sh
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 ```
+
 Now we can safely set up the repository with:
 
 ```sh
@@ -371,14 +375,18 @@ echo \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 ```
+
 Now we can install the Docker components: 
+
 ```sh
 sudo apt-get update
 ```
+
 ```sh
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 ```
-Finally, verify that everything is working by running:
+
+Verify that everything is working by running:
 
 ```sh
 sudo docker run hello-world
@@ -798,7 +806,6 @@ Adding [Fail2Ban](https://github.com/fail2ban/fail2ban) or perhaps [CrowdSec](ht
 Current ideas: 
 - handle Docker image updates with [Watchtower](https://containrrr.dev/watchtower/)
 - a static webpage on `blog.domain.tld` using [Static Web Server](https://sws.joseluisq.net/)
-- a landing page for managing all services with [Flame](https://github.com/pawelmalak/flame)
 - monitor uptime with [Uptime Kuma](https://github.com/louislam/uptime-kuma)
 - a data backup solution! Rsync, Restic and Kopia seems popular
 - media streaming with [Jellyfin](https://jellyfin.org/)
@@ -894,7 +901,7 @@ Finally I popped the CMOS battery out, waited a bit and re-placed it. This seeme
 
 I pop the CMOS again, boot with a single module and see the BIOS-version was updated to __J41BWB22.BSS__. Determined to regain the ability to use both modules I tried to flash the __J41BW929.BSS__ version using Biostars provided flashing tool. The tool reported a successfull flash but the process had in fact _bricked_ the motherboard.
 
-Lesson learned, think thrice before manually flashing your BIOS. I have since replaced the board with an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp). I also had to replace my RAM-modules with SO-DIMM ones due to board incompatibility, all in all it made the build about 700 SEK more expensive.
+Lesson learned, think thrice before manually flashing your BIOS. I have since replaced the board with an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp). I also had to replace my RAM-modules with SO-DIMM ones due to board incompatibility.
 
 </p>
 </details>
