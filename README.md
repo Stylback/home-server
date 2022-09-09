@@ -42,7 +42,7 @@ A collection of thoughts and notes as I build my home server. If you find anythi
   - [Issues and solutions](#issues-and-solutions)
     - [Bricked motherboard](#bricked-motherboard)
   - [Reference tables](#reference-tables)
-    - [Approximating power draw](#approximating-power-draw)
+    - [Approximating power consumption](#approximating-power-consumption)
   - [License and usage](#license-and-usage)
 
 </p>
@@ -57,33 +57,33 @@ A collection of thoughts and notes as I build my home server. If you find anythi
 
 ### CPU / Motherboard
 
-As I don't expect to be using resource-heavy services such as multiple desktop VM:s, 4K video encoding or multi-user streaming I've settled for an [intel Pentium J5040](https://ark.intel.com/content/www/us/en/ark/products/197304/intel-pentium-silver-j5040-processor-4m-cache-up-to-3-20-ghz.html). It has some useful features for my use case, including:
+I don't expect to use especially resource-heavy services (_such as multi-user streaming, multiple desktop VM:s or 4K video encoding_). As such I've settled for an [intel Pentium J5040](https://ark.intel.com/content/www/us/en/ark/products/197304/intel-pentium-silver-j5040-processor-4m-cache-up-to-3-20-ghz.html), it has some particularly useful features for my use case:
 
 - 18 execution units for parallel processing
-- Integrated Graphics for media and display capability
+- Integrated Graphics for display output
 - Intel Quick Sync for extensive video encoding/decoding support
 - 10W TDP (_Thermal Design Power, a shorthand way of estimating power consumption_)
 
-The J-series is only available as motherboard embedded CPU:s. I've opted for an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp) due to its rich feature-set, but you might consider the [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) as long as you're OK with being limited to 8GB of ram (_or risk bricking your motherboard,_ [_see here for more info_](#issues-and-solutions)).
+However, the J-series is only available as motherboard embedded CPU:s. I've opted for an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp) due to its rich feature-set, but you might consider the [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) as long as you're OK with being limited to 8GB of ram (_or risk bricking your motherboard, see_ [_here_](#bricked-motherboard) for my experience).
 
 ### Power supply (PSU)
 
-Ideally, the server will be running 24/7, 365 days a year. As such, high efficiency is important to keep power consumption down. __A power supply is at its most efficient at 50% of maximum rated load__, that means a PSU rated at 500W max load will be at its most efficient when it provides 250W of power.
+Ideally, the server will be running 24/7, 365 days a year. As such, high efficiency is important to keep power consumption down. A power supply is at its most efficient at __50% of maximum rated load__, that means a PSU rated at 500W max load will be at its most efficient when it provides 250W of power.
 
-__What is the efficiency at 50% load?__ That is determined by the [80+ Rating](https://en.wikipedia.org/wiki/80_Plus). A 80+ White will be 80-85% efficient at 50% load while a 80+ Titanium will be 94-96% efficient.
+What __is__ the efficiency at 50% load? That is determined by the [80+ Rating](https://en.wikipedia.org/wiki/80_Plus). A `80+ White` will be 80-85% efficient at 50% load while a `80+ Titanium` will be 94-96% efficient.
 
-After some [back of the napkin calculations](#reference-tables) I've estimated my system to draw between 10 to 23W. As such my ideal PSU would be a power-brick style 50-100W PICO-PSU. I've had no luck finding such a model with the right mix of power-cables (_24-pin and SATA_) and have instead opted for a [be quiet! SYSTEM POWER B9](https://www.bequiet.com/en/powersupply/1285). Besides having all the cables I need, at 300W it offers a better low-load efficiency than a 450-500W model while still providing some head-room for upgrades.
+After some [back of the napkin calculations](#approximating-power-consumption) I've estimated my system to draw between 10 to 23W. As such my ideal PSU would be a power-brick style 50-100W PICO-PSU. I've had no luck finding such a model with the right mix of power-cables and have instead opted for a tradition ATX PSU. At 300W, the [SYSTEM POWER B9 from be quiet!](https://www.bequiet.com/en/powersupply/1285) offers a better low-load efficiency compared to the more common 450/500W models while still providing some head-room for upgrades.
 
 ### Case
 
-The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes; discreet and affordable with some room for expandability. It also included a 120 mm rear-mounted fan, I might however replace it with a Noctua [NF-A12X25 ULN](https://noctua.at/en/products/fan/nf-a12x25-uln/specification) down the line to reduce noise.
+The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes; discreet and affordable with some room for expandability. It also included a 120 mm rear-mounted fan, I might however replace it with a Noctua [NF-A12X25 ULN](https://noctua.at/en/products/fan/nf-a12x25-uln/specification) down the line for noise reduction.
 
 ### RAM
 
 As stated on intel's and ASRock's websites; the J5040 _officially_ supports up to 8GB of RAM.
 However, some reddit users report being able to use 16 or even 32GB with [varying results](https://libreddit.dcs0.hu/r/ASRock/comments/k8hpww/how_can_a_motherboard_support_more_ram_than_the/).
 
-I decided to take a gamble with a [G.SKILL Ripjaws SO-DIMM 16GB, 2400 MHz Kit](https://www.gskill.com/product/2/197/1540865326/F4-2400C16D-16GRS).
+With this in mind I decided to take a gamble with a [G.SKILL Ripjaws SO-DIMM 16GB Kit](https://www.gskill.com/product/2/197/1540865326/F4-2400C16D-16GRS).
 
 ### Storage
 
@@ -122,7 +122,7 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 | Image | Note |
 |:---|:---|
 | ![inside of the case](https://github.com/Stylback/home-server/blob/main/media/inside.jpg?raw=true) | The process of assembling the system was relatively painless. The case can be disassembled for easy access to the motherboard fittings and has plenty of room for cable managment without the presence of a GPU. |
-| ![power-extender cable](https://github.com/Stylback/home-server/blob/main/media/psu_cable.jpg?raw=true) | The only gripe I had with the case was the power-extender. It's aligned in such a way that the cable has to be forcefully twisted to slot into my specific PSU. I tried to screw the end out and flipping it 180°, allowing the cable to rest naturally on the case floor. It was however not possible to screw it in that way due to the shape of the cutout. |
+| ![power-extender cable](https://github.com/Stylback/home-server/blob/main/media/psu_cable.jpg?raw=true) | My only gripe with the case is the power-extender. It's aligned in such a way that the cable has to be forcefully twisted to slot into my specific PSU. I tried to screw the end out and flipping it 180°, allowing the cable to rest naturally on the case floor. It was however not possible to screw it in that way due to the shape of the cutout. |
 | ![rear view](https://github.com/Stylback/home-server/blob/main/media/back.jpg?raw=true) | Rear-view and IO. |
 | ![assembled case](https://github.com/Stylback/home-server/blob/main/media/outside.jpg?raw=true) | Assembled system. |
 
@@ -798,7 +798,7 @@ Lesson learned, think thrice before manually flashing your BIOS. I have since re
 <details><summary>Click to expand</summary>
 <p>
 
-### Approximating power draw
+### Approximating power consumption
 
 | Component | Power draw (_idle_) [W] | Power draw (_active_) [W] |
 | :--- | ---: | ---: |
