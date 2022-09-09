@@ -32,7 +32,7 @@ A collection of thoughts and notes as I build my home server. If you find anythi
     - [Installation](#installation)
     - [Management software](#management-software)
   - [Setting up remote access](#setting-up-remote-access)
-    - [Part 1: Get a custom domain](#part-1-get-a-custom-domain)
+    - [Part 1: Aquire a custom domain](#part-1-aquire-a-custom-domain)
     - [Part 2: Configure Dynamic DNS](#part-2-configure-dynamic-dns)
     - [Part 3: Configure NGINX Proxy manager](#part-3-configure-nginx-proxy-manager)
     - [Part 4: Set up remote SSH](#part-4-set-up-remote-ssh)
@@ -275,7 +275,13 @@ If everything worked correctly, the server should now be accessible only by your
 
 ### Installation
 
-[Docker](https://www.docker.com/) lets us set up containers to hold our applications, making it easy to handle access and permissions. To install the necessary Docker components I followed their [official documentation](https://docs.docker.com/engine/install/) which can be summarized below as:
+[Docker](https://www.docker.com/) lets us set up containers to hold our applications, making it easy to handle access and permissions. There are multiple ways to use docker, we will be using the `docker-compose` method which entails three simple steps:
+
+- Create a `docker-compose.yml` file for your service
+- In the file, add any necessary parameters to make the service work (_these can often be pasted directly from the service's documentation_)
+- Launch the service with `sudo docker compose up -d`
+
+To install the necessary Docker components I followed their [official documentation](https://docs.docker.com/engine/install/) which can be summarized below as:
 
 Get the prerequisite with:
 
@@ -369,17 +375,11 @@ sudo ctop
 <details><summary>Click to expand</summary>
 <p>
 
-### Part 1: Get a custom domain
+### Part 1: Aquire a custom domain
 
-Up until this point we have only been able to access our server while on the same local network. To be able to access it remotely we have the following choices:
+Up until this point we have only been able to access our server while on the same local network, to access it remotely we will utilize a custom domain. This method will make it easy to manage multiple services as we can use subdomains (_blog.domain.tld, server.domain.tld etc._), it also makes the process of using Dynamic DNS easier.
 
-- Use a VPN tunnel access our local network remotely
-- Connect to our public facing IP-address and access our server through port-forwarding
-- Connect to a custom domain and access our server through port-forwarding
-
-A custom domain makes it very easy to access multiple services as we can use subdomains (_blog.domain.tld, server.domain.tld etc._), it also makes the process of using Dynamic DNS easier.
-
-To get a custom domain you will ned to purchase it from a domain registrar. There are many domain registrars but I've gone with [Njalla](https://njal.la/) due to their great track record, amazing privacy policy and [DMCA responses](https://njal.la/blog/dhlsucks/). Their pricing is somewhat higher than their competitors and you might consider something like [namecheap](https://www.namecheap.com/) if you're looking for a cheaper alternative.
+To get a custom domain you will need to purchase it from a domain registrar. There are many domain registrars but I've gone with [Njalla](https://njal.la/) due to their great track record, amazing privacy policy and [DMCA responses](https://njal.la/blog/dhlsucks/). Their pricing is somewhat higher than their competitors and you might consider something like [namecheap](https://www.namecheap.com/) if you're looking for a cheaper alternative.
 
 ### Part 2: Configure Dynamic DNS
 
