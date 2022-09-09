@@ -383,9 +383,9 @@ To get a custom domain you will need to purchase it from a domain registrar. The
 
 ### Part 2: Configure Dynamic DNS
 
-We want our domain to point to our routers IP-address, this address (_called a dynamic IP-address_) will change over and we will need to take this into account. To solve this we will utilize [ddns-updater](https://github.com/qdm12/ddns-updater), which is a dynamic DNS service that will regularly check our IP-address and convey any changes to our Njalla.
+We want our domain to point to our routers IP-address. This address, called a dynamic IP-address, will change over time and can cause our registrar to point the wrong way were it not updated. To solve this we will utilize [ddns-updater](https://github.com/qdm12/ddns-updater), which is a dynamic DNS service that will regularly check our IP-address and convey any changes to Njalla.
 
-To get started, log into Njalla (_or your registrar of choice_) and add a new DNS record to your domain. This new record should be __DYNAMIC__ (_not A or AAAA_) and be named __*__, this will create a dynamic __wildcard__ domain. Njalla will provide you with a key that we need to update the IP-address of the DNS record, if you're using another registrar they might have other ways of conveying changes.
+To get started, log into Njalla (_or your registrar of choice_) and add a new DNS record to your domain. This new record should be __DYNAMIC__ (_not A or AAAA_) and be named __*__, this will create a dynamic __wildcard__ domain. Njalla will provide you with a key that we need to update the IP-address of the DNS record, if you're using another registrar they might have other ways of conveying changes to IP.
 
 To get started with ddns-updater we will pull it from docker using:
 
