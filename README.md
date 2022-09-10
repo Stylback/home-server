@@ -177,6 +177,7 @@ sudo apt install openssh-client
 ```
 
 On the server we install it using:
+
 ```sh
 sudo apt install openssh-server
 ```
@@ -286,11 +287,7 @@ To install the necessary Docker components I followed their [official documentat
 Get the prerequisite with:
 
 ```sh
-sudo apt-get update
-```
-
-```sh
-sudo apt-get install \
+sudo apt update && sudo apt install \
     ca-certificates \
     curl \
     gnupg \
@@ -319,11 +316,7 @@ echo \
 Install the Docker components by running: 
 
 ```sh
-sudo apt-get update
-```
-
-```sh
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 ```
 
 Verify that everything is working by running:
@@ -343,20 +336,21 @@ sudo systemctl enable docker
 For easy overview and management of our docker containers we can install [ctop](https://github.com/bcicen/ctop). To do it, run the commands below:
 
 ```sh
-sudo apt-get install ca-certificates curl gnupg lsb-release
+sudo apt install ca-certificates curl gnupg lsb-release
 ```
 
 ```sh
 echo "deb [signed-by=/usr/share/keyrings/azlux-archive-keyring.gpg] http://packages.azlux.fr/debian/ bullseye main" | sudo tee /etc/apt/sources.list.d/azlux.list
-    sudo wget -O /usr/share/keyrings/azlux-archive-keyring.gpg  https://azlux.fr/repo.gpg
 ```
 
 ```sh
-sudo apt-get update
+sudo wget -O /usr/share/keyrings/azlux-archive-keyring.gpg  https://azlux.fr/repo.gpg
 ```
 
+> Error? Most likely the key is out of date, visit the [maintainers](https://packages.azlux.fr/) website to find the latest one.
+
 ```sh
-sudo apt-get install docker-ctop
+sudo apt update && sudo apt install docker-ctop
 ```
 
 Launch it by simply running:
@@ -387,25 +381,13 @@ We want our domain to point to our routers IP-address. This address, called a dy
 
 To get started, log into Njalla (_or your registrar of choice_) and add a new DNS record to your domain. This new record should be __DYNAMIC__ (_not A or AAAA_) and be named __*__, this will create a dynamic __wildcard__ domain. Njalla will provide you with a key that we need to update the IP-address of the DNS record, if you're using another registrar they might have other ways of conveying changes to IP.
 
-To get started with ddns-updater we will pull it from docker using:
+To get started with ddns-updater we will create a directory in `/srv`:
 
 ```sh
-sudo docker pull qmcgaw/ddns-updater
+sudo mkdir -p /srv/ddns-updater/data
 ```
 
-We will then create a directory in `/srv` that will serve as our working folder:
-
-```sh
-sudo mkdir /srv/ddns-updater
-```
-
-And a directory that will serve as our configuration folder:
-
-```sh
-sudo mkdir /srv/ddns-updater/data
-```
-
-We will then create a configuration file in our folder:
+We will then create a configuration file:
 
 ```sh
 sudo nano /srv/ddns-updater/data/config.json
@@ -481,15 +463,7 @@ cd /srv/ddns-updater
 ```
 
 ```sh
-sudo chown -R 1000 data
-```
-
-```sh
-sudo chmod 700 data
-```
-
-```sh
-sudo chmod 400 data/config.json
+sudo chown -R 1000 data && sudo chmod 700 data && sudo chmod 400 data/config.json
 ```
 
 You should now be able to start ddns-updater by running:
@@ -508,13 +482,13 @@ Check that everything is working by typing `[local-IP]:8000` in your browser.
 
 ### Part 3: Configure NGINX Proxy manager
 
-Start with creating a directory in `/srv`:
+Create a directory in `/srv`:
 
 ```sh
 sudo mkdir /srv/npm
 ```
 
-Now lets create a docker compose file:
+Now create a docker compose file:
 
 ```sh
 sudo nano /srv/npm/docker-compose.yml
@@ -626,20 +600,14 @@ Add the new port as such:
       - '[new port]:[new port]' # Remote SSH port
 ```
 
-Save and exit. Find the container name of NGINX with:
+Save and exit. Now lets restart the container to apply the settings, you can either do this directly with `ctop` or by running:
 
 ```sh
-sudo docker ps
-```
-
-Now lets restart it by running:
-
-```sh
-sudo docker stop [container]
+cd /srv/npm
 ```
 
 ```sh
-sudo docker compose up -d
+sudo docker compose restart npm-app-1
 ```
 
 Now we will create a new host entry in our SSH config file. On your client, run:
@@ -669,7 +637,7 @@ By deafult our remote connection will time out after a period of inactivity, to 
 sudo nano /etc/ssh/sshd_config
 ```
 
-Find, uncomment and change the following:
+Find, uncomment and change the values to:
 
 ```
 TCPKeepAlive yes
@@ -740,11 +708,7 @@ services:
 Save and exit. You can now start it by running:
 
 ```sh
-cd /srv/homarr 
-```
-
-```sh
-sudo docker compose up -d 
+cd /srv/homarr && sudo docker compose up -d 
 ```
 
 Now go to your NGINX Proxy Manager and add another Proxy Host with something like this:
