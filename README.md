@@ -657,7 +657,7 @@ The connection will now be kept alive for 600 seconds of inactivity, you can cha
 
 ### Part 5: Fail2Ban
 
-> __Note:__ This part is incomplete, this config for Fail2Ban does currently not work. Investigating.
+> __Note:__ This part is incomplete as i can not confirm that my Fail2Ban config is working. It can detect access to nginx.domain.tld and ban a IP after 3 failed log-ins, but the visitor isn't blocked from further tries. The filter and jail is working correctly but there is no actual blocking taking place. I am unsure how to proceed and will revisit this later.
 
 To get started with Fail2Ban we will follow the [docker-file2ban](https://github.com/crazy-max/docker-fail2ban) instructions. Start by creating a directory:
 
@@ -751,10 +751,12 @@ Paste the following:
 ```sh
 [npm-docker]
 enabled = true
+filter = npm-docker
 ignoreip = 127.0.0.1/8 192.168.1.0/24
 chain = INPUT
 logpath = /log/npm/default-host_*.log
           /log/npm/proxy-host-*.log
+          /log/npm/proxy-host-*_error.log
 maxretry = 3
 bantime  = 360
 findtime = 60
