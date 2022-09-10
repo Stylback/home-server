@@ -36,7 +36,7 @@ A collection of thoughts and notes as I build my home server. If you find anythi
     - [Part 2: Configure Dynamic DNS](#part-2-configure-dynamic-dns)
     - [Part 3: Configure NGINX Proxy manager](#part-3-configure-nginx-proxy-manager)
     - [Part 4: Set up remote SSH](#part-4-set-up-remote-ssh)
-    - [Part 5: Hardening](#part-5-hardening)
+    - [Part 5: Fail2Ban](#part-5-fail2ban)
   - [Implementing services](#implementing-services)
     - [Homarr](#homarr)
   - [Issues and solutions](#issues-and-solutions)
@@ -573,6 +573,8 @@ Now that we know that it works we will secure it with a SSL-certificate. Navigat
 
 Now go back to your Proxy Host for `nginx.domain.tld` and click `Edit`, go to to SSL and add your certificate from the drop-down list. For added security, enable __Force SSL__ and __HSTS__. Finally, visit `nginx.domain.tld` and ensure that everything is working as intended.
 
+Will mention more about credentials and accessability lists in NGINX Proxy Manager.
+
 ### Part 4: Set up remote SSH
 
 First we need to decide on a port we will expose, look through the [list](https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers) and add a port-forwarding rule for that port in your router. Next, visit `nginx.domain.tld`. Log in and navigate to `Streams`, add a new stream with:
@@ -653,9 +655,112 @@ sudo systemctl restart ssh
 
 The connection will now be kept alive for 600 seconds of inactivity, you can change this to your liking.
 
-### Part 5: Hardening
+### Part 5: Fail2Ban
 
-Adding [Fail2Ban](https://github.com/fail2ban/fail2ban) or perhaps [CrowdSec](https://www.crowdsec.net/). Will mention more about credentials and accessability lists in NGINX Proxy Manager.
+> __Note:__ This part is incomplete, this config for Fail2Ban does currently not work. Investigating.
+
+To get started with Fail2Ban we will follow the [docker-file2ban](https://github.com/crazy-max/docker-fail2ban) instructions. Start by creating a directory:
+
+```sh
+sudo mkdir /srv/fail2ban
+```
+
+Now create a `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/fail2ban/docker-compose.yml
+```
+
+Paste the following:
+
+```yml
+version: "3.5"
+
+services:
+  fail2ban:
+    image: crazymax/fail2ban:latest
+    container_name: fail2ban
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - "./data:/data"
+      - "/var/log:/var/log:ro"
+    env_file:
+      - "./fail2ban.env"
+    restart: always
+```
+
+Save and exit. Now create a `fail2ban.env` file:
+
+```sh
+sudo nano /srv/fail2ban/fail2ban.env
+```
+
+Paste the following, replacing `TZ=Continent/City` with your own (_such as Europe/Paris_):
+
+```
+TZ=Continent/City
+
+F2B_LOG_TARGET=STDOUT
+F2B_LOG_LEVEL=INFO
+F2B_DB_PURGE_AGE=1d
+
+SSMTP_HOST=smtp.example.com
+SSMTP_PORT=587
+SSMTP_HOSTNAME=example.com
+SSMTP_USER=smtp@example.com
+SSMTP_PASSWORD=
+SSMTP_TLS=YES
+```
+
+Save and exit. Start Fail2Ban with:
+
+```sh
+cd /srv/fail2ban && sudo docker compose up -d
+```
+
+Now we will take some notes from [hugalafutros](https://github.com/NginxProxyManager/nginx-proxy-manager/issues/39#issuecomment-907795521) comment to make it work with NGINX logs:
+
+Create a `npm-docker.conf` file:
+
+```sh
+sudo nano ./filter.d/npm-docker.conf
+```
+
+Paste the following:
+
+```
+[INCLUDES]
+
+[Definition]
+
+failregex = ^<HOST>.+" (4\d\d|3\d\d) (\d\d\d|\d) .+$
+            ^.+ 4\d\d \d\d\d - .+ \[Client <HOST>\] \[Length .+\] ".+" .+$
+```
+
+Save and exit. Now make a `npm-docker.local` file:
+
+```sh
+sudo nano ./jail.d/npm-docker.local
+```
+
+Paste the following:
+
+```sh
+[npm-docker]
+enabled = true
+ignoreip = 127.0.0.1/8 192.168.1.0/24
+chain = INPUT
+logpath = /log/npm/default-host_*.log
+          /log/npm/proxy-host-*.log
+maxretry = 3
+bantime  = 360
+findtime = 60
+```
+
+Save and exit. Now restart Fail2Ban.
 
 </p>
 </details>
