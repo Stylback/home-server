@@ -657,76 +657,43 @@ The connection will now be kept alive for 600 seconds of inactivity, you can cha
 
 ### Part 5: Fail2Ban
 
-> __Note:__ This part is incomplete as i can not confirm that my Fail2Ban config is working. It can detect access to nginx.domain.tld and ban a IP after 3 failed log-ins, but the visitor isn't blocked from further tries. The filter and jail is working correctly but there is no actual blocking taking place. I am unsure how to proceed and will revisit this later.
-
-To get started with Fail2Ban we will follow the [docker-file2ban](https://github.com/crazy-max/docker-fail2ban) instructions. Start by creating a directory:
+To get started with Fail2Ban we will install it with:
 
 ```sh
-sudo mkdir /srv/fail2ban
+sudo apt update && sudo apt install fail2ban
 ```
 
-Now create a `docker-compose.yml` file:
+Start Fail2Ban with:
 
 ```sh
-sudo nano /srv/fail2ban/docker-compose.yml
+sudo fail2ban-client start
 ```
 
-Paste the following:
-
-```yml
-version: "3.5"
-
-services:
-  fail2ban:
-    image: crazymax/fail2ban:latest
-    container_name: fail2ban
-    network_mode: "host"
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
-    volumes:
-      - "./data:/data"
-      - "/var/log:/var/log:ro"
-    env_file:
-      - "./fail2ban.env"
-    restart: always
-```
-
-Save and exit. Now create a `fail2ban.env` file:
+Now create an action-file:
 
 ```sh
-sudo nano /srv/fail2ban/fail2ban.env
+sudo nano /etc/fail2ban/action.d/docker-action.conf
 ```
 
-Paste the following, replacing `TZ=Continent/City` with your own (_such as Europe/Paris_):
+Paste:
 
 ```
-TZ=Continent/City
-
-F2B_LOG_TARGET=STDOUT
-F2B_LOG_LEVEL=INFO
-F2B_DB_PURGE_AGE=1d
-
-SSMTP_HOST=smtp.example.com
-SSMTP_PORT=587
-SSMTP_HOSTNAME=example.com
-SSMTP_USER=smtp@example.com
-SSMTP_PASSWORD=
-SSMTP_TLS=YES
+[Definition]
+actioncheck = iptables -n -L FORWARD | grep -q 'DOCKER-USER[ t]'
+actionban = iptables -I DOCKER-USER -s <ip> -j DROP
+actionunban = iptables -D DOCKER-USER -s <ip> -j DROP
 ```
 
-Save and exit. Start Fail2Ban with:
-
-```sh
-cd /srv/fail2ban && sudo docker compose up -d
-```
-
-Now we will take some notes from [hugalafutros](https://github.com/NginxProxyManager/nginx-proxy-manager/issues/39#issuecomment-907795521) comment to make it work with NGINX logs:
+Save and exit. Now we will take some notes from [hugalafutros](https://github.com/NginxProxyManager/nginx-proxy-manager/issues/39#issuecomment-907795521) comment to make it work with NGINX logs:
 
 Create a `npm-docker.conf` file:
 
 ```sh
 sudo nano ./filter.d/npm-docker.conf
+```
+
+```sh
+sudo nano /etc/fail2ban/filter.d/npm-docker.conf
 ```
 
 Paste the following:
@@ -740,29 +707,74 @@ failregex = ^<HOST>.+" (4\d\d|3\d\d) (\d\d\d|\d) .+$
             ^.+ 4\d\d \d\d\d - .+ \[Client <HOST>\] \[Length .+\] ".+" .+$
 ```
 
-Save and exit. Now make a `npm-docker.local` file:
+Save and exit. Now we will create a jail.file:
 
 ```sh
-sudo nano ./jail.d/npm-docker.local
+sudo nano /etc/fail2ban/jail.d/npm-docker.local
 ```
 
-Paste the following:
+Paste:
 
 ```sh
 [npm-docker]
 enabled = true
-filter = npm-docker
 ignoreip = 127.0.0.1/8 192.168.1.0/24
 chain = INPUT
-logpath = /log/npm/default-host_*.log
-          /log/npm/proxy-host-*.log
-          /log/npm/proxy-host-*_error.log
-maxretry = 3
-bantime  = 360
-findtime = 60
+filter  = npm-docker
+logpath = /srv/npm/data/logs/default-host_*.log
+          /srv/npm/data/logs/proxy-host-*.log
+          /srv/npm/data/logs/proxy-host-*_error.log
+maxretry = 2
+bantime  = -1 
+findtime = 86400
+action = docker-action
 ```
 
-Save and exit. Now restart Fail2Ban.
+Save and exit. Now restart Fail2Ban with:
+
+```sh
+sudo fail2ban-client restart
+```
+
+Check that your jail is detected:
+
+```sh
+sudo fail2ban-client status npm-docker
+```
+
+Which should output something like this:
+
+```sh
+|- Filter
+|  |- Currently failed:	0
+|  |- Total failed:	0
+|  `- File list:	/srv/npm/data/logs/proxy-host-1_error.log /srv/npm/data/logs/proxy-host-1_access.log
+`- Actions
+   |- Currently banned:	0
+   |- Total banned:	0
+   `- Banned IP list:	
+```
+
+Check that its banning correctly by visiting `nginx.domain.tld` on your phone or such. Type in the wrong password three times, you should not be able to do it a fourth time. Check the jail again:
+
+```sh
+sudo fail2ban-client status npm-docker
+```
+
+It should now show:
+
+```sh
+`- Actions
+   |- Currently banned:	1
+   |- Total banned:	1
+   `- Banned IP list:	[your-phones-IP]
+```
+
+You can unban yourself with:
+
+```sh
+sudo fail2ban-client unban --all
+```
 
 </p>
 </details>
@@ -892,7 +904,7 @@ For comparison, running an [average dishwasher](https://energyusecalculator.com/
 
 [^3]: Inferred from Dr. Helmut Neukirchen's [power consumption test](https://uni.hi.is/helmut/2021/06/07/power-consumption-of-raspberry-pi-4-versus-intel-j4105-system/) of the J4105, as it has the same TDP as the J5040. I also subtracted 3 W from the authors measurements which is the estimated power consumption of a 8GB stick of DDR4 RAM.
 
-[^4]: [HardwareInfo low-load PSU test](https://web.archive.org/web/20130812130505/http://uk.hardware.info:80/reviews/4683/3/45-psus-tested-at-very-low-loads-which-one-is-the-most-efficient-225-watt-test). Inferred from the 22.5 W test of the _be quiet! Pure Power L8 300 W_.
+[^4]: [HardwareInfo low-load PSU test](https://web.archive.org/web/20130811112042/http://uk.hardware.info/productinfo/188792/be-quiet!-pure-power-l8-300w#tab:testresults). Inferred from the 22.5 W test of the _be quiet! Pure Power L8 300 W_.
 
 </p>
 </details>
