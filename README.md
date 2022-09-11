@@ -23,8 +23,8 @@ A collection of thoughts and notes as I build my home server. If you find anythi
     - [Testing RAM stability](#testing-ram-stability)
     - [BIOS tweaks](#bios-tweaks)
     - [Installing the OS](#installing-the-os)
-  - [Get started with SSH](#get-started-with-ssh)
-    - [Part 1: Prerequisite and basic access](#part-1-prerequisite-and-basic-access)
+  - [SSH](#ssh)
+    - [Part 1: Prerequisite and local access](#part-1-prerequisite-and-local-access)
     - [Part 2: Create a Hostname alias](#part-2-create-a-hostname-alias)
     - [Part 3: Generate and use SSH-keys](#part-3-generate-and-use-ssh-keys)
     - [Part 4: Hardening](#part-4-hardening)
@@ -36,12 +36,12 @@ A collection of thoughts and notes as I build my home server. If you find anythi
     - [Part 2: Configure Dynamic DNS](#part-2-configure-dynamic-dns)
     - [Part 3: Configure NGINX Proxy manager](#part-3-configure-nginx-proxy-manager)
     - [Part 4: Set up remote SSH](#part-4-set-up-remote-ssh)
-    - [Part 5: Fail2Ban](#part-5-fail2ban)
+    - [Part 5: Implement Fail2Ban](#part-5-implement-fail2ban)
   - [Services](#services)
     - [Dashboard with Homarr](#dashboard-with-homarr)
   - [Issues and solutions](#issues-and-solutions)
     - [Bricked motherboard](#bricked-motherboard)
-    - [Fail2Ban struggles](#fail2ban-struggles)
+    - [Containerized Fail2Ban](#containerized-fail2ban)
   - [Reference tables](#reference-tables)
     - [Approximating power consumption](#approximating-power-consumption)
   - [License and usage](#license-and-usage)
@@ -52,6 +52,8 @@ A collection of thoughts and notes as I build my home server. If you find anythi
 --------------------
 
 ## Hardware choices
+
+This section is about my hardware choices.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -115,6 +117,8 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 
 ## Assembly and initial setup
 
+This section is about my experience putting the hardware together and verifying that everything works as it should.
+
 <details><summary>Click to expand</summary>
 <p>
 
@@ -158,12 +162,14 @@ I assigned the 250GB drive as boot drive, consuming about half of its available 
 
 --------------------
 
-## Get started with SSH
+## SSH
+
+This section is about basic SSH, such as local network access and some best practices. I will expand on this in an upcoming section where we will configure SSH outside of our home network.
 
 <details><summary>Click to expand</summary>
 <p>
 
-### Part 1: Prerequisite and basic access
+### Part 1: Prerequisite and local access
 
 SSH is a protocol that allows remote login and command line execution, something that will be very convenient when we continue to set up the server. Both my client and server is using Ubuntu-derivative OSs, as such the commands might differ from your own.
 
@@ -272,12 +278,14 @@ If everything worked correctly, the server should now be accessible only by your
 
 ## Docker
 
+This section is all about Docker and how to manage Docker containers.
+
 <details><summary>Click to expand</summary>
 <p>
 
 ### Installation
 
-[Docker](https://www.docker.com/) lets us set up containers to hold our applications, making it easy to handle access and permissions. There are multiple ways to use docker, we will be using the `docker-compose` method which entails three simple steps:
+[Docker](https://www.docker.com/) lets us set up containers to hold our services, making it easy to handle access and permissions. There are multiple ways to use docker, we will be using the `docker-compose` method which entails three steps:
 
 - Create a `docker-compose.yml` file for your service
 - In the file, add any necessary parameters to make the service work (_these can often be pasted directly from the service's documentation_)
@@ -366,6 +374,8 @@ sudo ctop
 --------------------
 
 ## Remote access and perimeter security
+
+This section is about secure, remote access. We will talk about custom domains, Dynamic DNS, NGINX Proxy Manager, remote SSH and finally Fail2Ban.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -656,7 +666,7 @@ sudo systemctl restart ssh
 
 The connection will now be kept alive for 600 seconds of inactivity, you can change this to your liking.
 
-### Part 5: Fail2Ban
+### Part 5: Implement Fail2Ban
 
 [Fail2Ban](https://github.com/fail2ban/fail2ban) is a service that scans log files and bans IP addresses that have multiple failed log-in attempts. We will make it listen to log files from NGINX Proxy Manager and prevent malicious hosts from spamming our services with authentication attempts.
 
@@ -786,14 +796,19 @@ sudo systemctl enable fail2ban
 
 ## Services
 
+This section is about the services I have or plan to implement. It will be an ever-growing section as I add more and more services, take a look at the table below to get an idea about what's next:
+
+|  Service | Description | Priority |
+| ------------- | ------------- | ------------- |
+| [Watchtower](https://containrrr.dev/watchtower/)  | Automatic docker-image updates  | High  |
+| [Static Web Server](https://sws.joseluisq.net/)  | A static webpage server  | Low |
+| - | Backup solution. Rsync, Restic and Kopia seems popular  | High |
+| [Jellyfin](https://jellyfin.org/)  | Multimedia streaming | Low  |
+| [\*.arr suite](https://wiki.servarr.com/docker-guide)  | Multimedia collection management  | Low  |
+| [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) | Prevents image hotlinking, will be implemented alongside static webpage. | Low  |
+
 <details><summary>Click to expand</summary>
 <p>
-
-Current ideas: 
-- handle Docker image updates with [Watchtower](https://containrrr.dev/watchtower/)
-- a static webpage on `blog.domain.tld` using [Static Web Server](https://sws.joseluisq.net/)
-- a data backup solution! Rsync, Restic and Kopia seems popular
-- media streaming with [Jellyfin](https://jellyfin.org/)
 
 ### Dashboard with Homarr
 
@@ -855,6 +870,8 @@ Save and check that Homarr is accessible at `homarr.domain.tld`. For increased s
 
 ## Issues and solutions
 
+Here I document anything particularly difficult that made me rethink an implementation.
+
 <details><summary>Click to expand</summary>
 <p>
 
@@ -874,11 +891,13 @@ I pop the CMOS again, boot with a single module and see the BIOS-version was upd
 
 Lesson learned, think thrice before manually flashing your BIOS. I have since replaced the board with an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp). I also had to replace my RAM-modules with SO-DIMM ones due to board incompatibility.
 
-### Fail2Ban struggles
+### Containerized Fail2Ban
 
-I initially tried to run Fail2Ban in a docker container. I managed to get the filter and jail working, it would detect and ban an IP. In reality nothing would actually happen, the host could continue to spam authentication attempts. There seems to be no clear way to propagate the banned addresses up the IP-tables chain.
+> __TL;DR:__ Containarized Fail2Ban didn't work so I've switched to running it on the OS directly.
 
-I have now resorted to running it on the server itself. It is able to intercept and stop connections from banned IP addresses before they reach NGINX Proxy Manager. However it's not perfect, I seem unable to ban IP addresses that fail Access List authentication. Maybe these attempts are not logged or maybe the REGEX fails to match them.
+I initially tried to run Fail2Ban in a docker container to streamline deployment. I managed to get the filter and jail working but not banning. Fail2Ban would correctly detect authentication fails and "ban" the associated IP address. This "ban" would in reality not result in denied connections, the client could continue to spam authentication attempts. There seemed to be no clear way to propagate the banned addresses up the IP-tables chain and block connections.
+
+I have now resorted to running it on the server itself and it's able to stop connections from banned IP addresses before they reach NGINX Proxy Manager. However it's not perfect, I seem unable to ban IP addresses that fail NGINX's Access List authentication. Perhaps these attempts are not logged or maybe the REGEX just fails to match them. I will revisit this issue at a later date and update accordingly.
 
 </p>
 </details>
@@ -886,6 +905,8 @@ I have now resorted to running it on the server itself. It is able to intercept 
 --------------------
 
 ## Reference tables
+
+Throughout the text I might refere to a table, this is where you can find it.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -922,6 +943,6 @@ For comparison, running an [average dishwasher](https://energyusecalculator.com/
 
 ## License and usage
 
-This project was created to document the thoughts and implementations behind my home server. Any resource i link to, cite or otherwise refer to are subject to their respective license, any image used is my own and are subject to All Rights Reserved. Everything else in this project is licensed under the terms of the [MIT license](https://mit-license.org/).
+This project was created to document the thoughts and implementations behind my home server. Any resource i link to, cite or otherwise refer to are subject to their respective licenses, any image used is my own and are subject to All Rights Reserved. Everything else in this project is licensed under the terms of the [MIT license](https://mit-license.org/).
 
 **[Back to top](#)**
