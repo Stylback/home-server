@@ -657,19 +657,21 @@ The connection will now be kept alive for 600 seconds of inactivity, you can cha
 
 ### Part 5: Fail2Ban
 
+[Fail2Ban](https://github.com/fail2ban/fail2ban) is a service that scans log files and bans IP addresses that have multiple failed log-in attempts. We will make it listen to log files from NGINX Proxy Manager and prevent malicious hosts from spamming our services with authentication attempts.
+
 To get started with Fail2Ban we will install it with:
 
 ```sh
 sudo apt update && sudo apt install fail2ban
 ```
 
-Start Fail2Ban with:
+Now start Fail2Ban:
 
 ```sh
 sudo fail2ban-client start
 ```
 
-Now create an action-file:
+We will create three different files; one action, one filter and one jail. First, create an action-file:
 
 ```sh
 sudo nano /etc/fail2ban/action.d/docker-action.conf
@@ -684,19 +686,13 @@ actionban = iptables -I DOCKER-USER -s <ip> -j DROP
 actionunban = iptables -D DOCKER-USER -s <ip> -j DROP
 ```
 
-Save and exit. Now we will take some notes from [hugalafutros](https://github.com/NginxProxyManager/nginx-proxy-manager/issues/39#issuecomment-907795521) comment to make it work with NGINX logs:
-
-Create a `npm-docker.conf` file:
-
-```sh
-sudo nano ./filter.d/npm-docker.conf
-```
+Second, create a filter:
 
 ```sh
 sudo nano /etc/fail2ban/filter.d/npm-docker.conf
 ```
 
-Paste the following:
+Paste the following REGEX-expression from [hugalafutros](https://github.com/NginxProxyManager/nginx-proxy-manager/issues/39#issuecomment-907795521):
 
 ```
 [INCLUDES]
@@ -707,7 +703,7 @@ failregex = ^<HOST>.+" (4\d\d|3\d\d) (\d\d\d|\d) .+$
             ^.+ 4\d\d \d\d\d - .+ \[Client <HOST>\] \[Length .+\] ".+" .+$
 ```
 
-Save and exit. Now we will create a jail.file:
+Save and exit. Lastly create a jail-file:
 
 ```sh
 sudo nano /etc/fail2ban/jail.d/npm-docker.local
@@ -755,7 +751,7 @@ Which should output something like this:
    `- Banned IP list:	
 ```
 
-Check that its banning correctly by visiting `nginx.domain.tld` on your phone or such. Type in the wrong password three times, you should not be able to do it a fourth time. Check the jail again:
+Check that its banning correctly by visiting `nginx.domain.tld` on your cellular network or such. Type in the wrong password three times, you should not be able to do it a fourth time. Check the jail again:
 
 ```sh
 sudo fail2ban-client status npm-docker
@@ -767,13 +763,19 @@ It should now show:
 `- Actions
    |- Currently banned:	1
    |- Total banned:	1
-   `- Banned IP list:	[your-phones-IP]
+   `- Banned IP list:	[banned-IP]
 ```
 
 You can unban yourself with:
 
 ```sh
 sudo fail2ban-client unban --all
+```
+
+Finally, lets make Fail2Ban automatically run on start:
+
+```sh
+sudo systemctl enable fail2ban
 ```
 
 </p>
