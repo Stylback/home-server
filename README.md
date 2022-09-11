@@ -23,24 +23,25 @@ A collection of thoughts and notes as I build my home server. If you find anythi
     - [Testing RAM stability](#testing-ram-stability)
     - [BIOS tweaks](#bios-tweaks)
     - [Installing the OS](#installing-the-os)
-  - [Setting up SSH](#setting-up-ssh)
+  - [Get started with SSH](#get-started-with-ssh)
     - [Part 1: Prerequisite and basic access](#part-1-prerequisite-and-basic-access)
     - [Part 2: Create a Hostname alias](#part-2-create-a-hostname-alias)
     - [Part 3: Generate and use SSH-keys](#part-3-generate-and-use-ssh-keys)
     - [Part 4: Hardening](#part-4-hardening)
-  - [Setting up Docker](#setting-up-docker)
+  - [Docker](#docker)
     - [Installation](#installation)
     - [Management software](#management-software)
-  - [Setting up remote access](#setting-up-remote-access)
+  - [Remote access and perimeter security](#remote-access-and-perimeter-security)
     - [Part 1: Aquire a custom domain](#part-1-aquire-a-custom-domain)
     - [Part 2: Configure Dynamic DNS](#part-2-configure-dynamic-dns)
     - [Part 3: Configure NGINX Proxy manager](#part-3-configure-nginx-proxy-manager)
     - [Part 4: Set up remote SSH](#part-4-set-up-remote-ssh)
     - [Part 5: Fail2Ban](#part-5-fail2ban)
-  - [Implementing services](#implementing-services)
-    - [Homarr](#homarr)
+  - [Services](#services)
+    - [Dashboard with Homarr](#dashboard-with-homarr)
   - [Issues and solutions](#issues-and-solutions)
     - [Bricked motherboard](#bricked-motherboard)
+    - [Fail2Ban struggles](#fail2ban-struggles)
   - [Reference tables](#reference-tables)
     - [Approximating power consumption](#approximating-power-consumption)
   - [License and usage](#license-and-usage)
@@ -157,7 +158,7 @@ I assigned the 250GB drive as boot drive, consuming about half of its available 
 
 --------------------
 
-## Setting up SSH
+## Get started with SSH
 
 <details><summary>Click to expand</summary>
 <p>
@@ -269,7 +270,7 @@ If everything worked correctly, the server should now be accessible only by your
 
 --------------------
 
-## Setting up Docker
+## Docker
 
 <details><summary>Click to expand</summary>
 <p>
@@ -364,7 +365,7 @@ sudo ctop
 
 --------------------
 
-## Setting up remote access
+## Remote access and perimeter security
 
 <details><summary>Click to expand</summary>
 <p>
@@ -692,7 +693,7 @@ Second, create a filter:
 sudo nano /etc/fail2ban/filter.d/npm-docker.conf
 ```
 
-Paste the following REGEX-expression from [hugalafutros](https://github.com/NginxProxyManager/nginx-proxy-manager/issues/39#issuecomment-907795521):
+Paste the following REGEX-expression from [hugalafutro](https://github.com/NginxProxyManager/nginx-proxy-manager/issues/39#issuecomment-907795521):
 
 ```
 [INCLUDES]
@@ -783,7 +784,7 @@ sudo systemctl enable fail2ban
 
 --------------------
 
-## Implementing services
+## Services
 
 <details><summary>Click to expand</summary>
 <p>
@@ -794,7 +795,7 @@ Current ideas:
 - a data backup solution! Rsync, Restic and Kopia seems popular
 - media streaming with [Jellyfin](https://jellyfin.org/)
 
-### Homarr
+### Dashboard with Homarr
 
 [Homarr](https://homarr.vercel.app/docs/about) is an easy to use dashboard for our services. First, lets create a `docker-compose.yml` and a directory to house it:
 
@@ -872,6 +873,12 @@ Finally I popped the CMOS battery out, waited a bit and re-placed it. This seeme
 I pop the CMOS again, boot with a single module and see the BIOS-version was updated to __J41BWB22.BSS__. Determined to regain the ability to use both modules I tried to flash the __J41BW929.BSS__ version using Biostars provided flashing tool. The tool reported a successfull flash but the process had in fact _bricked_ the motherboard.
 
 Lesson learned, think thrice before manually flashing your BIOS. I have since replaced the board with an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp). I also had to replace my RAM-modules with SO-DIMM ones due to board incompatibility.
+
+### Fail2Ban struggles
+
+I initially tried to run Fail2Ban in a docker container. I managed to get the filter and jail working, it would detect and ban an IP. In reality nothing would actually happen, the host could continue to spam authentication attempts. There seems to be no clear way to propagate the banned addresses up the IP-tables chain.
+
+I have now resorted to running it on the server itself. It is able to intercept and stop connections from banned IP addresses before they reach NGINX Proxy Manager. However it's not perfect, I seem unable to ban IP addresses that fail Access List authentication. Maybe these attempts are not logged or maybe the REGEX fails to match them.
 
 </p>
 </details>
