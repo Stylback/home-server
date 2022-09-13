@@ -53,7 +53,7 @@ A collection of thoughts and notes as I build my home server. If you find anythi
 
 ## Hardware choices
 
-This section is about my hardware choices.
+This section is about the hardware I use, why I chose a particular piece of hardware and what trade-offs are to be expected compared to similar choices.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -800,12 +800,15 @@ This section is about the services I have or plan to implement. It will be an ev
 
 |  Service | Description | Priority |
 | ------------- | ------------- | ------------- |
-| [Watchtower](https://containrrr.dev/watchtower/)  | Automatic docker-image updates  | High  |
-| [Static Web Server](https://sws.joseluisq.net/)  | A static webpage server  | Low |
+| [Watchtower](https://containrrr.dev/watchtower/) | Automatic docker-image updates  | High  |
+| [Static Web Server](https://sws.joseluisq.net/) | A static webpage server  | Low |
 | - | Backup solution. Rsync, Restic and Kopia seems popular  | High |
 | [Jellyfin](https://jellyfin.org/)  | Multimedia streaming | Low  |
-| [\*.arr suite](https://wiki.servarr.com/docker-guide)  | Multimedia collection management  | Low  |
+| [\*arr suite](https://wiki.servarr.com/docker-guide) | Multimedia collection management  | Low  |
 | [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) | Prevents image hotlinking, will be implemented alongside static webpage. | Low  |
+| [Umami](https://github.com/umami-software/umami) | Self-hosted, privacy focused, web analytics. Will be implemented alongside static webpage | Low  |
+| [WatchYourLan](https://github.com/aceberg/WatchYourLAN) | LAN monitor with a nice GUI | Low  |
+| [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s  | Low  |
 
 <details><summary>Click to expand</summary>
 <p>
