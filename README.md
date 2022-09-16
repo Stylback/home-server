@@ -39,6 +39,10 @@ A collection of thoughts and notes as I build my home server. If you find anythi
     - [Part 5: Implement Fail2Ban](#part-5-implement-fail2ban)
   - [Services](#services)
     - [Dashboard with Homarr](#dashboard-with-homarr)
+    - [Multimedia streaming with Jellyfin](#multimedia-streaming-with-jellyfin)
+      - [Part 1: Consistent directories](#part-1-consistent-directories)
+      - [Part 2: Install Jellyfin](#part-2-install-jellyfin)
+      - [Part 3: Media transfer and streaming](#part-3-media-transfer-and-streaming)
   - [Issues and solutions](#issues-and-solutions)
     - [Bricked motherboard](#bricked-motherboard)
     - [Containerized Fail2Ban](#containerized-fail2ban)
@@ -67,7 +71,7 @@ I don't expect to use especially resource-heavy services (_such as multi-user st
 - Intel Quick Sync for extensive video encoding/decoding support
 - 10W TDP (_Thermal Design Power, a shorthand way of estimating power consumption_)
 
-However, the J-series is only available as motherboard embedded CPU:s. I've opted for an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp) due to its rich feature-set, but you might consider the [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) as long as you're OK with being limited to 8GB of ram (_or risk bricking your motherboard, see_ [_here_](#bricked-motherboard) for my experience).
+However, the J-series is only available as motherboard embedded CPU:s. I've opted for an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp) due to its rich feature-set, but you might consider the [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) as long as you're OK with being limited to 8GB of ram (_or risk bricking your motherboard, see_ [_here_](#issues-and-solutions) for my experience).
 
 ### Power supply (PSU)
 
@@ -75,11 +79,11 @@ Ideally, the server will be running 24/7, 365 days a year. As such, high efficie
 
 What __is__ the efficiency at 50% load? That is determined by the [80+ Rating](https://en.wikipedia.org/wiki/80_Plus). A `80+ White` will be 80-85% efficient at 50% load while a `80+ Titanium` will be 94-96% efficient.
 
-After some [back of the napkin calculations](#approximating-power-consumption) I've estimated my system to draw between 10 to 23W. As such my ideal PSU would be a power-brick style 50-100W PICO-PSU. I've had no luck finding such a model with the right mix of power-cables and have instead opted for a tradition ATX PSU. At 300W, the [SYSTEM POWER B9 from be quiet!](https://www.bequiet.com/en/powersupply/1285) offers a better low-load efficiency compared to the more common 450/500W models while still providing some head-room for upgrades.
+After some [back of the napkin calculations](#reference-tables) I've estimated my system to draw between 10 to 23W. As such my ideal PSU would be a power-brick style 50-100W PICO-PSU. I've had no luck finding such a model with the right mix of power-cables and have instead opted for a tradition ATX PSU. At 300W, the [SYSTEM POWER B9 from be quiet!](https://www.bequiet.com/en/powersupply/1285) offers a better low-load efficiency compared to the more common 450/500W models while still providing some head-room for upgrades.
 
 ### Case
 
-The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes; discreet and affordable with some room for expandability. It also included a 120 mm rear-mounted fan, I might however replace it with a Noctua [NF-A12X25 ULN](https://noctua.at/en/products/fan/nf-a12x25-uln/specification) down the line for noise reduction.
+The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes; discreet and affordable with some room for expandability. It also included a 120 mm rear-mounted fan, however I replaced it with a Noctua [NF-A12X25 ULN](https://noctua.at/en/products/fan/nf-a12x25-uln) for reduced noise.
 
 ### RAM
 
@@ -101,12 +105,13 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 | CPU / Motherboard | [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp)| 1790 |
 | Power supply | [be quiet! SYSTEM POWER B9 (_300W_)](https://www.bequiet.com/en/powersupply/1285) | 440 |
 | Case | [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html)| 380 |
+| Fan | [NF-A12X25 ULN](https://noctua.at/en/products/fan/nf-a12x25-uln) | 290 |
 | RAM | [G.SKILL Ripjaws SO-DIMM 16GB, 2400MHz Kit](https://www.gskill.com/product/2/197/1540865326/F4-2400C16D-16GRS)| 560 |
 | Storage | [Crucial MX500 (_250GB + 2TB_)](https://www.crucial.com/products/ssd/crucial-mx500-ssd) | 2180 |
 | Cable| [Power cable 5m](https://www.amazon.se/gp/product/B07Y1VHRPT/) | 110 |
 | Cable| [Cat 5e cable 5m](https://www.amazon.se/gp/product/B00I7XX1BC/) | 60 |
 | Misc | [Cable ties](https://www.amazon.se/gp/product/B09GFMN616/) | 100 |
-| __Total:__ |  | __5620__ |
+| __Total:__ |  | __5910__ |
 
 [_*10 SEK = ~1 USD_ ](https://www.xe.com/currencyconverter/convert/?Amount=10&From=SEK&To=USD)
 
@@ -800,20 +805,18 @@ This section is about the services I have or plan to implement. It will be an ev
 
 |  Service | Description | Priority |
 | ------------- | ------------- | ------------- |
-| [Watchtower](https://containrrr.dev/watchtower/) | Automatic docker-image updates  | High  |
+| [Watchtower](https://containrrr.dev/watchtower/) | Automatic docker-image updates | High  |
+| - | Backup solution. Restic and Kopia seems popular  | High |
+| [\*arr suite](https://wiki.servarr.com/docker-guide) | Multimedia collection management | Low  |
 | [Static Web Server](https://sws.joseluisq.net/) | A static webpage server  | Low |
-| - | Backup solution. Rsync, Restic and Kopia seems popular  | High |
-| [Jellyfin](https://jellyfin.org/)  | Multimedia streaming | Low  |
-| [\*arr suite](https://wiki.servarr.com/docker-guide) | Multimedia collection management  | Low  |
 | [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) | Prevents image hotlinking, will be implemented alongside static webpage. | Low  |
 | [Umami](https://github.com/umami-software/umami) | Self-hosted, privacy focused, web analytics. Will be implemented alongside static webpage | Low  |
-| [WatchYourLan](https://github.com/aceberg/WatchYourLAN) | LAN monitor with a nice GUI | Low  |
-| [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s  | Low  |
+| [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s | Low  |
+
+### Dashboard with Homarr
 
 <details><summary>Click to expand</summary>
 <p>
-
-### Dashboard with Homarr
 
 [Homarr](https://homarr.vercel.app/docs/about) is an easy to use dashboard for our services. First, lets create a `docker-compose.yml` and a directory to house it:
 
@@ -865,6 +868,124 @@ Access List:            Publicly Accessible
 ```
 
 Save and check that Homarr is accessible at `homarr.domain.tld`. For increased security, add a SSL-certificate and assign it a unique Access List entry.
+
+</p>
+</details>
+
+### Multimedia streaming with Jellyfin
+
+<details><summary>Click to expand</summary>
+<p>
+
+#### Part 1: Consistent directories
+
+Use [hardlinks](https://trash-guides.info/Hardlinks/Hardlinks-and-Instant-Moves/)
+
+```sh
+sudo mkdir -p /srv/data/{torrents/{movies,music,tv},media/{movies,music,tv}}
+```
+
+```sh
+sudo chown -R $USER:$USER /srv/data
+```
+
+```sh
+sudo chmod -R a=,a+rX,u+w,g+w /srv/data
+```
+
+#### Part 2: Install Jellyfin
+
+Install [Jellyfin](https://hotio.dev/containers/jellyfin/)
+
+```sh
+sudo mkdir -p /srv/jellyfin/{config,cache}
+```
+
+Make a docker compose:
+
+```sh
+sudo nano /srv/jellyfin/docker-compose.yml
+```
+
+```yml
+version: "3.7"
+
+services:
+  jellyfin:
+    container_name: jellyfin
+    image: cr.hotio.dev/hotio/jellyfin
+    ports:
+      - "8096:8096"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - /srv/jellyfin/config:/config
+      - /srv/jellyfin/cache:/cache
+      - /srv/data/media:/media
+    devices:
+      - /dev/dri:/dev/dri
+    restart: "unless-stopped"
+```
+
+```sh
+cd /srv/jellyfin && sudo docker compose up -d
+```
+
+Wait a bit while it downloads then go to `[local IP]:8096`, follow the start-up guide.
+
+Now, make a proxy host with SSL:
+
+```
+Domain names:           jellyfin.domain.tld
+Scheme:                 http
+Forward Hostname / IP:  [local-ip]
+Forward Port:           8096
+Cache Assets:           No
+Block Common Expolits:  Yes
+Websocket Support:      No
+Access List:            Publicly Accessible
+```
+
+Visit it and make sure you can connect.
+
+#### Part 3: Media transfer and streaming
+
+Now to test media streaming. Load up a USB with some media-files and stick it into your server.
+
+Check its label:
+
+```sh
+lsblk
+```
+
+Make a directory for it:
+
+```sh
+sudo mkdir /media/external
+```
+
+Mount it to the directory:
+
+```sh
+sudo mount /dev/[label] /media/external
+```
+
+Copy it with:
+
+```sh
+sudo rsync -ah --progress /media/external/[your media] /srv/data/media/[relevant folder]
+```
+
+Once your media-files are copied they will be automatically added to your Jellyfin library. This process might take a couple of minutes, if you want to force a new check you can do so in the settings. Once they are detected, try to stream them.
+
+P.S. Don't forget to unmount your USB before unplugging it:
+
+```sh
+sudo umount /media/external
+```
 
 </p>
 </details>
@@ -922,12 +1043,13 @@ Throughout the text I might refere to a table, this is where you can find it.
 | Crucial MX500 250GB | 0.08[^1] | 0.54[^1] |
 | G.SKILL Ripjaws SO-DIMM 16GB | 6.00[^2] | 6.00[^2] |
 | ASRock J5040-ITX | 0.70[^3] | 10.00[^3] |
-| Total (_100% efficiency_): | 6.88 | 16.08 |
-| __Total (_70% efficiency_[^4]):__ | __9.82__ | __22.97__ |
+| NF-A12X25 ULN | 0.6[^4] | 0.6[^4] |
+| Total (_100% efficiency_): | 7.48 | 17.68 |
+| __Total (_70% efficiency_[^5]):__ | __10.7__ | __25.3__ |
 
-If we assume an average 2 hours of full system utilization per day, with the rest being equivalent to an idle power state, we can approximate the daily power consumption to: $\frac{22.97 \times 2 + 9.82 \times 22}{1000} \approx 0.262 \textrm{ kWh/Day}$
+If we assume an average 2 hours of full system utilization per day, with the rest being equivalent to an idle power state, we can approximate the daily power consumption to: $\frac{25.3 \times 2 + 10.7 \times 22}{1000} \approx 0.286 \textrm{ kWh/Day}$
 
-Or a yearly power consumption of: $0.262*365 \approx 95.6 \textrm{ kWh/Year}$
+Or a yearly power consumption of: $0.286*365 \approx 104 \textrm{ kWh/Year}$
 
 For comparison, running an [average dishwasher](https://energyusecalculator.com/electricity_dishwasher.htm) once a week for 3 hours consumes about $\approx 282 \textrm{ kWh/Year}$
 
@@ -937,7 +1059,9 @@ For comparison, running an [average dishwasher](https://energyusecalculator.com/
 
 [^3]: Inferred from Dr. Helmut Neukirchen's [power consumption test](https://uni.hi.is/helmut/2021/06/07/power-consumption-of-raspberry-pi-4-versus-intel-j4105-system/) of the J4105, as it has the same TDP as the J5040. I also subtracted 3 W from the authors measurements which is the estimated power consumption of a 8GB stick of DDR4 RAM.
 
-[^4]: [HardwareInfo low-load PSU test](https://web.archive.org/web/20130811112042/http://uk.hardware.info/productinfo/188792/be-quiet!-pure-power-l8-300w#tab:testresults). Inferred from the 22.5 W test of the _be quiet! Pure Power L8 300 W_.
+[^4]: Noctua NF-A12X25 ULN [specification](https://noctua.at/en/products/fan/nf-a12x25-uln/specification).
+
+[^5]: [HardwareInfo low-load PSU test](https://web.archive.org/web/20130811112042/http://uk.hardware.info/productinfo/188792/be-quiet!-pure-power-l8-300w#tab:testresults). Inferred from the 22.5 W test of the _be quiet! Pure Power L8 300 W_.
 
 </p>
 </details>
