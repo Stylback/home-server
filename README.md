@@ -589,7 +589,9 @@ Now that we know that it works we will secure it with a SSL-certificate. Navigat
 
 Now go back to your Proxy Host for `nginx.domain.tld` and click `Edit`, go to to SSL and add your certificate from the drop-down list. For added security, enable __Force SSL__ and __HSTS__. Finally, visit `nginx.domain.tld` and ensure that everything is working as intended.
 
-Will mention more about credentials and accessability lists in NGINX Proxy Manager.
+For added security you can make a Access List entry. Navigate to `Access Lists` and `Add Access List`, then configure access to fit your needs. For exposed services without a log-in page you might consider adding basic HTTP Authentication, which will prompt a visitor for credentials before even loading the page. For services that you only want to be accessible on your local network, consider adding you local network to the whitelist while denying all other connections.
+
+When you've made a Access List entry, navigate to Proxy Hosts and change a Proxy from `Publicly Accessible` to `[entry name]`.
 
 ### Part 4: Set up remote SSH
 
@@ -734,8 +736,7 @@ ignoreip = 127.0.0.1/8 192.168.1.0/24
 chain = INPUT
 filter  = npm-docker
 logpath = /srv/npm/data/logs/default-host_*.log
-          /srv/npm/data/logs/proxy-host-*.log
-          /srv/npm/data/logs/proxy-host-*_error.log
+          /srv/npm/data/logs/proxy-host-*_access.log
 maxretry = 2
 bantime  = -1 
 findtime = 86400
@@ -760,7 +761,7 @@ Which should output something like this:
 |- Filter
 |  |- Currently failed:	0
 |  |- Total failed:	0
-|  `- File list:	/srv/npm/data/logs/proxy-host-1_error.log /srv/npm/data/logs/proxy-host-1_access.log
+|  `- File list: /srv/npm/data/logs/proxy-host-1_access.log
 `- Actions
    |- Currently banned:	0
    |- Total banned:	0
@@ -809,8 +810,8 @@ This section is about the services I have or plan to implement. It will be an ev
 | - | Backup solution. Restic and Kopia seems popular  | High |
 | [\*arr suite](https://wiki.servarr.com/docker-guide) | Multimedia collection management | Low  |
 | [Static Web Server](https://sws.joseluisq.net/) | A static webpage server  | Low |
-| [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) | Prevents image hotlinking, will be implemented alongside static webpage. | Low  |
-| [Umami](https://github.com/umami-software/umami) | Self-hosted, privacy focused, web analytics. Will be implemented alongside static webpage | Low  |
+| [Umami](https://github.com/umami-software/umami) | Self-hosted, privacy focused web analytics. Will be implemented alongside static webpage | Low  |
+| [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) | Prevents image hotlinking, will be implemented alongside static webpage (_this isn't really a service but I will keep it here for future reference_). | Low  |
 | [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s | Low  |
 
 ### Dashboard with Homarr
@@ -879,33 +880,33 @@ Save and check that Homarr is accessible at `homarr.domain.tld`. For increased s
 
 #### Part 1: Consistent directories
 
-Use [hardlinks](https://trash-guides.info/Hardlinks/Hardlinks-and-Instant-Moves/)
+Before we set up Jellyfin we will make a clear and consistent directory-structure following TRaSH Guides [Hardlinks and Instant Moves](https://trash-guides.info/Hardlinks/Hardlinks-and-Instant-Moves/). We can create the whole structure with this one command:
 
 ```sh
 sudo mkdir -p /srv/data/{torrents/{movies,music,tv},media/{movies,music,tv}}
 ```
 
-```sh
-sudo chown -R $USER:$USER /srv/data
-```
+Now configure directory permissions with:
 
 ```sh
-sudo chmod -R a=,a+rX,u+w,g+w /srv/data
+sudo chown -R $USER:$USER /srv/data && sudo chmod -R a=,a+rX,u+w,g+w /srv/data
 ```
 
 #### Part 2: Install Jellyfin
 
-Install [Jellyfin](https://hotio.dev/containers/jellyfin/)
+We will be using [Hotios Jellyfin image](https://hotio.dev/containers/jellyfin/). Start by creating a directory:
 
 ```sh
 sudo mkdir -p /srv/jellyfin/{config,cache}
 ```
 
-Make a docker compose:
+Then make a docker compose file:
 
 ```sh
 sudo nano /srv/jellyfin/docker-compose.yml
 ```
+
+Paste the following:
 
 ```yml
 version: "3.7"
@@ -930,13 +931,13 @@ services:
     restart: "unless-stopped"
 ```
 
+Save and exit. You can now start it with:
+
 ```sh
 cd /srv/jellyfin && sudo docker compose up -d
 ```
 
-Wait a bit while it downloads then go to `[local IP]:8096`, follow the start-up guide.
-
-Now, make a proxy host with SSL:
+Wait a bit while everything is being prepared. When done, go to `[local IP]:8096` and follow the start-up guide. When you've confirmed it's accessible it's time to create a NGINX proxy host:
 
 ```
 Domain names:           jellyfin.domain.tld
@@ -949,31 +950,27 @@ Websocket Support:      No
 Access List:            Publicly Accessible
 ```
 
-Visit it and make sure you can connect.
+While you're at it, don't forget to request a SSL-certificate for `jellyfin.domain.tld`. Finally, visit it and make sure you can connect.
 
 #### Part 3: Media transfer and streaming
 
-Now to test media streaming. Load up a USB with some media-files and stick it into your server.
-
-Check its label:
+Jellyfin is up and running but we still need to test media streaming. Load up a USB with some media-files and stick it into your server. Check its label, it should be something akin to `sdb1`:
 
 ```sh
 lsblk
 ```
 
-Make a directory for it:
+Make a directory and mount the USB to it:
 
 ```sh
 sudo mkdir /media/external
 ```
 
-Mount it to the directory:
-
 ```sh
 sudo mount /dev/[label] /media/external
 ```
 
-Copy it with:
+Now we can copy the media-files from the USB to our media directory:
 
 ```sh
 sudo rsync -ah --progress /media/external/[your media] /srv/data/media/[relevant folder]
@@ -1070,6 +1067,6 @@ For comparison, running an [average dishwasher](https://energyusecalculator.com/
 
 ## License and usage
 
-This project was created to document the thoughts and implementations behind my home server. Any resource i link to, cite or otherwise refer to are subject to their respective licenses, any image used is my own and are subject to All Rights Reserved. Everything else in this project is licensed under the terms of the [MIT license](https://mit-license.org/).
+This project was created to document the thoughts and implementations behind my home server. Any resource I link to, cite or otherwise refer to are subject to their respective licenses, any image used is my own and are subject to All Rights Reserved. Everything else in this project is licensed under the terms of the [MIT license](https://mit-license.org/).
 
 **[Back to top](#)**
