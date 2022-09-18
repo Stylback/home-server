@@ -30,7 +30,8 @@ A collection of thoughts and notes as I build my home server. If you find anythi
     - [Part 4: Hardening](#part-4-hardening)
   - [Docker](#docker)
     - [Installation](#installation)
-    - [Management software](#management-software)
+    - [Easy management with ctop](#easy-management-with-ctop)
+    - [Automatic updates with Watchtower](#automatic-updates-with-watchtower)
   - [Remote access and perimeter security](#remote-access-and-perimeter-security)
     - [Part 1: Aquire a custom domain](#part-1-aquire-a-custom-domain)
     - [Part 2: Configure Dynamic DNS](#part-2-configure-dynamic-dns)
@@ -345,7 +346,7 @@ Finally, run the following to enable Docker to run on boot:
 sudo systemctl enable docker
 ```
 
-### Management software
+### Easy management with ctop
 
 For easy overview and management of our docker containers we can install [ctop](https://github.com/bcicen/ctop). To do it, run the commands below:
 
@@ -361,7 +362,7 @@ echo "deb [signed-by=/usr/share/keyrings/azlux-archive-keyring.gpg] http://packa
 sudo wget -O /usr/share/keyrings/azlux-archive-keyring.gpg  https://azlux.fr/repo.gpg
 ```
 
-> Error? Most likely the key is out of date, visit the [maintainers](https://packages.azlux.fr/) website to find the latest one.
+> Error? The key is most likely out of date, visit the [maintainers](https://packages.azlux.fr/) website to find the current key.
 
 ```sh
 sudo apt update && sudo apt install docker-ctop
@@ -372,6 +373,44 @@ Launch it by simply running:
 ```sh
 sudo ctop
 ```
+
+### Automatic updates with Watchtower
+
+We will use [Watchtower](https://containrrr.dev/watchtower/) to automatically find and apply updates to our docker images. To get started, make a directory:
+
+```sh
+sudo mkdir /srv/watchtower
+```
+
+Now make a `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/watchtower/docker-compose.yml
+```
+
+Paste the following:
+
+```yml
+version: "3"
+services:
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    environment:
+       - TZ=Europe/Stockholm
+     command: --cleanup true --schedule "0 0 2 * * *" # run daily at 2 am
+```
+
+Save and exit, now start Watchtower with:
+
+```sh
+cd /srv/watchtower && sudo docker compose up -d
+```
+
+Watchtower will check for updates every night at 2 am. If it finds any it will download it, restart the container to apply the update and remove the old version.
 
 </p>
 </details>
@@ -768,7 +807,7 @@ Which should output something like this:
    `- Banned IP list:	
 ```
 
-Check that its banning correctly by visiting `nginx.domain.tld` on your cellular network or such. Type in the wrong password three times, you should not be able to do it a fourth time. Check the jail again:
+Check that it's banning correctly by visiting `nginx.domain.tld` on your cellular network or such. Type in the wrong password three times, you should not be able to do it a fourth time. Check the jail again:
 
 ```sh
 sudo fail2ban-client status npm-docker
@@ -789,7 +828,7 @@ You can unban yourself with:
 sudo fail2ban-client unban --all
 ```
 
-Finally, lets make Fail2Ban automatically run on start:
+Finally, make Fail2Ban run automatically on start:
 
 ```sh
 sudo systemctl enable fail2ban
@@ -806,7 +845,6 @@ This section is about the services I have or plan to implement. It will be an ev
 
 |  Service | Description | Priority |
 | ------------- | ------------- | ------------- |
-| [Watchtower](https://containrrr.dev/watchtower/) | Automatic docker-image updates | High  |
 | - | Backup solution. Restic and Kopia seems popular  | High |
 | [\*arr suite](https://wiki.servarr.com/docker-guide) | Multimedia collection management | Low  |
 | [Static Web Server](https://sws.joseluisq.net/) | A static webpage server  | Low |
@@ -834,9 +872,6 @@ Paste the following:
 ```yml
  ---
 version: '3'
-#---------------------------------------------------------------------#
-#                Homarr -  A homepage for your server.                #
-#---------------------------------------------------------------------#
 services:
   homarr:
     container_name: homarr
@@ -970,6 +1005,16 @@ sudo mkdir /media/external
 sudo mount /dev/[label] /media/external
 ```
 
+If it is LUKS encrypted you need to unlock it before mounting, run:
+
+```sh
+sudo cryptsetup luksOpen /dev/[label] [volume name]
+```
+
+```sh
+sudo mount /dev/mapper/[volume name] /media/external
+```
+
 Now we can copy the media-files from the USB to our media directory:
 
 ```sh
@@ -982,6 +1027,12 @@ P.S. Don't forget to unmount your USB before unplugging it:
 
 ```sh
 sudo umount /media/external
+```
+
+If it was LUKS encrypted, also don't forget to lock it:
+
+```sh
+sudo cryptsetup luksClose [volume name]
 ```
 
 </p>
