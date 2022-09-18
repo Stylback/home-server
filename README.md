@@ -44,6 +44,8 @@ A collection of thoughts and notes as I build my home server. If you find anythi
       - [Part 1: Consistent directories](#part-1-consistent-directories)
       - [Part 2: Install Jellyfin](#part-2-install-jellyfin)
       - [Part 3: Media transfer and streaming](#part-3-media-transfer-and-streaming)
+    - [Torrenting with qflood](#torrenting-with-qflood)
+  - [</details>](#details)
   - [Issues and solutions](#issues-and-solutions)
     - [Bricked motherboard](#bricked-motherboard)
     - [Containerized Fail2Ban](#containerized-fail2ban)
@@ -1038,6 +1040,155 @@ sudo cryptsetup luksClose [volume name]
 </p>
 </details>
 
+### Torrenting with qflood
+
+<details><summary>Click to expand</summary>
+<p>
+
+> NOTE: A new version of qBittorrent broke Flood support, but you can still access qBittorrent through its own web UI.
+
+[qflood](https://hotio.dev/containers/qflood/) is a Docker image from Hotio that combines [qBittorrent](https://github.com/qbittorrent/qbittorrent) and [Flood](https://github.com/jesec/flood) with easy Wireguard VPN integration. Before setting up qflood we will install and configure Wireguard:
+
+```sh
+sudo apt update && sudo apt install openresolv && sudo apt install wireguard
+```
+
+Go to your VPN provider and get their Wireguard configuration. I will be using [Mullvad](https://mullvad.net/en/) throughout this section. Now run:
+
+```sh
+sudo nano /etc/wireguard/wg0.conf
+```
+
+Paste the contents of your Wireguard configuration and check that it's working by running:
+
+```sh
+wg-quick up wg0 && sudo wg show
+```
+
+Confirm that you have a connection, then disconnect with:
+
+```sh
+wg-quick down wg0
+```
+
+Now we can install qflood, start by creating a directory:
+
+```sh
+sudo mkdir /srv/qflood
+```
+
+Then create a `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/qflood/docker-compose.yml
+```
+
+Paste the following:
+
+```yml
+version: "3.7"
+services:
+  qflood:
+    container_name: qflood
+    image: cr.hotio.dev/hotio/qflood
+    ports:
+      - "8080:8080" #qbittorrent
+      - "3000:3000" #flood
+      - "8118:8118"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+      - VPN_ENABLED=true
+      - VPN_LAN_NETWORK=[local inet]/24
+      - VPN_CONF=wg0
+      - VPN_ADDITIONAL_PORTS
+      - VPN_IP_CHECK_DELAY=5
+      - PRIVOXY_ENABLED=false
+      - FLOOD_AUTH=false
+    volumes:
+      - /etc:/config
+      - /srv/data/torrents:/data/torrents
+      - /srv/data/media:/data/media
+    cap_add:
+      - NET_ADMIN
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv6.conf.all.disable_ipv6=0
+```
+
+Save and exit. Now run:
+
+```sh
+cd /srv/qflood && sudo docker compose up -d
+```
+
+> Got a IPv6 error? Might be that IPv6 is disabled on your server, run this to fix it: sudo modprobe ip6table_filter
+
+Now visit the webUI at `[local IP]:8080` and log in with the default credentials:
+
+```
+Username: admin
+Password: adminadmin
+```
+
+Next up is port forwarding. In Mullvad, go to your account and Port Forwarding. Identify your server and add a port for it. In Qbittorrent's WebUI, go to Tools -> Options -> Connection -> Listening Port and change the default port to your forwarded port. Then launch ctop, go to qflood and exec shell. Run the following two commands:
+
+```sh
+iptables -I INPUT -p tcp --dport [forwarded port] -j ACCEPT
+```
+
+```sh
+curl https://ipv4.am.i.mullvad.net/port/[forwarded port]
+```
+
+It should return:
+
+```sh
+{"ip":"[Mullvad's IP]","port":[forwarded port],"reachable":true}/
+```
+
+Now let's do some tinkering with Qbittorrent:
+
+```
+Connection: 
+  Peer connection protocol "TCP and µTP" -> "TCP", (µTP can throttle speeds)
+
+Bittorrent: 
+	Enable anonymous mode "unchecked" -> "checked"
+	Enable Local Peer Discovery to find more peers "unchecked"
+	
+Seeding Limits:
+	When ration reaches 1
+	When seeding time reaches 10080
+
+Speed:
+	Global rate limits
+	Upload:		  75000 KiB/s
+	Download: 	75000 KiB/s
+	
+	Alternative Rate Limits
+	Upload: 	  10000 KiB/s
+	Download: 	10000 KiB/s
+	
+	Schedule the use of alternative rate limits
+	07:00 to 01:00
+	Weekdays
+```
+
+Don't forget to change the default username and password.
+
+Add three new categories:
+
+```
+/data/media/tv
+/data/media/movies
+/data/media/music
+```
+
+</p>
+</details>
 --------------------
 
 ## Issues and solutions
