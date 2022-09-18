@@ -45,7 +45,6 @@ A collection of thoughts and notes as I build my home server. If you find anythi
       - [Part 2: Install Jellyfin](#part-2-install-jellyfin)
       - [Part 3: Media transfer and streaming](#part-3-media-transfer-and-streaming)
     - [Torrenting with qflood](#torrenting-with-qflood)
-  - [</details>](#details)
   - [Issues and solutions](#issues-and-solutions)
     - [Bricked motherboard](#bricked-motherboard)
     - [Containerized Fail2Ban](#containerized-fail2ban)
@@ -1045,6 +1044,8 @@ sudo cryptsetup luksClose [volume name]
 <details><summary>Click to expand</summary>
 <p>
 
+> DISCLAMIER: Torrenting gets a bad reputation due to Piracy. The BitTorrent protocol is a data transfer protocol like many others and in the end of the day it's just a tool. What you chose to do with the information in this section is entirely up to you and I am not liabel for anything you do. If you're considering downloading or sharing copyrighted content, first consult with your country's laws and regulations to ensure you're not breaking any of them.
+
 > NOTE: A new version of qBittorrent broke Flood support, but you can still access qBittorrent through its own web UI.
 
 [qflood](https://hotio.dev/containers/qflood/) is a Docker image from Hotio that combines [qBittorrent](https://github.com/qbittorrent/qbittorrent) and [Flood](https://github.com/jesec/flood) with easy Wireguard VPN integration. Before setting up qflood we will install and configure Wireguard:
@@ -1053,7 +1054,7 @@ sudo cryptsetup luksClose [volume name]
 sudo apt update && sudo apt install openresolv && sudo apt install wireguard
 ```
 
-Go to your VPN provider and get their Wireguard configuration. I will be using [Mullvad](https://mullvad.net/en/) throughout this section. Now run:
+Go to your VPN provider and get their Wireguard configuration, I will be using [Mullvad](https://mullvad.net/en/) throughout this section. Now run:
 
 ```sh
 sudo nano /etc/wireguard/wg0.conf
@@ -1126,14 +1127,14 @@ cd /srv/qflood && sudo docker compose up -d
 
 > Got a IPv6 error? Might be that IPv6 is disabled on your server, run this to fix it: sudo modprobe ip6table_filter
 
-Now visit the webUI at `[local IP]:8080` and log in with the default credentials:
+Now visit the web UI at `[local IP]:8080` and log in with the default credentials:
 
 ```
 Username: admin
 Password: adminadmin
 ```
 
-Next up is port forwarding. In Mullvad, go to your account and Port Forwarding. Identify your server and add a port for it. In Qbittorrent's WebUI, go to Tools -> Options -> Connection -> Listening Port and change the default port to your forwarded port. Then launch ctop, go to qflood and exec shell. Run the following two commands:
+Next up is port forwarding. In Mullvad, go to your account and Port Forwarding. Identify your server and add a port for it. In qBittorrent's Web UI, go to Tools -> Options -> Connection -> Listening Port and change the default port to your forwarded port. Then launch ctop, go to qflood and exec shell. Run the following two commands:
 
 ```sh
 iptables -I INPUT -p tcp --dport [forwarded port] -j ACCEPT
@@ -1149,11 +1150,11 @@ It should return:
 {"ip":"[Mullvad's IP]","port":[forwarded port],"reachable":true}/
 ```
 
-Now let's do some tinkering with Qbittorrent:
+Now let's do some tinkering with qBittorrent:
 
 ```
 Connection: 
-  Peer connection protocol "TCP and µTP" -> "TCP", (µTP can throttle speeds)
+  Peer connection protocol "TCP and µTP" -> "TCP" (µTP can throttle speeds)
 
 Bittorrent: 
 	Enable anonymous mode "unchecked" -> "checked"
@@ -1161,15 +1162,15 @@ Bittorrent:
 	
 Seeding Limits:
 	When ration reaches 1
-	When seeding time reaches 10080
+	When seeding time reaches 10080s (equal to one week)
 
 Speed:
 	Global rate limits
-	Upload:		  75000 KiB/s
+	Upload:		 75000 KiB/s
 	Download: 	75000 KiB/s
 	
 	Alternative Rate Limits
-	Upload: 	  10000 KiB/s
+	Upload: 	 10000 KiB/s
 	Download: 	10000 KiB/s
 	
 	Schedule the use of alternative rate limits
@@ -1179,16 +1180,25 @@ Speed:
 
 Don't forget to change the default username and password.
 
-Add three new categories:
+Add three new categories for easier management:
 
 ```
-/data/media/tv
-/data/media/movies
-/data/media/music
+tv  /data/media/tv
+movies  /data/media/movies
+music /data/media/music
+```
+
+Also add three watched folders:
+
+```
+/data/torrents/tv
+/data/torrents/movies
+/data/torrents/music
 ```
 
 </p>
 </details>
+
 --------------------
 
 ## Issues and solutions
