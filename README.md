@@ -850,9 +850,9 @@ This section is about the services I have or plan to implement. It will be an ev
 
 |  Service | Description | Priority |
 | ------------- | ------------- | ------------- |
-| - | Backup solution. Restic and Kopia seems popular  | High |
+| Data backup solution | [Restic](https://restic.net/) or [Borgmatic](https://torsion.org/borgmatic/). Will make backups/snapshots to an external SSD, compression is preferred | High |
 | [\*arr suite](https://wiki.servarr.com/docker-guide) | Multimedia collection management | Low  |
-| [Static Web Server](https://sws.joseluisq.net/) | A static webpage server  | Low |
+| [Static Web Server](https://sws.joseluisq.net/) | A static webpage server | Low |
 | [Umami](https://github.com/umami-software/umami) | Self-hosted, privacy focused web analytics. Will be implemented alongside static webpage | Low  |
 | [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) | Prevents image hotlinking, will be implemented alongside static webpage (_this isn't really a service but I will keep it here for future reference_). | Low  |
 | [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s | Low  |
@@ -1047,7 +1047,7 @@ sudo cryptsetup luksClose [volume name]
 <details><summary>Click to expand</summary>
 <p>
 
-> DISCLAMIER: The BitTorrent protocol is a communcation protocol for peer-to-peer file sharing, it's an easy and accessible way for people to share their own or licensed works online. Despite plenty of [valid usage areas](https://en.wikipedia.org/wiki/BitTorrent#Adoption), piracy have given the protoco a bad reputation. Before you contemplate downloading or sharing copyrighted content via the BitTorrent protocol, please check that those actions are not considered criminal by your local laws and regulations. I am not liabel in any way for your inability to use the BitTorrent protocol in accordance with said law.
+> DISCLAMIER: The BitTorrent protocol is a communcation protocol for peer-to-peer file sharing, it's an easy and accessible way for people to share their own or licensed works online. Despite plenty of [valid usage areas](https://en.wikipedia.org/wiki/BitTorrent#Adoption), piracy have given the protocol a bad reputation. Before you contemplate downloading or sharing copyrighted content via the BitTorrent protocol, please check that those actions are not considered criminal by your local laws and regulations. I am not liabel in any way for your inability to use the BitTorrent protocol in accordance with said law.
 
 [qflood](https://hotio.dev/containers/qflood/) is a Docker image from Hotio that combines [qBittorrent](https://github.com/qbittorrent/qbittorrent) and [Flood](https://github.com/jesec/flood) with easy Wireguard VPN integration.
 
@@ -1171,7 +1171,7 @@ Now that we know that port forwarding is wokring, let's do some `Options` tinker
 | Global rate limits | Disable | 10000 KiB/s | About 80 Mbit/s. |
 | Alternative Rate Limits | Disable | 1500 KiB/s | About 12 Mbit/s, a good limit to prevent daytime broadband shortage. |
 | Schedule the use of alternative rate limits | Disable | 07:00 to 01:00, Every day | Will give us a our limited rate between 07:00 - 01:00 and our global rate between 01:00 - 07:00. |
-| Username/Password | admin + adminadmin | ;) | Default credentials are a security hazard, avoid them! |
+| Username/Password | admin / adminadmin | ;) | Default credentials are a security hazard. |
 
 For easy management, add three categories corresponding to the three media directories:
 
