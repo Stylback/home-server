@@ -45,6 +45,10 @@ A collection of thoughts and notes as I build my home server. If you find anythi
       - [Part 2: Install Jellyfin](#part-2-install-jellyfin)
       - [Part 3: Media transfer and streaming](#part-3-media-transfer-and-streaming)
     - [Torrenting with qflood](#torrenting-with-qflood)
+      - [Part 1: Configure Wireguard](#part-1-configure-wireguard)
+      - [Part 2: Install qflood](#part-2-install-qflood)
+      - [Part 3: qBittorrent settings](#part-3-qbittorrent-settings)
+      - [Part 4: Configure Flood](#part-4-configure-flood)
   - [Issues and solutions](#issues-and-solutions)
     - [Bricked motherboard](#bricked-motherboard)
     - [Containerized Fail2Ban](#containerized-fail2ban)
@@ -234,7 +238,7 @@ On the client, run the following, replacing `comment` with some information to h
 ssh-keygen -t ed25519 -C "comment"
 ```
 
-You will be prompted for a name, you can chose a name or accept the default `id_ed2559` by pressing enter. You will also be prompted for a passphrase, enter a passphrase or press enter to skip. This will create a keypair, one public key named `keyname.pub` and one private key named `keyname`. You can verify that they are there by running:
+You will be prompted for a name, you can choose a name or accept the default `id_ed2559` by pressing enter. You will also be prompted for a passphrase, enter a passphrase or press enter to skip. This will create a keypair, one public key named `keyname.pub` and one private key named `keyname`. You can verify that they are there by running:
 
 ```sh
 ls ~/.ssh -la
@@ -1030,7 +1034,7 @@ P.S. Don't forget to unmount your USB before unplugging it:
 sudo umount /media/external
 ```
 
-If it was LUKS encrypted, also don't forget to lock it:
+If it was LUKS encrypted, don't forget to lock it:
 
 ```sh
 sudo cryptsetup luksClose [volume name]
@@ -1044,11 +1048,13 @@ sudo cryptsetup luksClose [volume name]
 <details><summary>Click to expand</summary>
 <p>
 
-> DISCLAMIER: Torrenting gets a bad reputation due to Piracy. The BitTorrent protocol is a data transfer protocol like many others and in the end of the day it's just a tool. What you chose to do with the information in this section is entirely up to you and I am not liabel for anything you do. If you're considering downloading or sharing copyrighted content, first consult with your country's laws and regulations to ensure you're not breaking any of them.
+> DISCLAMIER: Torrenting gets a bad reputation due to Piracy. The BitTorrent protocol is a data transfer protocol, it's an easy and accessible way for people to share files online. Before you contemplate downloading or sharing copyrighted content, please check that those actions are not considered criminal by your local laws and regulations. I am not liabel in any way for your inability to use the BitTorrent protocol in accordance with law.
 
-> NOTE: A new version of qBittorrent broke Flood support, but you can still access qBittorrent through its own web UI.
+[qflood](https://hotio.dev/containers/qflood/) is a Docker image from Hotio that combines [qBittorrent](https://github.com/qbittorrent/qbittorrent) and [Flood](https://github.com/jesec/flood) with easy Wireguard VPN integration.
 
-[qflood](https://hotio.dev/containers/qflood/) is a Docker image from Hotio that combines [qBittorrent](https://github.com/qbittorrent/qbittorrent) and [Flood](https://github.com/jesec/flood) with easy Wireguard VPN integration. Before setting up qflood we will install and configure Wireguard:
+#### Part 1: Configure Wireguard
+
+Before setting up qflood we will install and configure Wireguard:
 
 ```sh
 sudo apt update && sudo apt install openresolv && sudo apt install wireguard
@@ -1071,6 +1077,8 @@ Confirm that you have a connection, then disconnect with:
 ```sh
 wg-quick down wg0
 ```
+
+#### Part 2: Install qflood
 
 Now we can install qflood, start by creating a directory:
 
@@ -1125,16 +1133,18 @@ Save and exit. Now run:
 cd /srv/qflood && sudo docker compose up -d
 ```
 
-> Got a IPv6 error? Might be that IPv6 is disabled on your server, run this to fix it: sudo modprobe ip6table_filter
+> Got an IPv6 error? IPv6 might be disabled on the server, this command fixed it for me: `sudo modprobe ip6table_filter`
 
-Now visit the web UI at `[local IP]:8080` and log in with the default credentials:
+Now visit qBittorrent's web UI at `[local IP]:8080` and log in with the default credentials:
 
 ```
 Username: admin
 Password: adminadmin
 ```
 
-Next up is port forwarding. In Mullvad, go to your account and Port Forwarding. Identify your server and add a port for it. In qBittorrent's Web UI, go to Tools -> Options -> Connection -> Listening Port and change the default port to your forwarded port. Then launch ctop, go to qflood and exec shell. Run the following two commands:
+#### Part 3: qBittorrent settings
+
+Next up is port forwarding. In Mullvad, go to your account and Port Forwarding. Identify your server and add a port for it. In qBittorrent's Web UI, go to `Tools -> Options -> Connection -> Listening Port` and change the default port to your forwarded port. Then launch `ctop`, select `qflood` and choose `exec shell`. Run the following two commands:
 
 ```sh
 iptables -I INPUT -p tcp --dport [forwarded port] -j ACCEPT
@@ -1150,35 +1160,18 @@ It should return:
 {"ip":"[Mullvad's IP]","port":[forwarded port],"reachable":true}/
 ```
 
-Now let's do some tinkering with qBittorrent:
+Now let's do some `Options` tinkering:
 
-```
-Connection: 
-  Peer connection protocol "TCP and µTP" -> "TCP" (µTP can throttle speeds)
-
-Bittorrent: 
-	Enable anonymous mode "unchecked" -> "checked"
-	Enable Local Peer Discovery to find more peers "unchecked"
-	
-Seeding Limits:
-	When ration reaches 1
-	When seeding time reaches 10080s (equal to one week)
-
-Speed:
-	Global rate limits
-	Upload:		 75000 KiB/s
-	Download: 	75000 KiB/s
-	
-	Alternative Rate Limits
-	Upload: 	 10000 KiB/s
-	Download: 	10000 KiB/s
-	
-	Schedule the use of alternative rate limits
-	07:00 to 01:00
-	Weekdays
-```
-
-Don't forget to change the default username and password.
+| Setting | Default | Set to | Reason |
+| ------------- | ------------- |------------- |------------- |
+| Peer connection protocol |  TCP and µTP | TCP | µTP is good for data congestion control but can throttle speeds. |
+| Enable anonymous mode | Disable | Enable | Aims to prevent real IP-leakage while using a proxy or VPN. |
+| Enable Local Peer Discovery | Enable | Disable | We have no other client on our LAN. |
+| Seeding limits | Disable | When ratio reaches 1 or when time reaches 10080s | Introducing a limit means we can easily configure what happens after we are done with a torrent. A one-to-one ratio means we distribute as much as we downloaded, a lack of leachers might however mean that we never reach our ratio, therefore the one week time limit. |
+| Global rate limits | Disable | 10000 KiB/s | About 80 Mbit/s |
+| Alternative Rate Limits | Disable | 1500 KiB/s | About 12 Mbit/s, a good limit to prevent daytime broadband shortage. |
+| Schedule the use of alternative rate limits | Disable | 07:00 to 01:00, Every day | Will give us a our limited rate between 07:00 - 01:00 and our global rate between 01:00 - 07:00. |
+| Username/Password | admin + adminadmin | ;) | Default credentials are a security hazard, avoid them! |
 
 Add three new categories for easier management:
 
@@ -1188,13 +1181,17 @@ movies  /data/media/movies
 music /data/media/music
 ```
 
-Also add three watched folders:
+For even easier torrent management in the future (_when we start using the arr-suite_), add the `/srv/data/torrent` directories to the list of watched folders:
 
 ```
 /data/torrents/tv
 /data/torrents/movies
 /data/torrents/music
 ```
+
+#### Part 4: Configure Flood
+
+> NOTE: A new version of qBittorrent broke Flood support, but you can still access qBittorrent through its own web UI.
 
 </p>
 </details>
