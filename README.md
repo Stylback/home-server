@@ -1282,10 +1282,10 @@ In this section we will go over some of the [Arr-apps](https://wiki.servarr.com/
 
 ```mermaid
   graph TD;
-      A[Media discovery]-->B[We request it from Radarr];
-      B-->C[Radarr passes the request to qBittorrent];
-      C-->D[qBittorrent downloads it and places it in /torrents/movies];
-      D-->E[Radarr moves it to /media/movies];
+      A-->B;
+      B-->C;
+      C-->D;
+      D-->E;
 ```
 
 We will be using Hotio's docker image, start by making a directory:
