@@ -49,7 +49,7 @@ A collection of thoughts and notes as I build my home server. If you find anythi
       - [Part 2: Install qflood](#part-2-install-qflood)
       - [Part 3: qBittorrent settings](#part-3-qbittorrent-settings)
       - [Part 4: Configure Flood](#part-4-configure-flood)
-    - [Multimedia collection management with ARR](#multimedia-collection-management-with-arr)
+    - [Multimedia collection management with Arr](#multimedia-collection-management-with-arr)
       - [Part 1: Movies with Radarr](#part-1-movies-with-radarr)
   - [Issues and solutions](#issues-and-solutions)
     - [Bricked motherboard](#bricked-motherboard)
@@ -1194,7 +1194,7 @@ Save and exit. Now run:
 cd /srv/qflood && sudo docker compose up -d
 ```
 
-<details><summary>Did you get an IPv6 error? </summary>
+<details><summary>Did you get an IPv6 error?</summary>
 <p>
 
 It might be that there are no IPv6 tables on your server. To fix this we need to run:
@@ -1252,12 +1252,12 @@ Now that we know that port forwarding is wokring, let's do some `Options` tinker
 | Schedule the use of alternative rate limits | Disable | 07:00 to 01:00, Every day | Will give us a our limited rate between 07:00 - 01:00 and our global rate between 01:00 - 07:00. |
 | Username/Password | admin / adminadmin | ;) | Default credentials are a security hazard. |
 
-For easy management, add three categories corresponding to the three media directories:
+For easy management, add three categories corresponding to the three torrent types:
 
 ```
-Name: tv      Path: /data/torrents/tv
-Name: movies  Path: /data/torrents/movies
-Name: music   Path: /data/torrents/music
+Name: sonarr    Path: /data/torrents/tv
+Name: radarr    Path: /data/torrents/movies
+Name: lidarr    Path: /data/torrents/music
 ```
 
 Then go to `Tools -> Options -> Downloads -> Default Torrent Management Mode` and change it to `Automatic`. Now when you add a torrent you can choose a category and have it automatically transfered to the right directory after downloading.
@@ -1269,16 +1269,26 @@ A recent version of qBittorrent broke Flood support, I will revisit this section
 </p>
 </details>
 
-### Multimedia collection management with ARR
+### Multimedia collection management with Arr
 
-In this section we will go over the ARR-apps; Radarr, Lidarr, Sonarr and Overseerr.
+In this section we will go over some of the [Arr-apps](https://wiki.servarr.com/): Radarr, Lidarr, Sonarr and Overseerr.
 
 <details><summary>Click to expand</summary>
 <p>
 
 #### Part 1: Movies with Radarr
 
-[Radarr](https://hotio.dev/containers/radarr/) is a a movie collection manager, it allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using Hotio's docker image, start by making a directory:
+[Radarr](https://hotio.dev/containers/radarr/) is a a movie collection manager, it allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. The radarr workflow be as below:
+
+```mermaid
+  graph TD;
+      A[There is movie we want to add to our collection]-->B[We request it from Radarr];
+      B-->C[Radarr finds the desired language and quality andd passes the request to qBittorrent];
+      C-->D[qBittorrent downloads it and places it in /torrents/movies];
+      D-->E[Radarr moves it to /media/movies and renames it according to our naming scheme];
+```
+
+We will be using Hotio's docker image, start by making a directory:
 
 ```sh
 sudo mkdir /srv/radarr
