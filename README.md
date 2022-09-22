@@ -49,7 +49,7 @@ A collection of thoughts and notes as I build my home server. If you find anythi
       - [Part 2: Install qflood](#part-2-install-qflood)
       - [Part 3: qBittorrent settings](#part-3-qbittorrent-settings)
       - [Part 4: Configure Flood](#part-4-configure-flood)
-    - [Media collection management with ARR](#media-collection-management-with-arr)
+    - [Multimedia collection management with ARR](#multimedia-collection-management-with-arr)
       - [Part 1: Movies with Radarr](#part-1-movies-with-radarr)
   - [Issues and solutions](#issues-and-solutions)
     - [Bricked motherboard](#bricked-motherboard)
@@ -169,6 +169,68 @@ The ASRock J5040-ITX comes with an extensive list of BIOS settings, so far I've 
 After confirming RAM stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to extensive [documentation](https://ubuntu.com/server/docs).
 
 I assigned the 250GB drive as boot drive, consuming about half of its available storage. The rest was partitioned and mounted to `/home` for any application or service that needs to store information there. As the 2TB drive is going to be used as the primary storage unit it was partioned and mounted at `/srv`.
+
+After creating a user and logging in for the first time, update your system with:
+
+```sh
+sudo apt update && sudo apt upgrade
+```
+
+Afterwards, let's run [YABS](https://github.com/masonr/yet-another-bench-script), it's a benchmarking script that will tell us more about the system we're running and its capabilities:
+
+```sh
+curl -sL yabs.sh | bash
+```
+
+My results:
+
+```sh
+
+Basic System Information:
+---------------------------------
+Processor  : Intel(R) Pentium(R) Silver J5040 CPU @ 2.00GHz
+CPU cores  : 4 @ 2300.000 MHz
+AES-NI     : ✔ Enabled
+VM-x/AMD-V : ✔ Enabled
+RAM        : 15.3 GiB
+Swap       : 4.0 GiB
+Disk       : 2.0 TiB
+Distro     : Ubuntu 22.04.1 LTS
+Kernel     : 5.15.0-48-generic
+
+fio Disk Speed Tests (Mixed R/W 50/50):
+---------------------------------
+Block Size | 4k            (IOPS) | 64k           (IOPS)
+  ------   | ---            ----  | ----           ---- 
+Read       | 89.41 MB/s   (22.3k) | 122.40 MB/s   (1.9k)
+Write      | 89.65 MB/s   (22.4k) | 123.04 MB/s   (1.9k)
+Total      | 179.06 MB/s  (44.7k) | 245.45 MB/s   (3.8k)
+           |                      |                     
+Block Size | 512k          (IOPS) | 1m            (IOPS)
+  ------   | ---            ----  | ----           ---- 
+Read       | 167.05 MB/s    (326) | 169.66 MB/s    (165)
+Write      | 175.92 MB/s    (343) | 180.96 MB/s    (176)
+Total      | 342.98 MB/s    (669) | 350.63 MB/s    (341)
+
+iperf3 Network Speed Tests (IPv4):
+---------------------------------
+Provider        | Location (Link)           | Send Speed      | Recv Speed     
+                |                           |                 |                
+Clouvider       | London, UK (10G)          | 5.13 Mbits/sec  | busy           
+Online.net      | Paris, FR (10G)           | 124 Mbits/sec   | busy           
+Hybula          | The Netherlands (40G)     | 124 Mbits/sec   | 124 Mbits/sec  
+Uztelecom       | Tashkent, UZ (10G)        | 121 Mbits/sec   | 122 Mbits/sec  
+Clouvider       | NYC, NY, US (10G)         | 120 Mbits/sec   | 122 Mbits/sec  
+Clouvider       | Dallas, TX, US (10G)      | 116 Mbits/sec   | 120 Mbits/sec  
+Clouvider       | Los Angeles, CA, US (10G) | 117 Mbits/sec   | 119 Mbits/sec  
+
+Geekbench 5 Benchmark Test:
+---------------------------------
+Test            | Value                         
+                |                               
+Single Core     | 547                           
+Multi Core      | 1858
+```
 
 </p>
 </details>
@@ -853,7 +915,6 @@ This section is about the services I have or plan to implement. It will be an ev
 |  Service | Description | Priority |
 | ------------- | ------------- | ------------- |
 | Data backup solution | [Restic](https://restic.net/) or [Borgmatic](https://torsion.org/borgmatic/). Will make backups/snapshots to an external SSD, compression is preferred | High |
-| [\*arr suite](https://wiki.servarr.com/docker-guide) | Multimedia collection management | Low  |
 | [Static Web Server](https://sws.joseluisq.net/) | A static webpage server | Low |
 | [Umami](https://github.com/umami-software/umami) | Self-hosted, privacy focused web analytics. Will be implemented alongside static webpage | Low  |
 | [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) | Prevents image hotlinking, will be implemented alongside static webpage (_this isn't really a service but I will keep it here for future reference_). | Low  |
@@ -987,7 +1048,7 @@ Forward Hostname / IP:  [local-ip]
 Forward Port:           8096
 Cache Assets:           No
 Block Common Expolits:  Yes
-Websocket Support:      No
+Websocket Support:      Yes #required to make SyncPlay work
 Access List:            Publicly Accessible
 ```
 
@@ -1120,7 +1181,6 @@ services:
     volumes:
       - /etc:/config
       - /srv/data/torrents:/data/torrents
-      - /srv/data/media:/data/media
     cap_add:
       - NET_ADMIN
     sysctls:
@@ -1134,9 +1194,25 @@ Save and exit. Now run:
 cd /srv/qflood && sudo docker compose up -d
 ```
 
-> Got an IPv6 error? IPv6 might be disabled on the server, this command fixed it for me: 
+<details><summary>Did you get an IPv6 error? </summary>
+<p>
 
-> `sudo modprobe ip6table_filter`
+It might be that there are no IPv6 tables on your server. To fix this we need to run:
+
+```sh
+sudo modprobe ip6table_filter
+```
+
+Followed by a container restart. This will however only fix the issue until the next reboot, to make it persistent you need to run:
+
+```sh
+echo "ip6table_filter" | sudo tee -a /etc/modules
+```
+
+Save and reboot, check the container status with `ctop` to see if it's working.
+
+</p>
+</details>
 
 Now visit qBittorrent's web UI at `[local IP]:8080` and log in with the default credentials:
 
@@ -1170,7 +1246,7 @@ Now that we know that port forwarding is wokring, let's do some `Options` tinker
 | Peer connection protocol |  TCP and µTP | TCP | µTP is good for data congestion control but can throttle speeds. |
 | Enable anonymous mode | Disable | Enable | Aims to prevent real IP-leakage while using a proxy or VPN. |
 | Enable Local Peer Discovery | Enable | Disable | We have no other client on our LAN. |
-| Seeding limits | Disable | When ratio reaches 1 or when time reaches 10080s, Remove torrent | Introducing a limit means we can easily configure what happens after we are done with a torrent. A one-to-one ratio means we distribute as much as we downloaded, a lack of leachers might however mean that we never reach our ratio, therefore the one week time limit. |
+| Seeding limits | Disable | When ratio reaches 1 or when time reaches 1440 minutes, Pause torrent | Introducing a limit means we can easily configure what happens after we are done with a torrent. A one-to-one ratio means we distribute as much as we downloaded. A lack of peers might however mean that we never reach our ratio, therefore we also have a 24 hour limit. |
 | Global rate limits | Disable | 10000 KiB/s | About 80 Mbit/s. |
 | Alternative Rate Limits | Disable | 1500 KiB/s | About 12 Mbit/s, a good limit to prevent daytime broadband shortage. |
 | Schedule the use of alternative rate limits | Disable | 07:00 to 01:00, Every day | Will give us a our limited rate between 07:00 - 01:00 and our global rate between 01:00 - 07:00. |
@@ -1193,7 +1269,7 @@ A recent version of qBittorrent broke Flood support, I will revisit this section
 </p>
 </details>
 
-### Media collection management with ARR
+### Multimedia collection management with ARR
 
 In this section we will go over the ARR-apps; Radarr, Lidarr, Sonarr and Overseerr.
 
@@ -1233,7 +1309,7 @@ services:
       - /etc:/config
       - /srv/data/torrents:/data/torrents
       - /srv/data/media:/data/media
-    restart: unless-stopped
+    restart: always
 ```
 
 Start it with:
@@ -1246,18 +1322,18 @@ Now visit radarr's web-ui at `[local ip]:7878`. Now let us do some configuration
 
 | Setting | Default | Set to | Reason |
 | ------------- | ------------- |------------- |------------- |
-| Rename Movies | Disable | Enable | Will make the naming scheme uniform across out collection |
-| Colon Replacement | Disable | Enable, Replace with Space Dash Space | Removes `:` from file names |
-| Import Extra Files | Disable | Enable | Will add extra files |
-| Add Root Folder | none | `/data/torrents/movies` and `/data/media/movies` | The folders radarr will use to manage our collection |
-| Quality Profile | No custom profile | Add custom profiles that suite your quality and language requirements | Ensures you only have media of the language and quality you want |
+| Rename Movies | Disable | Enable | Will make the naming scheme uniform across out collection .|
+| Colon Replacement | Disable | Enable, Replace with Space Dash Space | Removes `:` from file names. |
+| Import Extra Files | Disable | Enable | Will add extra files. |
+| Add Root Folder | none | `/data/torrents/movies` and `/data/media/movies` | The folders radarr will use to manage our collection. |
+| Quality Profile | No custom profile | Add custom profiles that suite your quality and language requirements | Ensures you only have media of the language and quality you want. |
 | Delay profile | Both Usenet and Torrent | Only Torrent | We will not be using the Usenet protocol |
-| Qualities | No custom values | Some custom values | I recommend following TRaSH's [best practices](https://trash-guides.info/Radarr/Radarr-Quality-Settings-File-Size/) |
-| Indexers | No indexer | Add one or multiple of your choice | I recommend RARBG |
-| Add Download Client | Might be detected, might not | qBittorrent | The download client that will handle requests from radarr |
+| Qualities | No custom values | Some custom values | I recommend following TRaSH's [best practices](https://trash-guides.info/Radarr/Radarr-Quality-Settings-File-Size/). |
+| Indexers | No indexer | Add one or multiple of your choice | I recommend RARBG. |
+| Add Download Client | Might be detected, might not | qBittorrent | The download client that will handle requests from radarr. |
 | Analytics | Enable | Disable | I prefer to create github issues instead |
-| Authentication | No authentication | Forms | Will require a username and password before accessing radarr, great for security as we will expose the service to the internet |
-| UI | No custom values | Whatever you feel like |  |
+| Authentication | No authentication | Forms | Will require a username and password before accessing radarr, great for security as we will expose the service to the internet. |
+| UI | No custom values | Whatever you feel like. |  |
 
 Make a Proxy Host entry for radarr in NGINX.
 
