@@ -1278,17 +1278,7 @@ In this section we will go over some of the [Arr-apps](https://wiki.servarr.com/
 
 #### Part 1: Movies with Radarr
 
-[Radarr](https://hotio.dev/containers/radarr/) is a a movie collection manager, it allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. The radarr workflow be as below:
-
-```mermaid
-  graph TD;
-      A-->B;
-      B-->C;
-      C-->D;
-      D-->E;
-```
-
-We will be using Hotio's docker image, start by making a directory:
+[Radarr](https://hotio.dev/containers/radarr/) is a a movie collection manager, it allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using Hotio's docker image, start by making a directory:
 
 ```sh
 sudo mkdir /srv/radarr
@@ -1317,8 +1307,7 @@ services:
       - TZ=Europe/Stockholm
     volumes:
       - /etc:/config
-      - /srv/data/torrents:/data/torrents
-      - /srv/data/media:/data/media
+      - /srv/data:/data
     restart: always
 ```
 
@@ -1334,7 +1323,7 @@ Now visit radarr's web-ui at `[local ip]:7878`. Now let us do some configuration
 | ------------- | ------------- |------------- |------------- |
 | Rename Movies | Disable | Enable | Will make the naming scheme uniform across out collection .|
 | Colon Replacement | Disable | Enable, Replace with Space Dash Space | Removes `:` from file names. |
-| Import Extra Files | Disable | Enable | Will add extra files. |
+| Import Extra Files | Disable | Enable | Will add extra files such as subtitles. |
 | Add Root Folder | none | `/data/torrents/movies` and `/data/media/movies` | The folders radarr will use to manage our collection. |
 | Quality Profile | No custom profile | Add custom profiles that suite your quality and language requirements | Ensures you only have media of the language and quality you want. |
 | Delay profile | Both Usenet and Torrent | Only Torrent | We will not be using the Usenet protocol |
