@@ -49,6 +49,8 @@ A collection of thoughts and notes as I build my home server. If you find anythi
       - [Part 2: Install qflood](#part-2-install-qflood)
       - [Part 3: qBittorrent settings](#part-3-qbittorrent-settings)
       - [Part 4: Configure Flood](#part-4-configure-flood)
+    - [Media collection management with ARR](#media-collection-management-with-arr)
+      - [Part 1: Movies with Radarr](#part-1-movies-with-radarr)
   - [Issues and solutions](#issues-and-solutions)
     - [Bricked motherboard](#bricked-motherboard)
     - [Containerized Fail2Ban](#containerized-fail2ban)
@@ -1047,7 +1049,7 @@ sudo cryptsetup luksClose [volume name]
 <details><summary>Click to expand</summary>
 <p>
 
-> DISCLAMIER: The BitTorrent protocol is a communcation protocol for peer-to-peer file sharing, it's an easy and accessible way for people to share their own or licensed works online. Despite plenty of [valid usage areas](https://en.wikipedia.org/wiki/BitTorrent#Adoption), piracy have given the protocol a bad reputation. Before you contemplate downloading or sharing copyrighted content via the BitTorrent protocol, please check that those actions are not considered criminal by your local laws and regulations. I am not liabel in any way for your inability to use the BitTorrent protocol in accordance with said law.
+> DISCLAMIER: The BitTorrent protocol is a communcation protocol for peer-to-peer file sharing, it's an easy and accessible way for people to share their own or licensed works online. Before you contemplate downloading or sharing copyrighted content via the BitTorrent protocol, please check that those actions are not considered criminal by your local laws and regulations. I am not liabel in any way for your inability to use the BitTorrent protocol in accordance with said law.
 
 [qflood](https://hotio.dev/containers/qflood/) is a Docker image from Hotio that combines [qBittorrent](https://github.com/qbittorrent/qbittorrent) and [Flood](https://github.com/jesec/flood) with easy Wireguard VPN integration.
 
@@ -1133,6 +1135,7 @@ cd /srv/qflood && sudo docker compose up -d
 ```
 
 > Got an IPv6 error? IPv6 might be disabled on the server, this command fixed it for me: 
+
 > `sudo modprobe ip6table_filter`
 
 Now visit qBittorrent's web UI at `[local IP]:8080` and log in with the default credentials:
@@ -1176,24 +1179,87 @@ Now that we know that port forwarding is wokring, let's do some `Options` tinker
 For easy management, add three categories corresponding to the three media directories:
 
 ```
-Name: tv      Path: /data/media/tv
-Name: movies  Path: /data/media/movies
-Name: music   Path: /data/media/music
+Name: tv      Path: /data/torrents/tv
+Name: movies  Path: /data/torrents/movies
+Name: music   Path: /data/torrents/music
 ```
 
-Then go to `Tools -> Options -> Downloads -> Default Torrent Management Mode` and change it to `Automatic`. Now when you add a torrent you can choose a category and have it automatically transfered to the right media directory after downloading.
-
-For even easier torrent management in the future (_when we start using the arr-suite_), add the `/srv/data/torrent` directories to the list of watched folders:
-
-```
-Path: /data/torrents/tv
-Path: /data/torrents/movies
-Path: /data/torrents/music
-```
+Then go to `Tools -> Options -> Downloads -> Default Torrent Management Mode` and change it to `Automatic`. Now when you add a torrent you can choose a category and have it automatically transfered to the right directory after downloading.
 
 #### Part 4: Configure Flood
 
 A recent version of qBittorrent broke Flood support, I will revisit this section when the issue has been resolved.
+
+</p>
+</details>
+
+### Media collection management with ARR
+
+In this section we will go over the ARR-apps; Radarr, Lidarr, Sonarr and Overseerr.
+
+<details><summary>Click to expand</summary>
+<p>
+
+#### Part 1: Movies with Radarr
+
+[Radarr](https://hotio.dev/containers/radarr/) is a a movie collection manager, it allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using Hotio's docker image, start by making a directory:
+
+```sh
+sudo mkdir /srv/radarr
+```
+
+Make a docker-compose.yml file:
+
+```sh
+sudo nano /srv/radarr/docker-compose.yml
+```
+
+Paste:
+
+```yml
+version: "3.7"
+services:
+  radarr:
+    container_name: radarr
+    image: cr.hotio.dev/hotio/radarr
+    ports:
+      - "7878:7878"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - /etc:/config
+      - /srv/data/torrents:/data/torrents
+      - /srv/data/media:/data/media
+    restart: unless-stopped
+```
+
+Start it with:
+
+```sh
+cd /srv/radarr && sudo docker compose up -d
+```
+
+Now visit radarr's web-ui at `[local ip]:7878`. Now let us do some configuration, enable `Advanced Options` and do the following:
+
+| Setting | Default | Set to | Reason |
+| ------------- | ------------- |------------- |------------- |
+| Rename Movies | Disable | Enable | Will make the naming scheme uniform across out collection |
+| Colon Replacement | Disable | Enable, Replace with Space Dash Space | Removes `:` from file names |
+| Import Extra Files | Disable | Enable | Will add extra files |
+| Add Root Folder | none | `/data/torrents/movies` and `/data/media/movies` | The folders radarr will use to manage our collection |
+| Quality Profile | No custom profile | Add custom profiles that suite your quality and language requirements | Ensures you only have media of the language and quality you want |
+| Delay profile | Both Usenet and Torrent | Only Torrent | We will not be using the Usenet protocol |
+| Qualities | No custom values | Some custom values | I recommend following TRaSH's [best practices](https://trash-guides.info/Radarr/Radarr-Quality-Settings-File-Size/) |
+| Indexers | No indexer | Add one or multiple of your choice | I recommend RARBG |
+| Add Download Client | Might be detected, might not | qBittorrent | The download client that will handle requests from radarr |
+| Analytics | Enable | Disable | I prefer to create github issues instead |
+| Authentication | No authentication | Forms | Will require a username and password before accessing radarr, great for security as we will expose the service to the internet |
+| UI | No custom values | Whatever you feel like |  |
+
+Make a Proxy Host entry for radarr in NGINX.
 
 </p>
 </details>
@@ -1280,4 +1346,4 @@ For comparison, running an [average dishwasher](https://energyusecalculator.com/
 
 This project was created to document the thoughts and implementations behind my home server. Any resource I link to, cite or otherwise refer to are subject to their respective licenses, any image used is my own and are subject to All Rights Reserved. Everything else in this project is licensed under the terms of the [MIT license](https://mit-license.org/).
 
-**[Back to top](#)**
+**[Back to top](#home-server)**
