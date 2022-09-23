@@ -51,6 +51,8 @@ A collection of thoughts and notes as I build my home server. If you find anythi
       - [Part 4: Configure Flood](#part-4-configure-flood)
     - [Multimedia collection management with Arr](#multimedia-collection-management-with-arr)
       - [Part 1: Movies with Radarr](#part-1-movies-with-radarr)
+      - [Part 2: TV-shows with Sonarr](#part-2-tv-shows-with-sonarr)
+      - [Part 3: Music with Lidarr](#part-3-music-with-lidarr)
   - [Issues and solutions](#issues-and-solutions)
     - [Bricked motherboard](#bricked-motherboard)
     - [Containerized Fail2Ban](#containerized-fail2ban)
@@ -1194,7 +1196,7 @@ Save and exit. Now run:
 cd /srv/qflood && sudo docker compose up -d
 ```
 
-<details><summary>Did you get an IPv6 error?</summary>
+<details><summary>Did you get an IPv6_table error?</summary>
 <p>
 
 It might be that there are no IPv6 tables on your server. To fix this we need to run:
@@ -1281,7 +1283,7 @@ In this section we will go over some of the [Arr-apps](https://wiki.servarr.com/
 [Radarr](https://hotio.dev/containers/radarr/) is a a movie collection manager, it allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using Hotio's docker image, start by making a directory:
 
 ```sh
-sudo mkdir /srv/radarr
+sudo mkdir -p /srv/radarr/config
 ```
 
 Make a docker-compose.yml file:
@@ -1306,7 +1308,7 @@ services:
       - UMASK=002
       - TZ=Europe/Stockholm
     volumes:
-      - /etc:/config
+      - /srv/radarr/config:/config
       - /srv/data:/data
     restart: always
 ```
@@ -1322,19 +1324,116 @@ Now visit radarr's web-ui at `[local ip]:7878`. Now let us do some configuration
 | Setting | Default | Set to | Reason |
 | ------------- | ------------- |------------- |------------- |
 | Rename Movies | Disable | Enable | Will make the naming scheme uniform across out collection .|
-| Colon Replacement | Disable | Enable, Replace with Space Dash Space | Removes `:` from file names. |
+| Colon Replacement | Disable | Enable, Replace with Space Dash Space | Removes `:` from file names, makes it easier to extract metadata. |
 | Import Extra Files | Disable | Enable | Will add extra files such as subtitles. |
-| Add Root Folder | none | `/data/torrents/movies` and `/data/media/movies` | The folders radarr will use to manage our collection. |
-| Quality Profile | No custom profile | Add custom profiles that suite your quality and language requirements | Ensures you only have media of the language and quality you want. |
+| Add Root Folder | none | `/data/media/movies` | The folders radarr will use to manage our collection. |
+| Quality Profile | No custom profile | Custom profiles that suite your quality and language requirements | Ensures you only have media of the language and quality you want. |
 | Delay profile | Both Usenet and Torrent | Only Torrent | We will not be using the Usenet protocol |
 | Qualities | No custom values | Some custom values | I recommend following TRaSH's [best practices](https://trash-guides.info/Radarr/Radarr-Quality-Settings-File-Size/). |
-| Indexers | No indexer | Add one or multiple of your choice | I recommend RARBG. |
-| Add Download Client | Might be detected, might not | qBittorrent | The download client that will handle requests from radarr. |
-| Analytics | Enable | Disable | I prefer to create github issues instead |
+| Indexers | No indexer | One or more of your choice | Is required to find torrents, you can find the full list of supported indexers [here](https://wiki.servarr.com/radarr/supported). I recommend RARBG. |
+| Add Download Client | Might be automatically detected | qBittorrent | The download client that will handle requests from radarr. |
+| Analytics | Enable | Disable | I prefer to create github issues instead. |
 | Authentication | No authentication | Forms | Will require a username and password before accessing radarr, great for security as we will expose the service to the internet. |
-| UI | No custom values | Whatever you feel like. |  |
+| UI | Imperial standard | Whatever you feel like | Make it personal. |
 
 Make a Proxy Host entry for radarr in NGINX.
+
+</p>
+</details>
+
+#### Part 2: TV-shows with Sonarr
+
+<details><summary>Click to expand</summary>
+<p>
+
+[Sonarr](https://hotio.dev/containers/sonarr/) is a a tv-series collection manager, it allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using Hotio's docker image, start by making a directory:
+
+```sh
+sudo mkdir -p /srv/sonarr/config
+```
+
+Make a docker-compose.yml file:
+
+```sh
+sudo nano /srv/sonarr/docker-compose.yml
+```
+
+Paste:
+
+```yml
+version: "3.7"
+services:
+  sonarr:
+    container_name: sonarr
+    image: cr.hotio.dev/hotio/sonarr
+    ports:
+      - "8989:8989"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - /srv/sonarr/config:/config
+      - /srv/data:/data
+    restart: always
+```
+
+Start it with:
+
+```sh
+cd /srv/sonarr && sudo docker compose up -d
+```
+
+Now visit sonarr's web-ui at `[local ip]:8989`. Now let us do some configuration, enable `Advanced Options` and do the following:
+
+
+</p>
+</details>
+
+#### Part 3: Music with Lidarr
+
+[Lidarr](https://hotio.dev/containers/lidarr/) is a a music collection manager, it allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using Hotio's docker image, start by making a directory:
+
+```sh
+sudo mkdir -p /srv/lidarr/config
+```
+
+Make a docker-compose.yml file:
+
+```sh
+sudo nano /srv/sonarr/docker-compose.yml
+```
+
+Paste:
+
+```yml
+version: "3.7"
+services:
+  sonarr:
+    container_name: sonarr
+    image: cr.hotio.dev/hotio/lidarr
+    ports:
+      - "8686:8686"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - /srv/lidarr/config:/config
+      - /srv/data:/data
+    restart: always
+```
+
+Start it with:
+
+```sh
+cd /srv/lidarr && sudo docker compose up -d
+```
+
+Now visit sonarr's web-ui at `[local ip]:8686`. Now let us do some configuration, enable `Advanced Options` and do the following:
+
 
 </p>
 </details>
