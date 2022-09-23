@@ -53,6 +53,7 @@ A collection of thoughts and notes as I build my home server. If you find anythi
       - [Part 1: Movies with Radarr](#part-1-movies-with-radarr)
       - [Part 2: TV-shows with Sonarr](#part-2-tv-shows-with-sonarr)
       - [Part 3: Music with Lidarr](#part-3-music-with-lidarr)
+      - [Part 4: Request media with Overseer](#part-4-request-media-with-overseer)
   - [Issues and solutions](#issues-and-solutions)
     - [Bricked motherboard](#bricked-motherboard)
     - [Containerized Fail2Ban](#containerized-fail2ban)
@@ -1275,10 +1276,10 @@ A recent version of qBittorrent broke Flood support, I will revisit this section
 
 In this section we will go over some of the [Arr-apps](https://wiki.servarr.com/): Radarr, Lidarr, Sonarr and Overseerr.
 
+#### Part 1: Movies with Radarr
+
 <details><summary>Click to expand</summary>
 <p>
-
-#### Part 1: Movies with Radarr
 
 [Radarr](https://hotio.dev/containers/radarr/) is a a movie collection manager, it allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using Hotio's docker image, start by making a directory:
 
@@ -1323,7 +1324,7 @@ Now visit radarr's web-ui at `[local ip]:7878`. Now let us do some configuration
 
 | Setting | Default | Set to | Reason |
 | ------------- | ------------- |------------- |------------- |
-| Rename Movies | Disable | Enable | Will make the naming scheme uniform across out collection .|
+| Rename Movies | Disable | Enable | Will make the naming scheme uniform across out collection. |
 | Colon Replacement | Disable | Enable, Replace with Space Dash Space | Removes `:` from file names, makes it easier to extract metadata. |
 | Import Extra Files | Disable | Enable | Will add extra files such as subtitles. |
 | Add Root Folder | none | `/data/media/movies` | The folders radarr will use to manage our collection. |
@@ -1385,13 +1386,25 @@ Start it with:
 cd /srv/sonarr && sudo docker compose up -d
 ```
 
-Now visit sonarr's web-ui at `[local ip]:8989`. Now let us do some configuration, enable `Advanced Options` and do the following:
+Now visit sonarr's web-ui at `[local ip]:8989`. Let's do some configuration, enable `Advanced Options` change:
 
+| Setting | Default | Set to | Reason |
+| ------------- | ------------- |------------- |------------- |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
+
+
+Make a Proxy Host entry for sonarr in NGINX.
 
 </p>
 </details>
 
 #### Part 3: Music with Lidarr
+
+<details><summary>Click to expand</summary>
+<p>
 
 [Lidarr](https://hotio.dev/containers/lidarr/) is a a music collection manager, it allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using Hotio's docker image, start by making a directory:
 
@@ -1402,7 +1415,7 @@ sudo mkdir -p /srv/lidarr/config
 Make a docker-compose.yml file:
 
 ```sh
-sudo nano /srv/sonarr/docker-compose.yml
+sudo nano /srv/lidarr/docker-compose.yml
 ```
 
 Paste:
@@ -1432,8 +1445,26 @@ Start it with:
 cd /srv/lidarr && sudo docker compose up -d
 ```
 
-Now visit sonarr's web-ui at `[local ip]:8686`. Now let us do some configuration, enable `Advanced Options` and do the following:
+Now visit lidarr's web-ui at `[local ip]:8686`. Let's do some configuration, enable `Advanced Options` and change:
 
+| Setting | Default | Set to | Reason |
+| ------------- | ------------- |------------- |------------- |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
+
+Make a Proxy Host entry for lidarr in NGINX.
+
+</p>
+</details>
+
+#### Part 4: Request media with Overseer
+
+<details><summary>Click to expand</summary>
+<p>
+
+Nothing yet!
 
 </p>
 </details>
