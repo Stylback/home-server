@@ -53,7 +53,8 @@ A collection of thoughts and notes as I build my home server. If you find anythi
       - [Part 1: Movies with Radarr](#part-1-movies-with-radarr)
       - [Part 2: TV-shows with Sonarr](#part-2-tv-shows-with-sonarr)
       - [Part 3: Music with Lidarr](#part-3-music-with-lidarr)
-      - [Part 4: Request media with Overseer](#part-4-request-media-with-overseer)
+      - [Part 4: Request media with Jellyseerr](#part-4-request-media-with-jellyseerr)
+      - [Part 5: Index management with Prowlarr](#part-5-index-management-with-prowlarr)
   - [Issues and solutions](#issues-and-solutions)
     - [Bricked motherboard](#bricked-motherboard)
     - [Containerized Fail2Ban](#containerized-fail2ban)
@@ -1274,7 +1275,7 @@ A recent version of qBittorrent broke Flood support, I will revisit this section
 
 ### Multimedia collection management with Arr
 
-In this section we will go over some of the [Arr-apps](https://wiki.servarr.com/): Radarr, Lidarr, Sonarr and Overseerr.
+In this section we will go over some of the [Arr-apps](https://wiki.servarr.com/): Radarr, Lidarr, Sonarr and Jellyseerr.
 
 #### Part 1: Movies with Radarr
 
@@ -1386,17 +1387,7 @@ Start it with:
 cd /srv/sonarr && sudo docker compose up -d
 ```
 
-Now visit sonarr's web-ui at `[local ip]:8989`. Let's do some configuration, enable `Advanced Options` change:
-
-| Setting | Default | Set to | Reason |
-| ------------- | ------------- |------------- |------------- |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-
-
-Make a Proxy Host entry for sonarr in NGINX.
+Now visit sonarr's web-ui at `[local ip]:8989`. Make a Proxy Host entry for sonarr in NGINX.
 
 </p>
 </details>
@@ -1445,29 +1436,105 @@ Start it with:
 cd /srv/lidarr && sudo docker compose up -d
 ```
 
-Now visit lidarr's web-ui at `[local ip]:8686`. Let's do some configuration, enable `Advanced Options` and change:
-
-| Setting | Default | Set to | Reason |
-| ------------- | ------------- |------------- |------------- |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-
-Make a Proxy Host entry for lidarr in NGINX.
+Now visit lidarr's web-ui at `[local ip]:8686`. Make a Proxy Host entry for lidarr in NGINX.
 
 </p>
 </details>
 
-#### Part 4: Request media with Overseer
+#### Part 4: Request media with Jellyseerr
 
 <details><summary>Click to expand</summary>
 <p>
 
-Nothing yet!
+[Jellyseerr](https://hub.docker.com/r/fallenbagel/jellyseerr) is a media request manager for Jellyfin, it allows us and our users to discover and request media. This request is then passed along to Radarr, Sonarr or Lidarr depending on media type. Start by making a directory:
+
+```sh
+sudo mkdir -p /srv/jellyseerr/config
+```
+
+Make a docker-compose.yml file:
+
+```sh
+sudo nano /srv/jellyseerr/docker-compose.yml
+```
+
+Paste:
+
+```yml                              
+version: '3'
+services:
+    jellyseerr:
+       container_name: jellyseerr
+       image: fallenbagel/jellyseerr:latest
+       ports:
+            - 5055:5055
+       environment:
+            - PUID=1000
+            - PGID=1000
+            - UMASK=002
+            - TZ=Europe/Stockholm
+       volumes:
+            - /srv/jellyseerr/config:/app/config
+            - /srv/data:/data
+       restart: always
+```
+
+Start it with:
+
+```sh
+cd /srv/jellyseerr && sudo docker compose up -d
+```
+
+Now visit jellyseerr's web-ui at `[local ip]:5055`. Follow the start-up guide.
+
+Make a Proxy Host entry for jellyseerr in NGINX.
 
 </p>
 </details>
+
+#### Part 5: Index management with Prowlarr
+
+[Prowlarr](https://hotio.dev/containers/prowlarr/) is an indexer manager that integrates with other arr-apps.
+
+Make a directory:
+
+```sh
+sudo mkdir -p /srv/prowlarr/config
+```
+
+Make a docker-compose.yml file:
+
+```sh
+sudo nano /srv/prowlarr/docker-compose.yml
+```
+
+Paste:
+
+```yml                              
+version: "3.7"
+services:
+  prowlarr:
+    container_name: prowlarr
+    image: cr.hotio.dev/hotio/prowlarr
+    ports:
+      - "9696:9696"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - /srv/prowlarr/config:/config
+    restart: always
+```
+
+Start it with:
+
+```sh
+cd /srv/prowlarr && sudo docker compose up -d
+```
+
+Visit prowlarr's web ui at `[local ip]:9696`. Add indexers, there are a [huge](https://wiki.servarr.com/prowlarr/supported-indexers) list to choose from. Add Radarr, Sonarr and Lidarr under `Apps`.
 
 --------------------
 
