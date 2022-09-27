@@ -38,23 +38,23 @@ A collection of thoughts and notes as I build my home server. If you find anythi
     - [Part 3: Configure NGINX Proxy manager](#part-3-configure-nginx-proxy-manager)
     - [Part 4: Set up remote SSH](#part-4-set-up-remote-ssh)
     - [Part 5: Implement Fail2Ban](#part-5-implement-fail2ban)
-  - [Services](#services)
-    - [Dashboard with Homarr](#dashboard-with-homarr)
-    - [Multimedia streaming with Jellyfin](#multimedia-streaming-with-jellyfin)
-      - [Part 1: Consistent directories](#part-1-consistent-directories)
-      - [Part 2: Install Jellyfin](#part-2-install-jellyfin)
-      - [Part 3: Media transfer and streaming](#part-3-media-transfer-and-streaming)
-    - [Torrenting with qflood](#torrenting-with-qflood)
-      - [Part 1: Configure Wireguard](#part-1-configure-wireguard)
-      - [Part 2: Install qflood](#part-2-install-qflood)
-      - [Part 3: qBittorrent settings](#part-3-qbittorrent-settings)
-      - [Part 4: Configure Flood](#part-4-configure-flood)
-    - [Multimedia collection management with Arr](#multimedia-collection-management-with-arr)
-      - [Part 1: Movies with Radarr](#part-1-movies-with-radarr)
-      - [Part 2: TV-shows with Sonarr](#part-2-tv-shows-with-sonarr)
-      - [Part 3: Music with Lidarr](#part-3-music-with-lidarr)
-      - [Part 4: Request media with Jellyseerr](#part-4-request-media-with-jellyseerr)
-      - [Part 5: Index management with Prowlarr](#part-5-index-management-with-prowlarr)
+  - [Dashboard with Homarr](#dashboard-with-homarr)
+  - [Multimedia streaming with Jellyfin](#multimedia-streaming-with-jellyfin)
+    - [Part 1: Consistent directories](#part-1-consistent-directories)
+    - [Part 2: Install Jellyfin](#part-2-install-jellyfin)
+    - [Part 3: Media transfer and streaming](#part-3-media-transfer-and-streaming)
+  - [Torrenting with qflood](#torrenting-with-qflood)
+    - [Part 1: Configure Wireguard](#part-1-configure-wireguard)
+    - [Part 2: Install qflood](#part-2-install-qflood)
+    - [Part 3: qBittorrent settings](#part-3-qbittorrent-settings)
+    - [Part 4: Configure Flood](#part-4-configure-flood)
+  - [Multimedia collection management with Arr](#multimedia-collection-management-with-arr)
+    - [Part 1: Index management with Prowlarr](#part-1-index-management-with-prowlarr)
+    - [Part 2: Movies with Radarr](#part-2-movies-with-radarr)
+    - [Part 3: TV-shows with Sonarr](#part-3-tv-shows-with-sonarr)
+    - [Part 4: Music with Lidarr](#part-4-music-with-lidarr)
+    - [Part 5: Request media with Jellyseerr](#part-5-request-media-with-jellyseerr)
+  - [Future services](#future-services)
   - [Issues and solutions](#issues-and-solutions)
     - [Bricked motherboard](#bricked-motherboard)
     - [Containerized Fail2Ban](#containerized-fail2ban)
@@ -76,14 +76,14 @@ This section is about the hardware I use, why I chose a particular piece of hard
 
 ### CPU / Motherboard
 
-I don't expect to use especially resource-heavy services (_such as multi-user streaming, multiple desktop VM:s or 4K video encoding_). As such I've settled for an [intel Pentium J5040](https://ark.intel.com/content/www/us/en/ark/products/197304/intel-pentium-silver-j5040-processor-4m-cache-up-to-3-20-ghz.html), it has some particularly useful features for my use case:
+I've settled for an [intel Pentium J5040](https://ark.intel.com/content/www/us/en/ark/products/197304/intel-pentium-silver-j5040-processor-4m-cache-up-to-3-20-ghz.html) as it has some particularly useful features for my use case:
 
 - 18 execution units for parallel processing
 - Integrated Graphics for display output
 - Intel Quick Sync for extensive video encoding/decoding support
 - 10W TDP (_Thermal Design Power, a shorthand way of estimating power consumption_)
 
-However, the J-series is only available as motherboard embedded CPU:s. I've opted for an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp) due to its rich feature-set, but you might consider the [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) as long as you're OK with being limited to 8GB of ram (_or risk bricking your motherboard, see_ [_here_](#issues-and-solutions) for my experience).
+However; J-series CPU:s are only available as "on-board" or "embedded" CPU:s, which is to say they are soldered directly onto a motherboard. I've opted for an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp) due to its rich feature-set, but you might consider the cheaper [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) if you're OK with being limited to 8GB of RAM (_or risk bricking your motherboard, see_ [_here_](#issues-and-solutions) _for my experience_).
 
 ### Power supply (PSU)
 
@@ -91,7 +91,7 @@ Ideally, the server will be running 24/7, 365 days a year. As such, high efficie
 
 What __is__ the efficiency at 50% load? That is determined by the [80+ Rating](https://en.wikipedia.org/wiki/80_Plus). A `80+ White` will be 80-85% efficient at 50% load while a `80+ Titanium` will be 94-96% efficient.
 
-After some [back of the napkin calculations](#reference-tables) I've estimated my system to draw between 10 to 23W. As such my ideal PSU would be a power-brick style 50-100W PICO-PSU. I've had no luck finding such a model with the right mix of power-cables and have instead opted for a tradition ATX PSU. At 300W, the [SYSTEM POWER B9 from be quiet!](https://www.bequiet.com/en/powersupply/1285) offers a better low-load efficiency compared to the more common 450/500W models while still providing some head-room for upgrades.
+After some [back of the napkin calculations](#reference-tables) I've estimated my system to draw between 10 to 23W. As such my ideal PSU would be a power-brick style 50-100W PICO-PSU. I've had no luck finding such a model with the right mix of power-cables and have instead opted for a traditional ATX PSU. At 300W, the [SYSTEM POWER B9 from be quiet!](https://www.bequiet.com/en/powersupply/1285) offers a better low-load efficiency compared to the more common 450/500W models with the added benefit of providing some headroom for upgrades.
 
 ### Case
 
@@ -144,8 +144,8 @@ This section is about my experience putting the hardware together and verifying 
 | Image | Note |
 |:---|:---|
 | ![inside of the case](https://github.com/Stylback/home-server/blob/main/media/inside.jpg?raw=true) | The process of assembling the system was relatively painless. The case can be disassembled for easy access to the motherboard fittings and has plenty of room for cable managment without the presence of a GPU. |
-| ![power-extender cable](https://github.com/Stylback/home-server/blob/main/media/psu_cable.jpg?raw=true) | My only gripe with the case is the power-extender. It's aligned in such a way that the cable has to be forcefully twisted to slot into my specific PSU. I tried to screw the end out and flipping it 180°, allowing the cable to rest naturally on the case floor. It was however not possible to screw it in that way due to the shape of the cutout. |
-| ![rear view](https://github.com/Stylback/home-server/blob/main/media/back.jpg?raw=true) | Rear-view and IO. |
+| ![power-extender cable](https://github.com/Stylback/home-server/blob/main/media/psu_cable.jpg?raw=true) | My only gripe with the case is the power-extender. It's aligned in such a way that the cable has to be forcefully twisted to slot into my specific PSU. I tried to screw the end out and flipping it 180°, allowing the cable to rest naturally on the case floor. It was however not possible due to the shape of the cutout. |
+| ![rear view](https://github.com/Stylback/home-server/blob/main/media/back.jpg?raw=true) | Rear-view and IO. Taken before switching out the fan for a NF-A12X25 ULN. |
 | ![assembled case](https://github.com/Stylback/home-server/blob/main/media/outside.jpg?raw=true) | Assembled system. |
 
 ### Testing RAM stability
@@ -163,10 +163,12 @@ I made a bootable USB following their [instructions](https://www.memtest86.com/t
 
 The ASRock J5040-ITX comes with an extensive list of BIOS settings, so far I've made the following changes:
 
-- `SATA Aggressive Link Power Management -> Enabled`, reduces power consumption while SATA devices are idle.
-- `Onboard HD Audio -> Disabled`, as I won't use any audio input/output.
-- `Deep S5 -> Auto`, reduces power consumption on a turned off system.
-- `Restore on AC/Power -> Loss Power On`, restarts the system after a power failure.
+| Setting | Default | Set to | Reason |
+| ------------- | ------------- |------------- |------------- |
+| SATA Aggressive Link Power Management | Disable | Enable | Reduces power consumption while SATA devices are idle |
+| Onboard HD Audio | Enable | Disable | Audio will be handled client-side |
+| Deep S5 | Disable | Auto | Reduces power consumption while the system is turned off |
+| Restore on AC/Power | Loss Power Off | Loss Power On | Restarts the system after a power failure |
 
 ### Installing the OS
 
@@ -174,13 +176,13 @@ After confirming RAM stability I installed [Ubuntu Server 22.04 LTS](https://ubu
 
 I assigned the 250GB drive as boot drive, consuming about half of its available storage. The rest was partitioned and mounted to `/home` for any application or service that needs to store information there. As the 2TB drive is going to be used as the primary storage unit it was partioned and mounted at `/srv`.
 
-After creating a user and logging in for the first time, update your system with:
+After creating a user and logging in for the first time, I updated the system with:
 
 ```sh
 sudo apt update && sudo apt upgrade
 ```
 
-Afterwards, let's run [YABS](https://github.com/masonr/yet-another-bench-script), it's a benchmarking script that will tell us more about the system we're running and its capabilities:
+Afterwards I ran [YABS](https://github.com/masonr/yet-another-bench-script), which is a benchmarking script:
 
 ```sh
 curl -sL yabs.sh | bash
@@ -189,7 +191,6 @@ curl -sL yabs.sh | bash
 My results:
 
 ```sh
-
 Basic System Information:
 ---------------------------------
 Processor  : Intel(R) Pentium(R) Silver J5040 CPU @ 2.00GHz
@@ -236,6 +237,8 @@ Single Core     | 547
 Multi Core      | 1858
 ```
 
+Performance was as expected, the J5040 isn't going to play the latest AAA title but it will be plenty for my use case.
+
 </p>
 </details>
 
@@ -250,42 +253,39 @@ This section is about basic SSH, such as local network access and some best prac
 
 ### Part 1: Prerequisite and local access
 
-SSH is a protocol that allows remote login and command line execution, something that will be very convenient when we continue to set up the server. Both my client and server is using Ubuntu-derivative OSs, as such the commands might differ from your own.
+SSH is a protocol that allows remote login and command line execution, something that will be very convenient when we continue to set up the server. We will be using [OpenSSH](https://www.openssh.com/) as our SSH deamon, it usually comes shipped by default on both server and desktop Linux distributions. If you lack the deamon it can be installed with:
 
-To be able to SSH from a client to a server:
-- There must be a traversable network connection between them and
-- They both need to have a SSH service installed
-
-OpenSSH usually comes shipped by default on desktop Linux distributions, if for some reason you do not have the client installed you can install it by running:
+For your client:
 
 ```sh
 sudo apt install openssh-client
 ```
 
-On the server we install it using:
+For your server:
 
 ```sh
 sudo apt install openssh-server
 ```
-This was however not necessary in my case as the Ubuntu installer provided me with the option during initial set-up.
-From the server, run `ip a` to get information about your network connections and take note of your servers local IP-address.
 
-On the client, run:
+With OpenSSH installed on both the client and server, the next step is to connect to the server. Assuming you're on the same local network, run `ip a` on your server and take note of the local IP-address.
+
+Now on the client, run:
 
 ```sh
 ssh username@server-ip
 ```
-Where `username` is the username on the server and `server-ip` is your servers local IP-address. The terminal will prompt for a password and connect.
+
+Replace `username` and `server-ip` as appropriate. The terminal will prompt for a password and connect.
 
 ### Part 2: Create a Hostname alias
 
-We don't want to have to remember `username@server-ip`, so instead we will create an alias which will allow us to access the server by just running `ssh alias`. On the client, run:
+Remembering `username@server-ip` is a hassle, so instead we will create an alias which will allow us to access the server by just running `ssh alias`. To get started, run this on the client:
 
 ```sh
 sudo nano ~/.ssh/config
 ```
 
-Paste the following, replacing `alias`, `server-ip` and `username` with relevant information:
+Paste the following, replacing `alias`, `server-ip` and `username` as appropriate:
 
 ```sh
 Host alias
@@ -306,7 +306,7 @@ On the client, run the following, replacing `comment` with some information to h
 ssh-keygen -t ed25519 -C "comment"
 ```
 
-You will be prompted for a name, you can choose a name or accept the default `id_ed2559` by pressing enter. You will also be prompted for a passphrase, enter a passphrase or press enter to skip. This will create a keypair, one public key named `keyname.pub` and one private key named `keyname`. You can verify that they are there by running:
+You will be prompted for a name, you can choose a name or accept the default `id_ed2559` by pressing enter. You will also be prompted for a passphrase, enter a passphrase or press enter to skip. A keypair will be created, one public key named `keyname.pub` and one private key named `keyname`. You can verify that they are there by running:
 
 ```sh
 ls ~/.ssh -la
@@ -322,23 +322,21 @@ Replacing `keyname` and `alias` with whatever you chose earlier. If you chose a 
 
 Verify that the key works by connecting to the server with `ssh alias`. If the keys have been exchanged correctly you should __not__ be prompted for a password.
 
-__NOTE:__ Always keep your private key secure, __never__ share it with anyone! If you have reason to believe that your private key has been compromised, generate a new keypair and delete the old one from the servers `authorized_keys` file.
+> __NOTE:__ Always keep your private key secure, __never__ share it with anyone! If you have reason to believe that your private key has been compromised, generate a new keypair and delete the old one from the servers `authorized_keys` file.
 
 ### Part 4: Hardening
 
-Now that we can connect to the server using our SSH-key, we will make some security enhancement to prevent brute-forcing and root access.
-
-On your client, connect to the server and run:
+Now that we can connect to the server using our SSH-key, we will make some security enhancement. On your client, connect to the server and run:
 
 ```sh
 sudo nano /etc/ssh/sshd_config
 ```
 
-Search after the line with `PermitRootLogin`, uncomment and change it to `PermitRootLogin no`. Then search for `PasswordAuthentication`, uncomment and change it to `PasswordAuthentication no`. 
+Look for the line with `PermitRootLogin`, uncomment and change it to `PermitRootLogin no`. Then search for `PasswordAuthentication`, uncomment and change it to `PasswordAuthentication no`.
 
-Finally, find the line with `Port 22`, uncomment and change it from 22 to [another](https://serverfault.com/questions/509294/what-are-valid-ports-to-use-for-ssh) port of your choice. Save and exit. Remember to change the port number for your alias to reflect your choice.
+Finally, find the line with `Port 22`, uncomment and change it to [another](https://serverfault.com/questions/509294/what-are-valid-ports-to-use-for-ssh) port of your choice. Save and exit. Remember to change the port number for your alias to reflect your choice.
 
-__WARNING:__ Do __NOT__ close the terminal window, if something was entered incorrectly in the configuration file you might lose access to the server. Until we know everything works, ensure that you have atleast one other terminal instance running that is connected to the server.
+> __WARNING:__ Do __NOT__ close the terminal window, if something was entered incorrectly in the configuration file you might lose SSH access to the server. Until we know everything works, ensure that you have atleast one other terminal instance running that is connected to the server.
 
 Restart the SSH service by running:
 
@@ -346,9 +344,9 @@ Restart the SSH service by running:
 sudo systemctl restart ssh
 ```
 
-Verify that everything works by first trying to connect to the server with `ssh alias`, then try to access it using `ssh root@server-ip` (_which the server should deny_).
+Verify that everything works by first trying to connect to the server with `ssh alias`, then try to access it using `ssh root@server-ip`.
 
-If everything worked correctly, the server should now be accessible only by your SSH-key and no user that access it by SSH can gain Root privileges. As we changed the port number from the default we gain some resistance against automated attacks, but a persistent actor could still find the correct port after some trial and error.
+If everything worked correctly, the server should now be accessible only by your SSH-key and noone should be able to log in as root. As we changed the port number from the default we gain some resistance against automated attacks, but a persistent actor could still find the correct port after some trial and error.
 
 </p>
 </details>
@@ -366,20 +364,16 @@ This section is all about Docker and how to manage Docker containers.
 
 [Docker](https://www.docker.com/) lets us set up containers to hold our services, making it easy to handle access and permissions. There are multiple ways to use docker, we will be using the `docker-compose` method which entails three steps:
 
-- Create a `docker-compose.yml` file for your service
-- In the file, add any necessary parameters to make the service work (_these can often be pasted directly from the service's documentation_)
-- Launch the service with `sudo docker compose up -d`
+1. Create a `docker-compose.yml` file
+2. In the file, add any necessary parameters to make the service work (_these can often be pasted directly from the service's documentation_)
+3. Launch the service with `sudo docker compose up -d`
 
 To install the necessary Docker components I followed their [official documentation](https://docs.docker.com/engine/install/) which can be summarized below as:
 
 Get the prerequisite with:
 
 ```sh
-sudo apt update && sudo apt install \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
+sudo apt update && sudo apt install ca-certificates curl gnupg lsb-release
 ```
 
 Add Dockers official GPG with:
@@ -435,7 +429,7 @@ echo "deb [signed-by=/usr/share/keyrings/azlux-archive-keyring.gpg] http://packa
 sudo wget -O /usr/share/keyrings/azlux-archive-keyring.gpg  https://azlux.fr/repo.gpg
 ```
 
-> Error? The key is most likely out of date, visit the [maintainers](https://packages.azlux.fr/) website to find the current key.
+> __GPG Error?__ The key is most likely out of date, visit the [maintainer](https://packages.azlux.fr/) to find the current key.
 
 ```sh
 sudo apt update && sudo apt install docker-ctop
@@ -499,15 +493,15 @@ This section is about secure, remote access. We will talk about custom domains, 
 
 ### Part 1: Aquire a custom domain
 
-Up until this point we have only been able to access our server while on the same local network, to access it remotely we will utilize a custom domain. This method will make it easy to manage multiple services as we can use subdomains (_blog.domain.tld, server.domain.tld etc._), it also makes the process of using Dynamic DNS easier.
+Up until this point we have only been able to access our server while on the same local network, to access it remotely we will utilize a custom domain. This method will make it easy to manage multiple services as we can use subdomains (_blog.domain.tld, server.domain.tld etc._).
 
-To get a custom domain you will need to purchase it from a domain registrar. There are many domain registrars but I've gone with [Njalla](https://njal.la/) due to their great track record, amazing privacy policy and [DMCA responses](https://njal.la/blog/dhlsucks/). Their pricing is somewhat higher than their competitors and you might consider something like [namecheap](https://www.namecheap.com/) if you're looking for a cheaper alternative.
+To get a custom domain you will need to purchase it from a domain registrar. There are many domain registrars but I've gone with [Njalla](https://njal.la/) due to their great track record, privacy policy and [DMCA responses](https://njal.la/blog/dhlsucks/). Their pricing is somewhat higher than their competitors, so you might consider [namecheap](https://www.namecheap.com/) if you're looking for a more affordable option.
 
 ### Part 2: Configure Dynamic DNS
 
-We want our domain to point to our routers IP-address. This address, called a dynamic IP-address, will change over time and can cause our registrar to point the wrong way were it not updated. To solve this we will utilize [ddns-updater](https://github.com/qdm12/ddns-updater), which is a dynamic DNS service that will regularly check our IP-address and convey any changes to Njalla.
+We want our domain to point to our routers IP-address. This address, called a dynamic IP-address, will change over time and can cause our registrar to point the wrong way were it not updated. To solve this we will utilize [ddns-updater](https://github.com/qdm12/ddns-updater), which is a dynamic DNS service that will regularly check our public IP-address and convey any changes to Njalla.
 
-To get started, log into Njalla (_or your registrar of choice_) and add a new DNS record to your domain. This new record should be __DYNAMIC__ (_not A or AAAA_) and be named __*__, this will create a dynamic __wildcard__ domain. Njalla will provide you with a key that we need to update the IP-address of the DNS record, if you're using another registrar they might have other ways of conveying changes to IP.
+To get started, log into Njalla (_or your registrar of choice_) and add a new DNS record to your domain. This new record should be __DYNAMIC__ and be named __*__, this will create a dynamic __wildcard__ domain. Njalla will provide us with the key we need to update the IP-address of the DNS record, if you're using another registrar they might have other ways of conveying IP-changes.
 
 To get started with ddns-updater we will create a directory in `/srv`:
 
@@ -610,7 +604,7 @@ Check that everything is working by typing `[local-IP]:8000` in your browser.
 
 ### Part 3: Configure NGINX Proxy manager
 
-Create a directory in `/srv`:
+[NGINX Proxy Manager](https://nginxproxymanager.com/) combines the true and tested reverse proxy [NGINX](https://www.nginx.com/) with an easy-to-use GUI and [Let's Encrypt](https://letsencrypt.org/) integration. To get started, create a directory:
 
 ```sh
 sudo mkdir /srv/npm
@@ -669,8 +663,6 @@ Save and exit. You should now be able to start NGINX proxy manager by running:
 sudo docker compose up -d
 ```
 
-> Initial start might take awhile. If it didn't start, CD into the folder and try again.
-
 Check that everything is working by typing `[local-IP]:81` in your browser. Log in with the default email and password:
 
 ```
@@ -699,15 +691,15 @@ Press save and visit `nginx.domain.tld`, you should be greeted with a log-in pag
 
 Now that we know that it works we will secure it with a SSL-certificate. Navigate to the `SSL Certificates` tab and add a new Let's Encrypt certificate with `Domain Names: nginx.domain.tld`. Test that the server is reachable by clicking on `Test Server Reachability`, agree to the privacy policy and save.
 
-Now go back to your Proxy Host for `nginx.domain.tld` and click `Edit`, go to to SSL and add your certificate from the drop-down list. For added security, enable __Force SSL__ and __HSTS__. Finally, visit `nginx.domain.tld` and ensure that everything is working as intended.
+Now go back to your Proxy Host for `nginx.domain.tld` and click `Edit`, go to to SSL and add your certificate from the drop-down list. For added security, enable __Force SSL__ and __HSTS__. Finally, visit `nginx.domain.tld` and check that everything is working as expected.
 
-For added security you can make a Access List entry. Navigate to `Access Lists` and `Add Access List`, then configure access to fit your needs. For exposed services without a log-in page you might consider adding basic HTTP Authentication, which will prompt a visitor for credentials before even loading the page. For services that you only want to be accessible on your local network, consider adding you local network to the whitelist while denying all other connections.
+For added security you can make an access list entry. Navigate to `Access Lists` and `Add Access List`, then configure access to fit your needs. For exposed services without a log-in page you might consider adding basic HTTP Authentication, which will prompt a visitor for credentials before even loading the page. For services that you only want to be accessible on your local network, consider adding you local network to the whitelist while denying all other connections.
 
-When you've made a Access List entry, navigate to Proxy Hosts and change a Proxy from `Publicly Accessible` to `[entry name]`.
+When you've made an access list entry, navigate to a proxy host and change access from `Publicly Accessible` to `[access list entry]`.
 
 ### Part 4: Set up remote SSH
 
-First we need to decide on a port we will expose, look through the [list](https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers) and add a port-forwarding rule for that port in your router. Next, visit `nginx.domain.tld`. Log in and navigate to `Streams`, add a new stream with:
+First we need to decide on a port we will expose, look through the [list](https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers) and add a port-forwarding rule for that port in your router. Next, go to NPM and navigate to `Streams`, add a new stream with the following settings:
 
 ```
 Incoming port:          [your new port]
@@ -833,6 +825,8 @@ failregex = ^<HOST>.+" (4\d\d|3\d\d) (\d\d\d|\d) .+$
             ^.+ 4\d\d \d\d\d - .+ \[Client <HOST>\] \[Length .+\] ".+" .+$
 ```
 
+> __NOTE__: This filter is overeager and might ban a user for legitimate usage, such as reloading a tab of a web UI. I will revisit this regex at a later date, if you want to try your hands on creating your own filter I recommend [regex101](https://regex101.com/).
+
 Save and exit. Lastly create a jail-file:
 
 ```sh
@@ -912,19 +906,7 @@ sudo systemctl enable fail2ban
 
 --------------------
 
-## Services
-
-This section is about the services I have or plan to implement. It will be an ever-growing section as I add more and more services, take a look at the table below to get an idea about what's next:
-
-|  Service | Description | Priority |
-| ------------- | ------------- | ------------- |
-| Data backup solution | [Restic](https://restic.net/) or [Borgmatic](https://torsion.org/borgmatic/). Will make backups/snapshots to an external SSD, compression is preferred | High |
-| [Static Web Server](https://sws.joseluisq.net/) | A static webpage server | Low |
-| [Umami](https://github.com/umami-software/umami) | Self-hosted, privacy focused web analytics. Will be implemented alongside static webpage | Low  |
-| [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) | Prevents image hotlinking, will be implemented alongside static webpage (_this isn't really a service but I will keep it here for future reference_). | Low  |
-| [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s | Low  |
-
-### Dashboard with Homarr
+## Dashboard with Homarr
 
 <details><summary>Click to expand</summary>
 <p>
@@ -979,12 +961,12 @@ Save and check that Homarr is accessible at `homarr.domain.tld`. For increased s
 </p>
 </details>
 
-### Multimedia streaming with Jellyfin
+## Multimedia streaming with Jellyfin
 
 <details><summary>Click to expand</summary>
 <p>
 
-#### Part 1: Consistent directories
+### Part 1: Consistent directories
 
 Before we set up Jellyfin we will make a clear and consistent directory-structure following TRaSH Guides [Hardlinks and Instant Moves](https://trash-guides.info/Hardlinks/Hardlinks-and-Instant-Moves/). We can create the whole structure with this one command:
 
@@ -998,7 +980,7 @@ Now configure directory permissions with:
 sudo chown -R $USER:$USER /srv/data && sudo chmod -R a=,a+rX,u+w,g+w /srv/data
 ```
 
-#### Part 2: Install Jellyfin
+### Part 2: Install Jellyfin
 
 We will be using [Hotios Jellyfin image](https://hotio.dev/containers/jellyfin/). Start by creating a directory:
 
@@ -1058,7 +1040,7 @@ Access List:            Publicly Accessible
 
 While you're at it, don't forget to request a SSL-certificate for `jellyfin.domain.tld`. Finally, visit it and make sure you can connect.
 
-#### Part 3: Media transfer and streaming
+### Part 3: Media transfer and streaming
 
 Jellyfin is up and running but we still need to test media streaming. Load up a USB with some media-files and stick it into your server. Check its label, it should be something akin to `sdb1`:
 
@@ -1109,16 +1091,16 @@ sudo cryptsetup luksClose [volume name]
 </p>
 </details>
 
-### Torrenting with qflood
+## Torrenting with qflood
 
 <details><summary>Click to expand</summary>
 <p>
 
-> DISCLAMIER: The BitTorrent protocol is a communcation protocol for peer-to-peer file sharing, it's an easy and accessible way for people to share their own or licensed works online. Before you contemplate downloading or sharing copyrighted content via the BitTorrent protocol, please check that those actions are not considered criminal by your local laws and regulations. I am not liabel in any way for your inability to use the BitTorrent protocol in accordance with said law.
+> NOTE: The BitTorrent protocol is a communcation protocol for peer-to-peer file sharing, it's an easy and accessible way for people to share their own or licensed works online. Before you contemplate downloading or sharing copyrighted content via the BitTorrent protocol, please check that those actions are not considered criminal by your local laws and regulations. I am not liabel in any way for your inability to use the BitTorrent protocol in accordance with said law.
 
 [qflood](https://hotio.dev/containers/qflood/) is a Docker image from Hotio that combines [qBittorrent](https://github.com/qbittorrent/qbittorrent) and [Flood](https://github.com/jesec/flood) with easy Wireguard VPN integration.
 
-#### Part 1: Configure Wireguard
+### Part 1: Configure Wireguard
 
 Before setting up qflood we will install and configure Wireguard:
 
@@ -1144,7 +1126,7 @@ Confirm that you have a connection, then disconnect with:
 wg-quick down wg0
 ```
 
-#### Part 2: Install qflood
+### Part 2: Install qflood
 
 Now we can install qflood, start by creating a directory:
 
@@ -1225,7 +1207,7 @@ Username: admin
 Password: adminadmin
 ```
 
-#### Part 3: qBittorrent settings
+### Part 3: qBittorrent settings
 
 Next up is port forwarding. In Mullvad, go to your account and "Port Forwarding". Identify your server and add a port for it. In qBittorrent's Web UI, go to `Tools -> Options -> Connection -> Listening Port` and change the default port to your forwarded port. Then launch `ctop`, select `qflood` and choose `exec shell`. Run the following two commands:
 
@@ -1266,21 +1248,65 @@ Name: lidarr    Path: /data/torrents/music
 
 Then go to `Tools -> Options -> Downloads -> Default Torrent Management Mode` and change it to `Automatic`. Now when you add a torrent you can choose a category and have it automatically transfered to the right directory after downloading.
 
-#### Part 4: Configure Flood
+### Part 4: Configure Flood
 
 A recent version of qBittorrent broke Flood support, I will revisit this section when the issue has been resolved.
 
 </p>
 </details>
 
-### Multimedia collection management with Arr
+## Multimedia collection management with Arr
 
-In this section we will go over some of the [Arr-apps](https://wiki.servarr.com/): Radarr, Lidarr, Sonarr and Jellyseerr.
-
-#### Part 1: Movies with Radarr
+In this section we will go over some of the [Arr-apps](https://wiki.servarr.com/): Prowlarr, Radarr, Lidarr, Sonarr and Jellyseerr.
 
 <details><summary>Click to expand</summary>
 <p>
+
+### Part 1: Index management with Prowlarr
+
+[Prowlarr](https://hotio.dev/containers/prowlarr/) is an indexer manager that integrates with other arr-apps.
+
+Make a directory:
+
+```sh
+sudo mkdir -p /srv/prowlarr/config
+```
+
+Make a docker-compose.yml file:
+
+```sh
+sudo nano /srv/prowlarr/docker-compose.yml
+```
+
+Paste:
+
+```yml                              
+version: "3.7"
+services:
+  prowlarr:
+    container_name: prowlarr
+    image: cr.hotio.dev/hotio/prowlarr
+    ports:
+      - "9696:9696"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - /srv/prowlarr/config:/config
+    restart: always
+```
+
+Start it with:
+
+```sh
+cd /srv/prowlarr && sudo docker compose up -d
+```
+
+Visit prowlarr's web ui at `[local ip]:9696`. Add indexers, there are a [huge](https://wiki.servarr.com/prowlarr/supported-indexers) list to choose from. Add Radarr, Sonarr and Lidarr under `Apps`.
+
+### Part 2: Movies with Radarr
 
 [Radarr](https://hotio.dev/containers/radarr/) is a a movie collection manager, it allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using Hotio's docker image, start by making a directory:
 
@@ -1331,7 +1357,7 @@ Now visit radarr's web-ui at `[local ip]:7878`. Now let us do some configuration
 | Add Root Folder | none | `/data/media/movies` | The folders radarr will use to manage our collection. |
 | Quality Profile | No custom profile | Custom profiles that suite your quality and language requirements | Ensures you only have media of the language and quality you want. |
 | Delay profile | Both Usenet and Torrent | Only Torrent | We will not be using the Usenet protocol |
-| Qualities | No custom values | Some custom values | I recommend following TRaSH's [best practices](https://trash-guides.info/Radarr/Radarr-Quality-Settings-File-Size/). |
+| Qualities | No custom values | Some custom values | Granular file-size controls. If quality is your main concern, follow TRaSH's [best practices](https://trash-guides.info/Radarr/Radarr-Quality-Settings-File-Size/). |
 | Indexers | No indexer | One or more of your choice | Is required to find torrents, you can find the full list of supported indexers [here](https://wiki.servarr.com/radarr/supported). I recommend RARBG. |
 | Add Download Client | Might be automatically detected | qBittorrent | The download client that will handle requests from radarr. |
 | Analytics | Enable | Disable | I prefer to create github issues instead. |
@@ -1340,13 +1366,7 @@ Now visit radarr's web-ui at `[local ip]:7878`. Now let us do some configuration
 
 Make a Proxy Host entry for radarr in NGINX.
 
-</p>
-</details>
-
-#### Part 2: TV-shows with Sonarr
-
-<details><summary>Click to expand</summary>
-<p>
+### Part 3: TV-shows with Sonarr
 
 [Sonarr](https://hotio.dev/containers/sonarr/) is a a tv-series collection manager, it allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using Hotio's docker image, start by making a directory:
 
@@ -1389,13 +1409,7 @@ cd /srv/sonarr && sudo docker compose up -d
 
 Now visit sonarr's web-ui at `[local ip]:8989`. Make a Proxy Host entry for sonarr in NGINX.
 
-</p>
-</details>
-
-#### Part 3: Music with Lidarr
-
-<details><summary>Click to expand</summary>
-<p>
+### Part 4: Music with Lidarr
 
 [Lidarr](https://hotio.dev/containers/lidarr/) is a a music collection manager, it allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using Hotio's docker image, start by making a directory:
 
@@ -1438,13 +1452,7 @@ cd /srv/lidarr && sudo docker compose up -d
 
 Now visit lidarr's web-ui at `[local ip]:8686`. Make a Proxy Host entry for lidarr in NGINX.
 
-</p>
-</details>
-
-#### Part 4: Request media with Jellyseerr
-
-<details><summary>Click to expand</summary>
-<p>
+### Part 5: Request media with Jellyseerr
 
 [Jellyseerr](https://hub.docker.com/r/fallenbagel/jellyseerr) is a media request manager for Jellyfin, it allows us and our users to discover and request media. This request is then passed along to Radarr, Sonarr or Lidarr depending on media type. Start by making a directory:
 
@@ -1492,49 +1500,19 @@ Make a Proxy Host entry for jellyseerr in NGINX.
 </p>
 </details>
 
-#### Part 5: Index management with Prowlarr
+--------------------
 
-[Prowlarr](https://hotio.dev/containers/prowlarr/) is an indexer manager that integrates with other arr-apps.
+## Future services
 
-Make a directory:
+This section is about the services I plan to implement, take a look at the table below to get an idea about what's next:
 
-```sh
-sudo mkdir -p /srv/prowlarr/config
-```
-
-Make a docker-compose.yml file:
-
-```sh
-sudo nano /srv/prowlarr/docker-compose.yml
-```
-
-Paste:
-
-```yml                              
-version: "3.7"
-services:
-  prowlarr:
-    container_name: prowlarr
-    image: cr.hotio.dev/hotio/prowlarr
-    ports:
-      - "9696:9696"
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - UMASK=002
-      - TZ=Europe/Stockholm
-    volumes:
-      - /srv/prowlarr/config:/config
-    restart: always
-```
-
-Start it with:
-
-```sh
-cd /srv/prowlarr && sudo docker compose up -d
-```
-
-Visit prowlarr's web ui at `[local ip]:9696`. Add indexers, there are a [huge](https://wiki.servarr.com/prowlarr/supported-indexers) list to choose from. Add Radarr, Sonarr and Lidarr under `Apps`.
+|  Service | Description | Priority |
+| ------------- | ------------- | ------------- |
+| Data backup solution | [Restic](https://restic.net/) or [Borgmatic](https://torsion.org/borgmatic/). Will make backups/snapshots to an external SSD, compression is preferred | High |
+| [Static Web Server](https://sws.joseluisq.net/) | A static webpage server | Low |
+| [Umami](https://github.com/umami-software/umami) | Self-hosted, privacy focused web analytics. Will be implemented alongside static webpage | Low  |
+| [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) | Prevents image hotlinking, will be implemented alongside static webpage (_this isn't really a service but I will keep it here for future reference_). | Low  |
+| [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s | Low  |
 
 --------------------
 
@@ -1563,7 +1541,7 @@ Lesson learned, think thrice before manually flashing your BIOS. I have since re
 
 ### Containerized Fail2Ban
 
-> __TL;DR:__ Containarized Fail2Ban didn't work so I've switched to running it on the OS directly.
+> __TL;DR:__ Containarized Fail2Ban didn't work so I've switched to running it directly on the OS.
 
 I initially tried to run Fail2Ban in a docker container to streamline deployment. I managed to get the filter and jail working but not banning. Fail2Ban would correctly detect authentication fails and "ban" the associated IP address. This "ban" would in reality not result in denied connections, the client could continue to spam authentication attempts. There seemed to be no clear way to propagate the banned addresses up the IP-tables chain and block connections.
 
