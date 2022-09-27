@@ -624,6 +624,7 @@ version: "3"
 services:
   app:
     image: 'jc21/nginx-proxy-manager:latest'
+    container_name: npm-app
     restart: unless-stopped
     ports:
       # These ports are in format <host-port>:<container-port>
@@ -633,6 +634,7 @@ services:
       # Add any other Stream port you want to expose
       # - '21:21' # FTP
     environment:
+      TZ: "Europe/Stockholm"
       DB_MYSQL_HOST: "db"
       DB_MYSQL_PORT: 3306
       DB_MYSQL_USER: "npm"
@@ -648,8 +650,10 @@ services:
 
   db:
     image: 'jc21/mariadb-aria:latest'
+    container_name: npm-db
     restart: unless-stopped
     environment:
+      TZ: "Europe/Stockholm"
       MYSQL_ROOT_PASSWORD: 'npm'
       MYSQL_DATABASE: 'npm'
       MYSQL_USER: 'npm'
@@ -664,7 +668,7 @@ Save and exit. You should now be able to start NGINX proxy manager by running:
 sudo docker compose up -d
 ```
 
-Check that everything is working by typing `[local-IP]:81` in your browser. Log in with the default email and password:
+It will take couple of seconds to set up. It might not return terminal control to you afterwards, in that case exit the process with `ctrl-z`. Check that everything is working by typing `[local-IP]:81` in your browser. Log in with the default email and password:
 
 ```
 Email:    admin@example.com
@@ -1247,7 +1251,7 @@ It should return:
 {"ip":"[Mullvad's IP]","port":[forwarded port],"reachable":true}/
 ```
 
-Now that we know that port forwarding is wokring, let's do some `Options` tinkering in qBittorrent:
+Now that we know that port forwarding is working, let's do some `Options` tinkering in qBittorrent. These are the changes I made:
 
 | Setting | Default | Set to | Reason |
 | ------------- | ------------- |------------- |------------- |
