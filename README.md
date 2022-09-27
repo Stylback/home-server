@@ -43,6 +43,7 @@ A collection of thoughts and notes as I build my home server. If you find anythi
     - [Part 1: Consistent directories](#part-1-consistent-directories)
     - [Part 2: Install Jellyfin](#part-2-install-jellyfin)
     - [Part 3: Media transfer and streaming](#part-3-media-transfer-and-streaming)
+    - [Part 4: Customization](#part-4-customization)
   - [Torrenting with qflood](#torrenting-with-qflood)
     - [Part 1: Configure Wireguard](#part-1-configure-wireguard)
     - [Part 2: Install qflood](#part-2-install-qflood)
@@ -961,6 +962,8 @@ Save and check that Homarr is accessible at `homarr.domain.tld`. For increased s
 </p>
 </details>
 
+--------------------
+
 ## Multimedia streaming with Jellyfin
 
 <details><summary>Click to expand</summary>
@@ -1058,7 +1061,7 @@ sudo mkdir /media/external
 sudo mount /dev/[label] /media/external
 ```
 
-If it is LUKS encrypted you need to unlock it before mounting, run:
+If it's LUKS encrypted you need to unlock it before mounting:
 
 ```sh
 sudo cryptsetup luksOpen /dev/[label] [volume name]
@@ -1082,14 +1085,29 @@ P.S. Don't forget to unmount your USB before unplugging it:
 sudo umount /media/external
 ```
 
-If it was LUKS encrypted, don't forget to lock it:
+If it was LUKS encrypted you also need to lock it:
 
 ```sh
 sudo cryptsetup luksClose [volume name]
 ```
 
+### Part 4: Customization
+
+Jellyfin supports [custom CSS](https://jellyfin.org/docs/general/clients/css-customization.html), you can either create your own or import one from the community. I will be using the Kaleidochromic preset from [Ultrachromic](https://github.com/CTalvio/Ultrachromic) combined with a tweak to hide _More Like This_:
+
+```css
+@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/presets/kaleidochromic_preset.css');
+
+/* Hide More Like This */
+#similarCollapsible { display: none; }
+```
+
+The Custom CSS setting can be found at `Dashboard -> General -> Custom CSS`. I had to restart the Jellyfin container for the settings to take effect.
+
 </p>
 </details>
+
+--------------------
 
 ## Torrenting with qflood
 
@@ -1255,6 +1273,8 @@ A recent version of qBittorrent broke Flood support, I will revisit this section
 </p>
 </details>
 
+--------------------
+
 ## Multimedia collection management with Arr
 
 In this section we will go over some of the [Arr-apps](https://wiki.servarr.com/): Prowlarr, Radarr, Lidarr, Sonarr and Jellyseerr.
@@ -1304,7 +1324,7 @@ Start it with:
 cd /srv/prowlarr && sudo docker compose up -d
 ```
 
-Visit prowlarr's web ui at `[local ip]:9696`. Add indexers, there are a [huge](https://wiki.servarr.com/prowlarr/supported-indexers) list to choose from. Add Radarr, Sonarr and Lidarr under `Apps`.
+Visit prowlarr's web ui at `[local ip]:9696`. Add indexers, there are a [huge](https://wiki.servarr.com/prowlarr/supported-indexers) list to choose from.
 
 ### Part 2: Movies with Radarr
 
@@ -1358,13 +1378,16 @@ Now visit radarr's web-ui at `[local ip]:7878`. Now let us do some configuration
 | Quality Profile | No custom profile | Custom profiles that suite your quality and language requirements | Ensures you only have media of the language and quality you want. |
 | Delay profile | Both Usenet and Torrent | Only Torrent | We will not be using the Usenet protocol |
 | Qualities | No custom values | Some custom values | Granular file-size controls. If quality is your main concern, follow TRaSH's [best practices](https://trash-guides.info/Radarr/Radarr-Quality-Settings-File-Size/). |
-| Indexers | No indexer | One or more of your choice | Is required to find torrents, you can find the full list of supported indexers [here](https://wiki.servarr.com/radarr/supported). I recommend RARBG. |
 | Add Download Client | Might be automatically detected | qBittorrent | The download client that will handle requests from radarr. |
 | Analytics | Enable | Disable | I prefer to create github issues instead. |
 | Authentication | No authentication | Forms | Will require a username and password before accessing radarr, great for security as we will expose the service to the internet. |
 | UI | Imperial standard | Whatever you feel like | Make it personal. |
 
 Make a Proxy Host entry for radarr in NGINX.
+
+Add app to Prowlarr.
+
+Add app to Homarr.
 
 ### Part 3: TV-shows with Sonarr
 
@@ -1450,11 +1473,17 @@ Start it with:
 cd /srv/lidarr && sudo docker compose up -d
 ```
 
-Now visit lidarr's web-ui at `[local ip]:8686`. Make a Proxy Host entry for lidarr in NGINX.
+Now visit lidarr's web-ui at `[local ip]:8686`.
+
+Make a Proxy Host entry for radarr in NGINX.
+
+Add app to Prowlarr.
+
+Add app to Homarr.
 
 ### Part 5: Request media with Jellyseerr
 
-[Jellyseerr](https://hub.docker.com/r/fallenbagel/jellyseerr) is a media request manager for Jellyfin, it allows us and our users to discover and request media. This request is then passed along to Radarr, Sonarr or Lidarr depending on media type. Start by making a directory:
+[Jellyseerr](https://hub.docker.com/r/fallenbagel/jellyseerr) is a media request manager for Jellyfin, it allows us and our users to discover and request media. This request is then passed along to Radarr or Sonarr depending on media type. Start by making a directory:
 
 ```sh
 sudo mkdir -p /srv/jellyseerr/config
@@ -1493,9 +1522,13 @@ Start it with:
 cd /srv/jellyseerr && sudo docker compose up -d
 ```
 
-Now visit jellyseerr's web-ui at `[local ip]:5055`. Follow the start-up guide.
+Now visit jellyseerr's web-ui at `[local ip]:5055`. Log in using your Jellyfin account and follow the start-up guide.
 
-Make a Proxy Host entry for jellyseerr in NGINX.
+Make a Proxy Host entry for radarr in NGINX.
+
+Add app to Prowlarr.
+
+Add app to Homarr.
 
 </p>
 </details>
