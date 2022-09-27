@@ -909,10 +909,12 @@ sudo systemctl enable fail2ban
 
 ## Dashboard with Homarr
 
+[Homarr](https://homarr.vercel.app/docs/about) is an easy to use dashboard that integrates well with ARR apps.
+
 <details><summary>Click to expand</summary>
 <p>
 
-[Homarr](https://homarr.vercel.app/docs/about) is an easy to use dashboard for our services. First, lets create a `docker-compose.yml` and a directory to house it:
+First, lets create a `docker-compose.yml` and a directory to house it:
 
 ```sh
 sudo mkdir /srv/homarr 
@@ -965,6 +967,8 @@ Save and check that Homarr is accessible at `homarr.domain.tld`. For increased s
 --------------------
 
 ## Multimedia streaming with Jellyfin
+
+[Jellfin](https://jellyfin.org/) is a free, open source and self-hosted multimedia streaming server.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -1111,12 +1115,12 @@ The Custom CSS setting can be found at `Dashboard -> General -> Custom CSS`. I h
 
 ## Torrenting with qflood
 
+[qflood](https://hotio.dev/containers/qflood/) is a Docker image from Hotio that combines [qBittorrent](https://github.com/qbittorrent/qbittorrent) and [Flood](https://github.com/jesec/flood) with easy Wireguard VPN integration.
+
 <details><summary>Click to expand</summary>
 <p>
 
 > NOTE: The BitTorrent protocol is a communcation protocol for peer-to-peer file sharing, it's an easy and accessible way for people to share their own or licensed works online. Before you contemplate downloading or sharing copyrighted content via the BitTorrent protocol, please check that those actions are not considered criminal by your local laws and regulations. I am not liabel in any way for your inability to use the BitTorrent protocol in accordance with said law.
-
-[qflood](https://hotio.dev/containers/qflood/) is a Docker image from Hotio that combines [qBittorrent](https://github.com/qbittorrent/qbittorrent) and [Flood](https://github.com/jesec/flood) with easy Wireguard VPN integration.
 
 ### Part 1: Configure Wireguard
 
@@ -1324,7 +1328,7 @@ Start it with:
 cd /srv/prowlarr && sudo docker compose up -d
 ```
 
-Visit prowlarr's web ui at `[local ip]:9696`. Add indexers, there are a [huge](https://wiki.servarr.com/prowlarr/supported-indexers) list to choose from.
+Visit prowlarr's web ui at `[local ip]:9696` and configure it. Add indexers, there are a [huge](https://wiki.servarr.com/prowlarr/supported-indexers) list to choose from. Finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr.
 
 ### Part 2: Movies with Radarr
 
@@ -1367,7 +1371,7 @@ Start it with:
 cd /srv/radarr && sudo docker compose up -d
 ```
 
-Now visit radarr's web-ui at `[local ip]:7878`. Now let us do some configuration, enable `Advanced Options` and do the following:
+Now visit radarr's web-ui at `[local ip]:7878` and configure it. I made the following changes:
 
 | Setting | Default | Set to | Reason |
 | ------------- | ------------- |------------- |------------- |
@@ -1383,11 +1387,7 @@ Now visit radarr's web-ui at `[local ip]:7878`. Now let us do some configuration
 | Authentication | No authentication | Forms | Will require a username and password before accessing radarr, great for security as we will expose the service to the internet. |
 | UI | Imperial standard | Whatever you feel like | Make it personal. |
 
-Make a Proxy Host entry for radarr in NGINX.
-
-Add app to Prowlarr.
-
-Add app to Homarr.
+Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in prowlarr.
 
 ### Part 3: TV-shows with Sonarr
 
@@ -1430,7 +1430,7 @@ Start it with:
 cd /srv/sonarr && sudo docker compose up -d
 ```
 
-Now visit sonarr's web-ui at `[local ip]:8989`. Make a Proxy Host entry for sonarr in NGINX.
+Now visit sonarr's web-ui at `[local ip]:8989` and configure it. Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in prowlarr.
 
 ### Part 4: Music with Lidarr
 
@@ -1473,13 +1473,7 @@ Start it with:
 cd /srv/lidarr && sudo docker compose up -d
 ```
 
-Now visit lidarr's web-ui at `[local ip]:8686`.
-
-Make a Proxy Host entry for radarr in NGINX.
-
-Add app to Prowlarr.
-
-Add app to Homarr.
+Now visit lidarr's web-ui at `[local ip]:8686` and configure it. Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in prowlarr.
 
 ### Part 5: Request media with Jellyseerr
 
@@ -1522,13 +1516,7 @@ Start it with:
 cd /srv/jellyseerr && sudo docker compose up -d
 ```
 
-Now visit jellyseerr's web-ui at `[local ip]:5055`. Log in using your Jellyfin account and follow the start-up guide.
-
-Make a Proxy Host entry for radarr in NGINX.
-
-Add app to Prowlarr.
-
-Add app to Homarr.
+Now visit jellyseerr's web-ui at `[local ip]:5055`. Log in using your Jellyfin account and follow the start-up guide. Finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr.
 
 </p>
 </details>
