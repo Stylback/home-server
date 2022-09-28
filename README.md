@@ -1,18 +1,18 @@
 
-<p align="center"><img src="/media/homarr.png" alt="Dashboard"/></p>
-
-<p align="center">
-      <a href="https://github.com/Stylback/home-server/labels/question" alt="Questions open">
-        <img src="https://img.shields.io/github/issues-raw/Stylback/home-server/question?color=important&label=Open%20questions&style=for-the-badge" /></a>
-      <a href="https://github.com/Stylback/home-server/issues?q=is%3Aclosed+label%3Aquestion+" alt="Questions closed">
-        <img src="https://img.shields.io/github/issues-closed-raw/Stylback/home-server/question?color=yellowgreen&label=Answered%20questions&style=for-the-badge" /></a>
-</p>
+<p align="center"><img src="https://github.com/Stylback/home-server/blob/main/media/homarr.png?raw=true" alt="Dashboard"/></p>
 
 #
 
-In this repository I document everything connected to my home server. I do this so that I may easily reproduce the steps taken in case of a re-installation but also as sort of a guide to others in the self-hosted community.
+In this repository I document everything connected to my home server. I do this so that I may easily reproduce the steps taken but also as sort of a guide to others in the self-hosted community.
 
-Do you have questions regarding my implementation? Create an issue and I will answer to the best of my ability.
+Do you have a question regarding my implementation? Create an [issue](https://github.com/Stylback/home-server/issues) with the `question` tag and I will answer to the best of my ability. So far we have:
+
+<p align="center">
+      <a href="https://github.com/Stylback/home-server/labels/question" alt="Questions open">
+        <img src="https://img.shields.io/github/issues-raw/Stylback/home-server/question?color=3ba850&label=Open%20questions&style=for-the-badge" /></a>
+      <a href="https://github.com/Stylback/home-server/issues?q=is%3Aclosed+label%3Aquestion+" alt="Questions closed">
+        <img src="https://img.shields.io/github/issues-closed-raw/Stylback/home-server/question?color=338882&label=Answered%20questions&style=for-the-badge" /></a>
+</p>
 
 Did you find something interesting and want to use it in your own project? You're welcome to use anything but the images, please see [License and usage](#license-and-usage).
 
@@ -742,14 +742,10 @@ Add the new port as such:
       - '[new port]:[new port]' # Remote SSH port
 ```
 
-Save and exit. Now lets restart the container to apply the settings, you can either do this directly with `ctop` or by running:
+Save and exit. Now lets restart the container to apply the settings, you can either do this directly through `ctop` or with:
 
 ```sh
-cd /srv/npm
-```
-
-```sh
-sudo docker compose restart npm-app-1
+cd /srv/npm && sudo docker compose restart npm-app
 ```
 
 Now we will create a new host entry in our SSH config file. On your client, run:
@@ -1637,7 +1633,7 @@ For comparison, running an [average dishwasher](https://energyusecalculator.com/
 
 ## License and usage
 
-- Any resource I link to, cite or otherwise refer to are subject to their respective licenses.
+- Any resource I link, cite or otherwise refer to are subject to their respective licenses.
 - Any image used is my own and are subject to All Rights Reserved.
 - Everything else in this project is licensed under the terms of the [MIT license](https://mit-license.org/).
 
