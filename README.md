@@ -152,7 +152,7 @@ This section is about my experience putting the hardware together and verifying 
 |:---|:---|
 | ![inside of the case](https://github.com/Stylback/home-server/blob/main/media/inside.jpg?raw=true) | The process of assembling the system was relatively painless. The case can be disassembled for easy access to the motherboard fittings and has plenty of room for cable managment without the presence of a GPU. |
 | ![power-extender cable](https://github.com/Stylback/home-server/blob/main/media/psu_cable.jpg?raw=true) | My only gripe with the case is the power-extender. It's aligned in such a way that the cable has to be forcefully twisted to slot into my specific PSU. I tried to screw the end out and flipping it 180°, allowing the cable to rest naturally on the case floor. It was however not possible due to the shape of the cutout. |
-| ![rear view](https://github.com/Stylback/home-server/blob/main/media/back.jpg?raw=true) | Rear-view and IO. Taken before switching out the fan for a NF-A12X25 ULN. |
+| ![rear view](https://github.com/Stylback/home-server/blob/main/media/back.jpg?raw=true) | Rear-view and IO. Picture taken before switching out the fan for a NF-A12X25 ULN. |
 | ![assembled case](https://github.com/Stylback/home-server/blob/main/media/outside.jpg?raw=true) | Assembled system. |
 
 ### Testing RAM stability
@@ -1630,6 +1630,8 @@ For comparison, running an [average dishwasher](https://energyusecalculator.com/
 
 ## License and usage
 
-This project was created to document the thoughts and implementations behind my home server. Any resource I link to, cite or otherwise refer to are subject to their respective licenses, any image used is my own and are subject to All Rights Reserved. Everything else in this project is licensed under the terms of the [MIT license](https://mit-license.org/).
+- Any resource I link to, cite or otherwise refer to are subject to their respective licenses.
+- Any image used is my own and are subject to All Rights Reserved.
+- Everything else in this project is licensed under the terms of the [MIT license](https://mit-license.org/).
 
 **[Back to top](#)**
