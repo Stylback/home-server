@@ -1,6 +1,13 @@
 
 <p align="center"><img src="/media/homarr.png" alt="Dashboard"/></p>
 
+<p align="center">
+      <a href="https://github.com/Stylback/home-server/labels/question" alt="Questions open">
+        <img src="https://img.shields.io/github/issues/Stylback/home-server/question?color=yellow&label=Questions&style=for-the-badge" /></a>
+      <a href="https://github.com/Stylback/home-server/issues?q=is%3Aclosed+label%3Aquestion+" alt="Questions answered">
+        <img src="https://img.shields.io/github/issues-closed/Stylback/home-server/question?color=orange&label=Question&style=for-the-badge" /></a>
+</p>
+
 #
 
 In this repository I document everything connected to my home server. I do this so that I may easily reproduce the steps taken in case of a re-installation but also as sort of a guide to others in the self-hosted community.
