@@ -1,5 +1,7 @@
 # Home Server
 
+<p align="center"><img width="600px" src="/media/homarr.png" alt="ctop"/></p>
+
 A collection of thoughts and notes as I build my home server. If you find anything useful, feel free to use it in your own project.
 
 --------------------
@@ -936,12 +938,17 @@ services:
   homarr:
     container_name: homarr
     image: ghcr.io/ajnart/homarr:latest
-    restart: unless-stopped
+    ports:
+      - '7575:7575'
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
     volumes:
       - ./homarr/configs:/app/data/configs
       - ./homarr/icons:/app/public/icons
-    ports:
-      - '7575:7575' 
+    restart: unless-stopped
 ```
 
 Save and exit. You can now start it by running:
