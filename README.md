@@ -3,9 +3,9 @@
 
 <p align="center">
       <a href="https://github.com/Stylback/home-server/labels/question" alt="Questions open">
-        <img src="https://img.shields.io/github/issues/Stylback/home-server/question?color=yellow&label=Questions&style=for-the-badge" /></a>
-      <a href="https://github.com/Stylback/home-server/issues?q=is%3Aclosed+label%3Aquestion+" alt="Questions answered">
-        <img src="https://img.shields.io/github/issues-closed/Stylback/home-server/question?color=orange&label=Question&style=for-the-badge" /></a>
+        <img src="https://img.shields.io/github/issues-raw/Stylback/home-server/question?color=important&label=Open%20questions&style=for-the-badge" /></a>
+      <a href="https://github.com/Stylback/home-server/issues?q=is%3Aclosed+label%3Aquestion+" alt="Questions closed">
+        <img src="https://img.shields.io/github/issues-closed-raw/Stylback/home-server/question?color=yellowgreen&label=Answered%20questions&style=for-the-badge" /></a>
 </p>
 
 #
