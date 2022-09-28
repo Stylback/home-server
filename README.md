@@ -1,8 +1,13 @@
-#
 
 <p align="center"><img src="/media/homarr.png" alt="Dashboard"/></p>
 
-A collection of thoughts and notes as I build my home server. If you find anything useful, feel free to use it in your own project.
+#
+
+In this repository I document everything connected to my home server. I do this so that I may easily reproduce the steps taken in case of a re-installation but also as sort of a guide to others in the self-hosted community.
+
+Do you have questions regarding my implementation? Create an issue and I will answer to the best of my ability.
+
+Did you find something interesting and want to use it in your own project? You're welcome to use anything but the images, please see [License and usage](#license-and-usage).
 
 --------------------
 
