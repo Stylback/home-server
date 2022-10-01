@@ -55,10 +55,10 @@ Did you find something interesting and want to use it in your own project? You'r
   - [Part 2: Install qflood](#part-2-install-qflood)
   - [Part 3: qBittorrent settings](#part-3-qbittorrent-settings)
   - [Part 4: Configure Flood](#part-4-configure-flood)
-- [Multimedia collection management with Arr](#multimedia-collection-management-with-arr)
+- [Multimedia collection management with *Arr](#multimedia-collection-management-with-arr)
   - [Part 1: Index management with Prowlarr](#part-1-index-management-with-prowlarr)
   - [Part 2: Movies with Radarr](#part-2-movies-with-radarr)
-  - [Part 3: TV-shows with Sonarr](#part-3-tv-shows-with-sonarr)
+  - [Part 3: Series with Sonarr](#part-3-series-with-sonarr)
   - [Part 4: Music with Lidarr](#part-4-music-with-lidarr)
   - [Part 5: Request media with Jellyseerr](#part-5-request-media-with-jellyseerr)
   - [Part 6: Manage subtitles with Bazarr](#part-6-manage-subtitles-with-bazarr)
@@ -1291,24 +1291,22 @@ A recent version of qBittorrent broke Flood support, I will revisit this section
 
 --------------------
 
-## Multimedia collection management with Arr
+## Multimedia collection management with *Arr
 
-In this section we will go over some of the [Arr-apps](https://wiki.servarr.com/): Prowlarr, Radarr, Lidarr, Sonarr and Jellyseerr.
+In this section we will be implementing a full suite of *Arr apps, adding a high degree of automation to our media collection. We will be looking at Prowlarr, Radarr, Lidarr, Sonarr, Jellyseerr and finally Bazarr.
 
 <details><summary>Click to expand</summary>
 <p>
 
 ### Part 1: Index management with Prowlarr
 
-[Prowlarr](https://hotio.dev/containers/prowlarr/) is an indexer manager that integrates with other arr-apps.
-
-Make a directory:
+[Prowlarr](https://github.com/Prowlarr/Prowlarr/) is an indexer manager that integrates with other *Arr-apps. We will be using [hotio's](https://hotio.dev/containers/prowlarr/) Docker image, get started by making the directory structure:
 
 ```sh
 sudo mkdir -p /srv/prowlarr/config
 ```
 
-Make a docker-compose.yml file:
+Make a `docker-compose.yml` file:
 
 ```sh
 sudo nano /srv/prowlarr/docker-compose.yml
@@ -1334,29 +1332,29 @@ services:
     restart: always
 ```
 
-Start it with:
+Save and exit, start it with:
 
 ```sh
 cd /srv/prowlarr && sudo docker compose up -d
 ```
 
-Visit prowlarr's web ui at `[local ip]:9696` and configure it. Add indexers, there are a [huge](https://wiki.servarr.com/prowlarr/supported-indexers) list to choose from. Finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr.
+Visit Prowlarr's web ui at `[local ip]:9696` and configure it. Add indexers, there are a [huge](https://wiki.servarr.com/prowlarr/supported-indexers) list to choose from. Finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr.
 
 ### Part 2: Movies with Radarr
 
-[Radarr](https://hotio.dev/containers/radarr/) is a a movie collection manager, it allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using Hotio's docker image, start by making a directory:
+[Radarr](https://radarr.video/) is a a movie collection manager. It allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using [hotio's](https://hotio.dev/containers/radarr/) Docker image, start by making the directory structure:
 
 ```sh
 sudo mkdir -p /srv/radarr/config
 ```
 
-Make a docker-compose.yml file:
+Make a `docker-compose.yml` file:
 
 ```sh
 sudo nano /srv/radarr/docker-compose.yml
 ```
 
-Paste:
+Paste the following:
 
 ```yml
 version: "3.7"
@@ -1377,13 +1375,13 @@ services:
     restart: always
 ```
 
-Start it with:
+Save and exit, start it with:
 
 ```sh
 cd /srv/radarr && sudo docker compose up -d
 ```
 
-Now visit radarr's web-ui at `[local ip]:7878` and configure it. I made the following changes:
+Now visit Radarr's web-ui at `[local ip]:7878` and configure it. I made the following changes:
 
 | Setting | Default | Set to | Reason |
 | ------------- | ------------- |------------- |------------- |
@@ -1399,23 +1397,23 @@ Now visit radarr's web-ui at `[local ip]:7878` and configure it. I made the foll
 | Authentication | No authentication | Forms | Will require a username and password before accessing radarr, great for security as we will expose the service to the internet. |
 | UI | Imperial standard | Whatever you feel like | Make it personal. |
 
-Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in prowlarr.
+Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in Prowlarr.
 
-### Part 3: TV-shows with Sonarr
+### Part 3: Series with Sonarr
 
-[Sonarr](https://hotio.dev/containers/sonarr/) is a a tv-series collection manager, it allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using Hotio's docker image, start by making a directory:
+[Sonarr](https://sonarr.tv/) is a a series collection manager. It allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using [hotio's](https://hotio.dev/containers/sonarr/) Docker image, start by making the directory structure:
 
 ```sh
 sudo mkdir -p /srv/sonarr/config
 ```
 
-Make a docker-compose.yml file:
+Make a `docker-compose.yml` file:
 
 ```sh
 sudo nano /srv/sonarr/docker-compose.yml
 ```
 
-Paste:
+Paste the following:
 
 ```yml
 version: "3.7"
@@ -1436,17 +1434,17 @@ services:
     restart: always
 ```
 
-Start it with:
+Save and exit, start it with:
 
 ```sh
 cd /srv/sonarr && sudo docker compose up -d
 ```
 
-Now visit sonarr's web-ui at `[local ip]:8989` and configure it. Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in prowlarr.
+Now visit Sonarr's web-ui at `[local ip]:8989` and configure it. Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in prowlarr.
 
 ### Part 4: Music with Lidarr
 
-[Lidarr](https://lidarr.audio/) is a music collection manager. It allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using [hotio's](https://hotio.dev/containers/lidarr/) docker image, start by making a directory:
+[Lidarr](https://lidarr.audio/) is a music collection manager. It allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using [hotio's](https://hotio.dev/containers/lidarr/) docker image, start by making the directory structure:
 
 ```sh
 sudo mkdir -p /srv/lidarr/config
@@ -1489,19 +1487,19 @@ Now visit lidarr's web-ui at `[local ip]:8686` and configure it. Finish up by cr
 
 ### Part 5: Request media with Jellyseerr
 
-[Jellyseerr](https://hub.docker.com/r/fallenbagel/jellyseerr) is a media request manager for Jellyfin, it allows us and our users to discover and request media. This request is then passed along to Radarr or Sonarr depending on media type. Start by making a directory:
+[Jellyseerr](https://hub.docker.com/r/fallenbagel/jellyseerr) is a media request manager for Jellyfin. It allows us and our users to discover and request media. Start by making the directory structure:
 
 ```sh
 sudo mkdir -p /srv/jellyseerr/config
 ```
 
-Make a docker-compose.yml file:
+Make a `docker-compose.yml` file:
 
 ```sh
 sudo nano /srv/jellyseerr/docker-compose.yml
 ```
 
-Paste:
+Paste the following:
 
 ```yml                              
 version: '3'
@@ -1522,7 +1520,7 @@ services:
        restart: always
 ```
 
-Start it with:
+Save and exit, start it with:
 
 ```sh
 cd /srv/jellyseerr && sudo docker compose up -d
@@ -1538,7 +1536,7 @@ Now visit Jellyseerr's web-ui at `[local ip]:5055`. Log in using your Jellyfin a
 sudo mkdir -p /srv/bazarr/config
 ```
 
-Now make a docker-compose.yml file:
+Now make a `docker-compose.yml` file:
 
 ```sh
 sudo nano /srv/bazarr/docker-compose.yml
