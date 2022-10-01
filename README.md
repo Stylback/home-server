@@ -5,14 +5,7 @@
 
 In this repository I document everything connected to my home server. I do this so that I may easily reproduce the steps taken but also as sort of a guide to others in the self-hosted community.
 
-Do you have a question regarding my implementation? Create an [issue](https://github.com/Stylback/home-server/issues) with the `question` tag and I will answer to the best of my ability. So far we have:
-
-<p align="center">
-      <a href="https://github.com/Stylback/home-server/labels/question" alt="Questions open">
-        <img src="https://img.shields.io/github/issues-raw/Stylback/home-server/question?color=3ba850&label=Open%20questions&style=for-the-badge" /></a>
-      <a href="https://github.com/Stylback/home-server/issues?q=is%3Aclosed+label%3Aquestion+" alt="Questions closed">
-        <img src="https://img.shields.io/github/issues-closed-raw/Stylback/home-server/question?color=338882&label=Answered%20questions&style=for-the-badge" /></a>
-</p>
+Do you have a question regarding my implementation? Create an [issue](https://github.com/Stylback/home-server/issues) with the `question` tag and I will answer to the best of my ability.
 
 Did you find something interesting and want to use it in your own project? You're welcome to use anything but the images, please see [License and usage](#license-and-usage).
 
@@ -68,6 +61,7 @@ Did you find something interesting and want to use it in your own project? You'r
   - [Part 3: TV-shows with Sonarr](#part-3-tv-shows-with-sonarr)
   - [Part 4: Music with Lidarr](#part-4-music-with-lidarr)
   - [Part 5: Request media with Jellyseerr](#part-5-request-media-with-jellyseerr)
+  - [Part 6: Manage subtitles with Bazarr](#part-6-manage-subtitles-with-bazarr)
 - [Future services](#future-services)
 - [Issues and solutions](#issues-and-solutions)
   - [Bricked motherboard](#bricked-motherboard)
@@ -1452,7 +1446,7 @@ Now visit sonarr's web-ui at `[local ip]:8989` and configure it. Finish up by cr
 
 ### Part 4: Music with Lidarr
 
-[Lidarr](https://hotio.dev/containers/lidarr/) is a a music collection manager, it allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using Hotio's docker image, start by making a directory:
+[Lidarr](https://lidarr.audio/) is a music collection manager. It allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using [hotio's](https://hotio.dev/containers/lidarr/) docker image, start by making a directory:
 
 ```sh
 sudo mkdir -p /srv/lidarr/config
@@ -1464,7 +1458,7 @@ Make a docker-compose.yml file:
 sudo nano /srv/lidarr/docker-compose.yml
 ```
 
-Paste:
+Paste the following:
 
 ```yml
 version: "3.7"
@@ -1485,7 +1479,7 @@ services:
     restart: always
 ```
 
-Start it with:
+Save and exit, start it with:
 
 ```sh
 cd /srv/lidarr && sudo docker compose up -d
@@ -1534,7 +1528,50 @@ Start it with:
 cd /srv/jellyseerr && sudo docker compose up -d
 ```
 
-Now visit jellyseerr's web-ui at `[local ip]:5055`. Log in using your Jellyfin account and follow the start-up guide. Finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr.
+Now visit Jellyseerr's web-ui at `[local ip]:5055`. Log in using your Jellyfin account and follow the start-up guide. Finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr.
+
+### Part 6: Manage subtitles with Bazarr
+
+[Bazarr](https://www.bazarr.media/) is a subtitle downloader and manager. It integrates natively with Radarr and Sonnar. We will be using [hotio's](https://hotio.dev/containers/bazarr/) Docker image, get started by making a the directory structure:
+
+```sh
+sudo mkdir -p /srv/bazarr/config
+```
+
+Now make a docker-compose.yml file:
+
+```sh
+sudo nano /srv/bazarr/docker-compose.yml
+```
+
+Paste the following:
+
+```yml                              
+version: "3.7"
+services:
+  bazarr:
+    container_name: bazarr
+    image: cr.hotio.dev/hotio/bazarr
+    ports:
+      - "6767:6767"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - /srv/bazarr/config:/app/config
+      - /srv/data:/data
+    restart: always
+```
+
+Save and exit, start it with:
+
+```sh
+cd /srv/bazarr && sudo docker compose up -d
+```
+
+Now visit Bazarr's web-ui at `[local ip]:6767`. Start by making a language profile and add subtitle providers, then connect to Radarr and Sonarr. When you know it works, finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr. For security, remember to add an authentication method.
 
 </p>
 </details>
