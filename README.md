@@ -18,26 +18,26 @@ Did you find something interesting and want to use it in your own project? You'r
 
 - [Table of contents](#table-of-contents)
 - [Hardware choices](#hardware-choices)
-  - [CPU / Motherboard](#cpu--motherboard)
-  - [Power supply (PSU)](#power-supply-psu)
-  - [Case](#case)
-  - [RAM](#ram)
-  - [Storage](#storage)
-  - [Final build costs](#final-build-costs)
+  - [Part 1: CPU / Motherboard](#part-1-cpu--motherboard)
+  - [Part 2: Power supply (PSU)](#part-2-power-supply-psu)
+  - [Part 3: Case](#part-3-case)
+  - [Part 4: RAM](#part-4-ram)
+  - [Part 5: Storage](#part-5-storage)
+  - [Part 6: Final build costs](#part-6-final-build-costs)
 - [Assembly and initial setup](#assembly-and-initial-setup)
-  - [Assembly](#assembly)
-  - [Testing RAM stability](#testing-ram-stability)
-  - [BIOS tweaks](#bios-tweaks)
-  - [Installing the OS](#installing-the-os)
+  - [Part 1: Assembly](#part-1-assembly)
+  - [Part 2: Testing RAM stability](#part-2-testing-ram-stability)
+  - [Part 3: BIOS tweaks](#part-3-bios-tweaks)
+  - [Part 4: Installing the OS](#part-4-installing-the-os)
 - [SSH](#ssh)
   - [Part 1: Prerequisite and local access](#part-1-prerequisite-and-local-access)
   - [Part 2: Create a Hostname alias](#part-2-create-a-hostname-alias)
   - [Part 3: Generate and use SSH-keys](#part-3-generate-and-use-ssh-keys)
   - [Part 4: Hardening](#part-4-hardening)
 - [Docker](#docker)
-  - [Installation](#installation)
-  - [Easy management with ctop](#easy-management-with-ctop)
-  - [Automatic updates with Watchtower](#automatic-updates-with-watchtower)
+  - [Part 1: Installation](#part-1-installation)
+  - [Part 2: Management with ctop](#part-2-management-with-ctop)
+  - [Part 3: Automatic updates with Watchtower](#part-3-automatic-updates-with-watchtower)
 - [Remote access and perimeter security](#remote-access-and-perimeter-security)
   - [Part 1: Aquire a custom domain](#part-1-aquire-a-custom-domain)
   - [Part 2: Configure Dynamic DNS](#part-2-configure-dynamic-dns)
@@ -82,7 +82,7 @@ This section is about the hardware I use, why I chose a particular piece of hard
 <details><summary>Click to expand</summary>
 <p>
 
-### CPU / Motherboard
+### Part 1: CPU / Motherboard
 
 I've settled for an [intel Pentium J5040](https://ark.intel.com/content/www/us/en/ark/products/197304/intel-pentium-silver-j5040-processor-4m-cache-up-to-3-20-ghz.html) as it has some particularly useful features for my use case:
 
@@ -93,7 +93,7 @@ I've settled for an [intel Pentium J5040](https://ark.intel.com/content/www/us/e
 
 However; J-series CPU:s are only available as "on-board" or "embedded" CPU:s, which is to say they are soldered directly onto a motherboard. I've opted for an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp) due to its rich feature-set, but you might consider the cheaper [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) if you're OK with being limited to 8GB of RAM (_or risk bricking your motherboard, see_ [_here_](#issues-and-solutions) _for my experience_).
 
-### Power supply (PSU)
+### Part 2: Power supply (PSU)
 
 Ideally, the server will be running 24/7, 365 days a year. As such, high efficiency is important to keep power consumption down. A power supply is at its most efficient at __50% of maximum rated load__, that means a PSU rated at 500W max load will be at its most efficient when it provides 250W of power.
 
@@ -101,24 +101,24 @@ What __is__ the efficiency at 50% load? That is determined by the [80+ Rating](h
 
 After some [back of the napkin calculations](#reference-tables) I've estimated my system to draw between 10 to 23W. As such my ideal PSU would be a power-brick style 50-100W PICO-PSU. I've had no luck finding such a model with the right mix of power-cables and have instead opted for a traditional ATX PSU. At 300W, the [SYSTEM POWER B9 from be quiet!](https://www.bequiet.com/en/powersupply/1285) offers a better low-load efficiency compared to the more common 450/500W models with the added benefit of providing some headroom for upgrades.
 
-### Case
+### Part 3: Case
 
 The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes; discreet and affordable with some room for expandability. It also included a 120 mm rear-mounted fan, however I replaced it with a Noctua [NF-A12X25 ULN](https://noctua.at/en/products/fan/nf-a12x25-uln) for reduced noise.
 
-### RAM
+### Part 4: RAM
 
 As stated on intel's and ASRock's websites; the J5040 _officially_ supports up to 8GB of RAM.
 However, some reddit users report being able to use 16 or even 32GB with [varying results](https://libreddit.dcs0.hu/r/ASRock/comments/k8hpww/how_can_a_motherboard_support_more_ram_than_the/).
 
 With this in mind I decided to take a gamble with a [G.SKILL Ripjaws SO-DIMM 16GB Kit](https://www.gskill.com/product/2/197/1540865326/F4-2400C16D-16GRS).
 
-### Storage
+### Part 5: Storage
 
 Spinning hard-disk drives (HDD) are popular in home servers and NAS due to their high storage capacity and low price. However, they have reduced speeds and increased power draw compared to solid-state drives (SSD). Their moving parts also add noise and a significant [point of failure](https://en.wikipedia.org/wiki/Head_crash).
 
 I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/crucial-mx500-ssd) (_250GB bootdrive + 2TB storage drive_) as they provide a good balance between price and performance. They also support _Integrated Power Loss Immunity_ which aims to prevent data loss in case of a power outage.
 
-### Final build costs
+### Part 6: Final build costs
 
 | Component type | Model name | Price (SEK*) |
 | :--- | :--- | ---: |
@@ -147,7 +147,7 @@ This section is about my experience putting the hardware together and verifying 
 <details><summary>Click to expand</summary>
 <p>
 
-### Assembly
+### Part 1: Assembly
 
 | Image | Note |
 |:---|:---|
@@ -156,7 +156,7 @@ This section is about my experience putting the hardware together and verifying 
 | ![rear view](https://github.com/Stylback/home-server/blob/main/media/back.jpg?raw=true) | Rear-view and IO. Picture taken before switching out the fan for a NF-A12X25 ULN. |
 | ![assembled case](https://github.com/Stylback/home-server/blob/main/media/outside.jpg?raw=true) | Assembled system. |
 
-### Testing RAM stability
+### Part 2: Testing RAM stability
 
 Before installing the operating system I wanted to ensure that my RAM modules would not cause any system instability. MemTest86 is an industry staple in this regard, it has a multitude of tests designed to coax RAM instability under extreme conditions.
 
@@ -167,7 +167,7 @@ I made a bootable USB following their [instructions](https://www.memtest86.com/t
 | ![Ram modules detected by MemTest86](https://github.com/Stylback/home-server/blob/main/media/memtest86_ram.bmp?raw=true) | Both sticks of RAM was detected by MemTest86. |
 | ![Test completion screen](https://github.com/Stylback/home-server/blob/main/media/memtest86_pass.jpg?raw=true) | The sticks passed with 0 errors, completing the tests in 4 hours and 37 minutes. |
 
-### BIOS tweaks
+### Part 3: BIOS tweaks
 
 The ASRock J5040-ITX comes with an extensive list of BIOS settings, so far I've made the following changes:
 
@@ -178,7 +178,7 @@ The ASRock J5040-ITX comes with an extensive list of BIOS settings, so far I've 
 | Deep S5 | Disable | Auto | Reduces power consumption while the system is turned off |
 | Restore on AC/Power | Loss Power Off | Loss Power On | Restarts the system after a power failure |
 
-### Installing the OS
+### Part 4: Installing the OS
 
 After confirming RAM stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to extensive [documentation](https://ubuntu.com/server/docs).
 
@@ -368,7 +368,7 @@ This section is all about Docker and how to manage Docker containers.
 <details><summary>Click to expand</summary>
 <p>
 
-### Installation
+### Part 1: Installation
 
 [Docker](https://www.docker.com/) lets us set up containers to hold our services, making it easy to handle access and permissions. There are multiple ways to use docker, we will be using the `docker-compose` method which entails three steps:
 
@@ -421,7 +421,7 @@ Finally, run the following to enable Docker to run on boot:
 sudo systemctl enable docker
 ```
 
-### Easy management with ctop
+### Part 2: Management with ctop
 
 For easy overview and management of our docker containers we can install [ctop](https://github.com/bcicen/ctop). To do it, run the commands below:
 
@@ -443,13 +443,13 @@ sudo wget -O /usr/share/keyrings/azlux-archive-keyring.gpg  https://azlux.fr/rep
 sudo apt update && sudo apt install docker-ctop
 ```
 
-Launch it by simply running:
+Launch it with:
 
 ```sh
 sudo ctop
 ```
 
-### Automatic updates with Watchtower
+### Part 3: Automatic updates with Watchtower
 
 We will use [Watchtower](https://containrrr.dev/watchtower/) to automatically find and apply updates to our docker images. To get started, make a directory:
 
@@ -473,10 +473,14 @@ services:
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
+    restart: always
     environment:
-       - TZ=Europe/Stockholm
-     command: --cleanup true --schedule "0 0 2 * * *" # run daily at 2 am
+      - TZ=Europe/Stockholm
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_SCHEDULE=0 0 2 * * * # run daily at 2 am
+    command: [container names]
+
 ```
 
 Save and exit, now start Watchtower with:
@@ -1035,7 +1039,7 @@ services:
       - /srv/data/media:/media
     devices:
       - /dev/dri:/dev/dri
-    restart: "unless-stopped"
+    restart: unless-stopped
 ```
 
 Save and exit. You can now start it with:
@@ -1206,6 +1210,7 @@ services:
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
       - net.ipv6.conf.all.disable_ipv6=0
+    restart: unless-stopped
 ```
 
 Save and exit. Now run:
@@ -1312,7 +1317,7 @@ Make a `docker-compose.yml` file:
 sudo nano /srv/prowlarr/docker-compose.yml
 ```
 
-Paste:
+Paste the following:
 
 ```yml                              
 version: "3.7"
@@ -1329,7 +1334,7 @@ services:
       - TZ=Europe/Stockholm
     volumes:
       - /srv/prowlarr/config:/config
-    restart: always
+    restart: unless-stopped
 ```
 
 Save and exit, start it with:
@@ -1372,7 +1377,7 @@ services:
     volumes:
       - /srv/radarr/config:/config
       - /srv/data:/data
-    restart: always
+    restart: unless-stopped
 ```
 
 Save and exit, start it with:
@@ -1431,7 +1436,7 @@ services:
     volumes:
       - /srv/sonarr/config:/config
       - /srv/data:/data
-    restart: always
+    restart: unless-stopped
 ```
 
 Save and exit, start it with:
@@ -1474,7 +1479,7 @@ services:
     volumes:
       - /srv/lidarr/config:/config
       - /srv/data:/data
-    restart: always
+    restart: unless-stopped
 ```
 
 Save and exit, start it with:
@@ -1517,7 +1522,7 @@ services:
        volumes:
             - /srv/jellyseerr/config:/app/config
             - /srv/data:/data
-       restart: always
+       restart: unless-stopped
 ```
 
 Save and exit, start it with:
@@ -1530,7 +1535,7 @@ Now visit Jellyseerr's web-ui at `[local ip]:5055`. Log in using your Jellyfin a
 
 ### Part 6: Manage subtitles with Bazarr
 
-[Bazarr](https://www.bazarr.media/) is a subtitle downloader and manager. It integrates natively with Radarr and Sonnar. We will be using [hotio's](https://hotio.dev/containers/bazarr/) Docker image, get started by making a the directory structure:
+[Bazarr](https://www.bazarr.media/) is a subtitle downloader and manager. It integrates natively with Radarr and Sonnar. We will be using [hotio's](https://hotio.dev/containers/bazarr/) Docker image, get started by making the directory structure:
 
 ```sh
 sudo mkdir -p /srv/bazarr/config
@@ -1560,7 +1565,7 @@ services:
     volumes:
       - /srv/bazarr/config:/app/config
       - /srv/data:/data
-    restart: always
+    restart: unless-stopped
 ```
 
 Save and exit, start it with:
@@ -1569,7 +1574,7 @@ Save and exit, start it with:
 cd /srv/bazarr && sudo docker compose up -d
 ```
 
-Now visit Bazarr's web-ui at `[local ip]:6767`. Start by making a language profile and add subtitle providers, then connect to Radarr and Sonarr. When you know it works, finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr. For security, remember to add an authentication method.
+Now visit Bazarr's web-ui at `[local ip]:6767`. Start by making a language profile and add subtitle providers, then connect to Radarr and Sonarr. When you know everything works as intended, finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr. For security, remember to add an authentication method.
 
 </p>
 </details>
