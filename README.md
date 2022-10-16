@@ -1,5 +1,7 @@
 <p align="center"><img src="https://github.com/Stylback/home-server/blob/main/media/homarr.png?raw=true" alt="Dashboard screenshot"/></p>
 
+## About
+
 This project is all about my home server, here I document my implementations step-by-step so that I may more easily reproduce them at a later date. 
 
 I could've not started my journey towards self-hosting were it not for the open source community, as such my documentation is and will always remain open for others to read and learn from. For more information, please see the [License and usage](#license-and-usage) section.
@@ -13,11 +15,12 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
 <details><summary>Click to expand</summary>
 <p>
 
+- [About](#about)
 - [Table of contents](#table-of-contents)
 - [Hardware choices](#hardware-choices)
   - [Part 1: CPU / Motherboard](#part-1-cpu--motherboard)
   - [Part 2: Power supply (PSU)](#part-2-power-supply-psu)
-  - [Part 3: Case](#part-3-case)
+  - [Part 3: Case and fan](#part-3-case-and-fan)
   - [Part 4: RAM](#part-4-ram)
   - [Part 5: Storage](#part-5-storage)
   - [Part 6: Final build costs](#part-6-final-build-costs)
@@ -96,25 +99,23 @@ What __is__ the efficiency at 50% load? That is determined by the [80+ Rating](h
 
 After some [back of the napkin calculations](#reference-tables) I've estimated my system to draw between 10 to 23W. As such my ideal PSU would be a power-brick style 50-100W PICO-PSU. I've had no luck finding such a model with the right mix of power-cables and have instead opted for a traditional ATX PSU. At 300W, the [SYSTEM POWER B9 from be quiet!](https://www.bequiet.com/en/powersupply/1285) offers a better low-load efficiency compared to the more common 450/500W models with the added benefit of providing some headroom for upgrades.
 
-### Part 3: Case
+### Part 3: Case and fan
 
-The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes; discreet and affordable with some room for expandability. It included a 120 mm rear-mounted fan which I replaced with a [Noctua NF-A12X25 ULN](https://noctua.at/en/products/fan/nf-a12x25-uln) for noise reduction.
+The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes; discreet and affordable with some room for expandability. I wasn't fully satisfied with the noise level of the included rear-mounted 120mm fan, as such I replaced it with a [Noctua NF-A12X25 ULN](https://noctua.at/en/products/fan/nf-a12x25-uln).
 
 ### Part 4: RAM
 
-The J5040 _officially_ supports up to 8GB of RAM, as stated on intel's and ASRock's websites. Despite this some reddit users report being able to use 16 or even 32GB with [varying results](https://libreddit.dcs0.hu/r/ASRock/comments/k8hpww/how_can_a_motherboard_support_more_ram_than_the/).
-
-With this in mind I decided on a [G.SKILL Ripjaws SO-DIMM 16GB](https://www.gskill.com/product/2/197/1540865326/F4-2400C16D-16GRS) kit.
+The J5040 __officially__ supports up to 8GB of RAM as stated on intel's and ASRock's websites. Despite this [some](https://libreddit.dcs0.hu/r/ASRock/comments/k8hpww/how_can_a_motherboard_support_more_ram_than_the/) reddit users report being able to use 16 or even 32GB with varying results. With this in mind I decided on a [G.SKILL Ripjaws SO-DIMM 16GB](https://www.gskill.com/product/2/197/1540865326/F4-2400C16D-16GRS) kit.
 
 ### Part 5: Storage
 
 Spinning hard-disk drives (HDD) are popular in home servers and NAS due to their high storage capacity and low price. However, they have reduced speeds and increased power draw compared to solid-state drives (SSD). Their moving parts also add noise and a significant [point of failure](https://en.wikipedia.org/wiki/Head_crash).
 
-I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/crucial-mx500-ssd) (_250GB bootdrive + 2TB storage drive_) as they provide a good balance between price and performance. They also support _Integrated Power Loss Immunity_ which aims to prevent data loss in the case of a power outage.
+I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/crucial-mx500-ssd) (_250GB bootdrive + 2TB storage drive_) as they provide a good balance between price and performance, in addition they support _Integrated Power Loss Immunity_ which aims to prevent data loss in the case of a power outage.
 
 ### Part 6: Final build costs
 
-| Component type | Model name | Price [(SEK)](https://www.xe.com/currencyconverter/convert/?Amount=1000&From=SEK&To=USD) |
+| Component type | Model name | Price ([SEK](https://www.xe.com/currencyconverter/convert/?Amount=1000&From=SEK&To=USD)) |
 | :--- | :--- | ---: |
 | CPU / Motherboard | [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp)| 1790 |
 | Power supply | [be quiet! SYSTEM POWER B9 (_300W_)](https://www.bequiet.com/en/powersupply/1285) | 440 |
@@ -141,9 +142,9 @@ This section is about my experience putting the hardware together and verifying 
 
 | Image | Note |
 |:---|:---|
-| ![inside of the case](https://github.com/Stylback/home-server/blob/main/media/inside.jpg?raw=true) | The process of assembling the system was relatively painless. The case can be disassembled for easy access to the motherboard fittings and has plenty of room for cable managment without the presence of a GPU. |
-| ![power-extender cable](https://github.com/Stylback/home-server/blob/main/media/psu_cable.jpg?raw=true) | My only gripe with the case is the power-extender. It's aligned in such a way that the cable has to be forcefully twisted to slot into my specific PSU. I tried to screw the end out and flipping it 180°, allowing the cable to rest naturally on the case floor. It was however not possible due to the shape of the cutout. |
-| ![rear view](https://github.com/Stylback/home-server/blob/main/media/back.jpg?raw=true) | Rear-view and IO. Picture taken before switching out the fan for a NF-A12X25 ULN. |
+| ![inside of the case](https://github.com/Stylback/home-server/blob/main/media/inside.jpg?raw=true) | The process of assembling the system was relatively painless. The case can be disassembled for easy access and has plenty of room for cable managment, as long as you don't have a GPU. |
+| ![power-extender cable](https://github.com/Stylback/home-server/blob/main/media/psu_cable.jpg?raw=true) | One gripe with the case is the power-extender, it's aligned in such a way that the power-cable has to be forcefully twisted to slot into my PSU. I tried to screw the socket out and flip it 180° but it was not possible due to the shape of the cutout. |
+| ![rear view](https://github.com/Stylback/home-server/blob/main/media/back.jpg?raw=true) | Rear-view and IO. Picture taken before switching the fan out for a NF-A12X25 ULN. |
 | ![assembled case](https://github.com/Stylback/home-server/blob/main/media/outside.jpg?raw=true) | Assembled system. |
 
 ### Part 2: Testing RAM stability
@@ -163,16 +164,16 @@ The ASRock J5040-ITX comes with an extensive list of BIOS settings, so far I've 
 
 | Setting | Default | Set to | Reason |
 | ------------- | ------------- |------------- |------------- |
-| SATA Aggressive Link Power Management | Disable | Enable | Reduces power consumption while SATA devices are idle |
-| Onboard HD Audio | Enable | Disable | Audio will be handled client-side |
-| Deep S5 | Disable | Auto | Reduces power consumption while the system is turned off |
-| Restore on AC/Power | Loss Power Off | Loss Power On | Restarts the system after a power failure |
+| SATA Aggressive Link Power Management | Disable | Enable | Reduces power consumption while SATA devices are idle. |
+| Onboard HD Audio | Enable | Disable | Audio will be handled client-side. |
+| Deep S5 | Disable | Auto | Reduces power consumption while the system is turned off. |
+| Restore on AC/Power | Loss Power Off | Loss Power On | Restarts the system after a power failure. |
 
 ### Part 4: Installing the OS
 
-After confirming RAM stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to extensive [documentation](https://ubuntu.com/server/docs).
+After confirming RAM stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to [extensive](https://ubuntu.com/server/docs) documentation.
 
-I assigned the 250GB drive as boot drive, consuming about half of its available storage. The rest was partitioned and mounted to `/home` for any application or service that needs to store information there. As the 2TB drive is going to be used as the primary storage unit it was partioned and mounted at `/srv`.
+I assigned the 250GB drive as boot drive, consuming about half of its available storage. The rest was partitioned and mounted to `/home` for any application or service that needs to store data there. As the 2TB drive is going to be used as the primary storage unit it was partioned and mounted at `/srv`.
 
 After creating a user and logging in for the first time, I updated the system with:
 
@@ -380,7 +381,7 @@ sudo mkdir -p /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 ```
 
-Now we can safely set up the repository with:
+Now we can safely add the repository with:
 
 ```sh
 echo \
@@ -474,7 +475,7 @@ Save and exit, now start Watchtower with:
 cd /srv/watchtower && sudo docker compose up -d
 ```
 
-Watchtower will check for updates every night at 02:00. If it finds any it will download it, restart the container to apply the update and remove the old version.
+If everything works as expected, Watchtower will check for new docker images every night at 02:00. If it finds any, it will download the image, stop the service, apply the new image, start tthe service and finally remove the old image.
 
 </p>
 </details>
@@ -589,13 +590,21 @@ You should now be able to start ddns-updater by running:
 sudo docker compose up -d
 ```
 
-> Didn't start? Check that you're CD:d into `/srv/ddns-updater` and try again.
-
-Check that everything is working by typing `[local-IP]:8000` in your browser.
+Check that everything is working by visting `[local-IP]:8000` in your browser, you should see a `Success` message under `Update status`:
 
 ![Screenshot of DDNS-updater web page](https://github.com/Stylback/home-server/blob/main/media/ddns_screenshot.png?raw=true)
 
-> Didn't work? It's probably a permission error, double-check the directory/file permissions with `ls -la` and restart the service.
+<details><summary>Didn't work?</summary>
+<p>
+
+First, ensure that you are in `/srv/ddns-updater` and try again.
+
+If that didn't fix it you might be looking at a permission error, double-check the directory/file permissions with `ls -la`.
+
+If the problem still persist your best bet is to look at the logs. Run `sudo ctop` and take a look at the `ddns-updater` container.
+
+</p>
+</details>
 
 ### Part 3: Configure NGINX Proxy manager
 
@@ -620,7 +629,6 @@ services:
     image: 'jc21/nginx-proxy-manager:latest'
     container_name: npm-app
     ports:
-      # <host-port>:<container-port>
       - '80:80' # Public HTTP Port
       - '443:443' # Public HTTPS Port
       - '81:81' # Admin Web Port
@@ -816,9 +824,9 @@ failregex = ^<HOST>.+" (4\d\d|3\d\d) (\d\d\d|\d) .+$
             ^.+ 4\d\d \d\d\d - .+ \[Client <HOST>\] \[Length .+\] ".+" .+$
 ```
 
-> __NOTE__: This filter is overeager and might ban a user for legitimate usage, such as reloading a tab of a web UI. I will revisit this regex at a later date, if you want to try your hands on creating your own filter I recommend [regex101](https://regex101.com/).
+> __NOTE__: This filter is overeager and might ban a user for legitimate usage such as reloading a web UI. I will revisit this regex at a later date, if you want to try your hands on creating your own filter I recommend [regex101](https://regex101.com/).
 
-Save and exit. Lastly create a jail-file:
+Save and exit. Now create a jail-file:
 
 ```sh
 sudo nano /etc/fail2ban/jail.d/npm-docker.local
@@ -1040,13 +1048,13 @@ While you're at it, don't forget to request a SSL-certificate for `jellyfin.doma
 
 ### Part 3: Media transfer and streaming
 
-Jellyfin is up and running but we still need to test media streaming. Load up a USB with some media-files and stick it into your server. Check its label, it should be something akin to `sdb1`:
+Jellyfin is up and running but we still need to test media streaming. Load up a USB with some media-files and stick it into your server, check its label with:
 
 ```sh
 lsblk
 ```
 
-Make a directory and mount the USB to it:
+It should be something akin to `sdb1`, take note! Now make a directory and mount the USB to it:
 
 ```sh
 sudo mkdir /media/external
@@ -1056,15 +1064,27 @@ sudo mkdir /media/external
 sudo mount /dev/[label] /media/external
 ```
 
-If it's LUKS encrypted you need to unlock it before mounting:
+<details><summary>Is your USB LUKS encrypted?</summary>
+<p>
+
+Then you need to unlock it before mounting:
 
 ```sh
 sudo cryptsetup luksOpen /dev/[label] [volume name]
 ```
 
+Choose a volume name for the USB and mount it:
+
 ```sh
 sudo mount /dev/mapper/[volume name] /media/external
 ```
+
+Remember, when you've unmounted the USB you also need to lock it:
+
+```sh
+sudo cryptsetup luksClose [volume name]
+```
+</p>
 
 Now we can copy the media-files from the USB to our media directory:
 
@@ -1072,23 +1092,15 @@ Now we can copy the media-files from the USB to our media directory:
 sudo rsync -ah --progress /media/external/[your media] /srv/data/media/[relevant folder]
 ```
 
-Once your media-files are copied they will be automatically added to your Jellyfin library. This process might take a couple of minutes, if you want to force a new check you can do so in the settings. Once they are detected, try to stream them.
-
-P.S. Don't forget to unmount your USB before unplugging it:
+Once your media-files are copied they will be automatically added to your Jellyfin library. This process might take a couple of minutes, if you want to force a new check you can do so in the settings. Once they are detected, try to stream them. When everything works as expected, remember to unmount the USB before unplugging it:
 
 ```sh
 sudo umount /media/external
 ```
 
-If it was LUKS encrypted you also need to lock it:
-
-```sh
-sudo cryptsetup luksClose [volume name]
-```
-
 ### Part 4: Customization
 
-Jellyfin supports [custom CSS](https://jellyfin.org/docs/general/clients/css-customization.html), you can either create your own or import one from the community. I will be using the Kaleidochromic preset from [Ultrachromic](https://github.com/CTalvio/Ultrachromic) combined with a tweak to hide _More Like This_:
+Jellyfin supports [custom CSS](https://jellyfin.org/docs/general/clients/css-customization.html), you can either create your own or import one from the community. I will be using the Kaleidochromic preset from [Ultrachromic](https://github.com/CTalvio/Ultrachromic) combined with a tweak to hide `More Like This`:
 
 ```css
 @import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/presets/kaleidochromic_preset.css');
@@ -1113,13 +1125,13 @@ The Custom CSS setting can be found at `Dashboard -> General -> Custom CSS`. I h
 
 ### Part 1: Configure Wireguard
 
-Before setting up qflood we will install and configure Wireguard:
+You will need a VPN provider for this section, I will be using [Mullvad](https://mullvad.net/en/) but there are [other](https://www.privacyguides.org/vpn/) options you might consider. Before setting up qflood we will install and configure Wireguard:
 
 ```sh
 sudo apt update && sudo apt install openresolv wireguard
 ```
 
-You will need a VPN provider for this section, I will be using [Mullvad](https://mullvad.net/en/) but there are [other](https://www.privacyguides.org/vpn/) options you might consider. When you have a provider, go to their website and get their Wireguard configuration. Now run:
+Go to your VPN-provider's website and get their Wireguard configuration. Now run:
 
 ```sh
 sudo nano /etc/wireguard/wg0.conf
