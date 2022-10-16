@@ -1,15 +1,12 @@
+<p align="center"><img src="https://github.com/Stylback/home-server/blob/main/media/homarr.png?raw=true" alt="Dashboard screenshot"/></p>
 
-<p align="center"><img src="https://github.com/Stylback/home-server/blob/main/media/homarr.png?raw=true" alt="Dashboard"/></p>
+This project is all about my home server, here I document my implementations step-by-step so that I may more easily reproduce them at a later date. 
 
-#
+I could've not started my journey towards self-hosting were it not for the open source community, as such my documentation is and will always remain open for others to read and learn from. For more information, please see the [License and usage](#license-and-usage) section.
 
-In this repository I document everything connected to my home server. I do this so that I may easily reproduce the steps taken but also as sort of a guide to others in the self-hosted community.
+Do you have questions? Create an [issue](https://github.com/Stylback/home-server/issues) with the `question` tag and I will answer it to the best of my ability.
 
-Do you have a question regarding my implementation? Create an [issue](https://github.com/Stylback/home-server/issues) with the `question` tag and I will answer to the best of my ability.
-
-Did you find something interesting and want to use it in your own project? You're welcome to use anything but the images, please see [License and usage](#license-and-usage).
-
---------------------
+Got feedback or suggestions? I would love to hear it, please create an [issue](https://github.com/Stylback/home-server/issues) with the `suggestion` tag and we can take it from there.
 
 ## Table of contents
 
@@ -56,12 +53,12 @@ Did you find something interesting and want to use it in your own project? You'r
   - [Part 3: qBittorrent settings](#part-3-qbittorrent-settings)
   - [Part 4: Configure Flood](#part-4-configure-flood)
 - [Multimedia collection management with *Arr](#multimedia-collection-management-with-arr)
-  - [Part 1: Index management with Prowlarr](#part-1-index-management-with-prowlarr)
+  - [Part 1: Indexers with Prowlarr](#part-1-indexers-with-prowlarr)
   - [Part 2: Movies with Radarr](#part-2-movies-with-radarr)
   - [Part 3: Series with Sonarr](#part-3-series-with-sonarr)
-  - [Part 4: Music with Lidarr](#part-4-music-with-lidarr)
-  - [Part 5: Request media with Jellyseerr](#part-5-request-media-with-jellyseerr)
-  - [Part 6: Manage subtitles with Bazarr](#part-6-manage-subtitles-with-bazarr)
+  - [Part 4: Subtitles with Bazarr](#part-4-subtitles-with-bazarr)
+  - [Part 5: Request shows and movies with Jellyseerr](#part-5-request-shows-and-movies-with-jellyseerr)
+  - [Part 6: Music with Lidarr](#part-6-music-with-lidarr)
 - [Future services](#future-services)
 - [Issues and solutions](#issues-and-solutions)
   - [Bricked motherboard](#bricked-motherboard)
@@ -72,8 +69,6 @@ Did you find something interesting and want to use it in your own project? You'r
 
 </p>
 </details>
-
---------------------
 
 ## Hardware choices
 
@@ -138,7 +133,7 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 </p>
 </details>
 
---------------------
+
 
 ## Assembly and initial setup
 
@@ -200,7 +195,7 @@ My results:
 
 ```sh
 Basic System Information:
----------------------------------
+-------------
 Processor  : Intel(R) Pentium(R) Silver J5040 CPU @ 2.00GHz
 CPU cores  : 4 @ 2300.000 MHz
 AES-NI     : ✔ Enabled
@@ -212,7 +207,7 @@ Distro     : Ubuntu 22.04.1 LTS
 Kernel     : 5.15.0-48-generic
 
 fio Disk Speed Tests (Mixed R/W 50/50):
----------------------------------
+-------------
 Block Size | 4k            (IOPS) | 64k           (IOPS)
   ------   | ---            ----  | ----           ---- 
 Read       | 89.41 MB/s   (22.3k) | 122.40 MB/s   (1.9k)
@@ -226,7 +221,7 @@ Write      | 175.92 MB/s    (343) | 180.96 MB/s    (176)
 Total      | 342.98 MB/s    (669) | 350.63 MB/s    (341)
 
 iperf3 Network Speed Tests (IPv4):
----------------------------------
+-------------
 Provider        | Location (Link)           | Send Speed      | Recv Speed     
                 |                           |                 |                
 Clouvider       | London, UK (10G)          | 5.13 Mbits/sec  | busy           
@@ -238,7 +233,7 @@ Clouvider       | Dallas, TX, US (10G)      | 116 Mbits/sec   | 120 Mbits/sec
 Clouvider       | Los Angeles, CA, US (10G) | 117 Mbits/sec   | 119 Mbits/sec  
 
 Geekbench 5 Benchmark Test:
----------------------------------
+-------------
 Test            | Value                         
                 |                               
 Single Core     | 547                           
@@ -250,7 +245,7 @@ Performance was as expected, the J5040 isn't going to play the latest AAA title 
 </p>
 </details>
 
---------------------
+
 
 ## SSH
 
@@ -359,7 +354,7 @@ If everything worked correctly, the server should now be accessible only by your
 </p>
 </details>
 
---------------------
+
 
 ## Docker
 
@@ -494,7 +489,7 @@ Watchtower will check for updates every night at 2 am. If it finds any it will d
 </p>
 </details>
 
---------------------
+
 
 ## Remote access and perimeter security
 
@@ -916,7 +911,7 @@ sudo systemctl enable fail2ban
 </p>
 </details>
 
---------------------
+
 
 ## Dashboard with Homarr
 
@@ -980,7 +975,7 @@ Save and check that Homarr is accessible at `homarr.domain.tld`. For increased s
 </p>
 </details>
 
---------------------
+
 
 ## Multimedia streaming with Jellyfin
 
@@ -1127,7 +1122,7 @@ The Custom CSS setting can be found at `Dashboard -> General -> Custom CSS`. I h
 </p>
 </details>
 
---------------------
+
 
 ## Torrenting with qflood
 
@@ -1268,6 +1263,7 @@ Now that we know that port forwarding is working, let's do some `Options` tinker
 
 | Setting | Default | Set to | Reason |
 | ------------- | ------------- |------------- |------------- |
+| Default Torrent Management Mode | Manual | Automatic | Torrents are automatically transfered to the right directory depending on their category. |
 | Peer connection protocol |  TCP and µTP | TCP | µTP is good for data congestion control but can throttle speeds. |
 | Enable anonymous mode | Disable | Enable | Aims to prevent real IP-leakage while using a proxy or VPN. |
 | Enable Local Peer Discovery | Enable | Disable | We have no other client on our LAN. |
@@ -1275,17 +1271,7 @@ Now that we know that port forwarding is working, let's do some `Options` tinker
 | Global rate limits | Disable | 10000 KiB/s | About 80 Mbit/s. |
 | Alternative Rate Limits | Disable | 1500 KiB/s | About 12 Mbit/s, a good limit to prevent daytime broadband shortage. |
 | Schedule the use of alternative rate limits | Disable | 07:00 to 01:00, Every day | Will give us a our limited rate between 07:00 - 01:00 and our global rate between 01:00 - 07:00. |
-| Username/Password | admin / adminadmin | ;) | Default credentials are a security hazard. |
-
-For easy management, add three categories corresponding to the three torrent types:
-
-```
-Name: sonarr    Path: /data/torrents/tv
-Name: radarr    Path: /data/torrents/movies
-Name: lidarr    Path: /data/torrents/music
-```
-
-Then go to `Tools -> Options -> Downloads -> Default Torrent Management Mode` and change it to `Automatic`. Now when you add a torrent you can choose a category and have it automatically transfered to the right directory after downloading.
+| Username/Password | admin / adminadmin |  | Default credentials are a security hazard. |
 
 ### Part 4: Configure Flood
 
@@ -1294,16 +1280,16 @@ A recent version of qBittorrent broke Flood support, I will revisit this section
 </p>
 </details>
 
---------------------
+
 
 ## Multimedia collection management with *Arr
 
-In this section we will be implementing a full suite of *Arr apps, adding a high degree of automation to our media collection. We will be looking at Prowlarr, Radarr, Lidarr, Sonarr, Jellyseerr and finally Bazarr.
+In this section we will be implementing a full suite of *Arr apps, adding a high degree of automation to our media collection. We will be looking at Prowlarr, Radarr, Sonarr, Bazarr, Jellyseerr and finally Lidarr.
 
 <details><summary>Click to expand</summary>
 <p>
 
-### Part 1: Index management with Prowlarr
+### Part 1: Indexers with Prowlarr
 
 [Prowlarr](https://github.com/Prowlarr/Prowlarr/) is an indexer manager that integrates with other *Arr-apps. We will be using [hotio's](https://hotio.dev/containers/prowlarr/) Docker image, get started by making the directory structure:
 
@@ -1398,7 +1384,6 @@ Now visit Radarr's web-ui at `[local ip]:7878` and configure it. I made the foll
 | Delay profile | Both Usenet and Torrent | Only Torrent | We will not be using the Usenet protocol |
 | Qualities | No custom values | Some custom values | Granular file-size controls. If quality is your main concern, follow TRaSH's [best practices](https://trash-guides.info/Radarr/Radarr-Quality-Settings-File-Size/). |
 | Add Download Client | Might be automatically detected | qBittorrent | The download client that will handle requests from radarr. |
-| Analytics | Enable | Disable | I prefer to create github issues instead. |
 | Authentication | No authentication | Forms | Will require a username and password before accessing radarr, great for security as we will expose the service to the internet. |
 | UI | Imperial standard | Whatever you feel like | Make it personal. |
 
@@ -1445,9 +1430,95 @@ Save and exit, start it with:
 cd /srv/sonarr && sudo docker compose up -d
 ```
 
-Now visit Sonarr's web-ui at `[local ip]:8989` and configure it. Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in prowlarr.
+Now visit Sonarr's web-ui at `[local ip]:8989` and configure it. Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in Prowlarr.
 
-### Part 4: Music with Lidarr
+### Part 4: Subtitles with Bazarr
+
+[Bazarr](https://www.bazarr.media/) is a subtitle downloader and manager. It integrates natively with Radarr and Sonnar. We will be using [hotio's](https://hotio.dev/containers/bazarr/) Docker image, get started by making the directory structure:
+
+```sh
+sudo mkdir -p /srv/bazarr/config
+```
+
+Now make a `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/bazarr/docker-compose.yml
+```
+
+Paste the following:
+
+```yml                              
+version: "3.7"
+services:
+  bazarr:
+    container_name: bazarr
+    image: cr.hotio.dev/hotio/bazarr
+    ports:
+      - "6767:6767"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - /srv/bazarr/config:/config
+      - /srv/data:/data
+    restart: unless-stopped
+```
+
+Save and exit, start it with:
+
+```sh
+cd /srv/bazarr && sudo docker compose up -d
+```
+
+Now visit Bazarr's web-ui at `[local ip]:6767`. Start by making a language profile and add subtitle providers, then connect to Radarr and Sonarr. When you know everything works as intended, finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr. For security, remember to add an authentication method.
+
+### Part 5: Request shows and movies with Jellyseerr
+
+[Jellyseerr](https://hub.docker.com/r/fallenbagel/jellyseerr) is a request manager for Jellyfin. It allows us and our users to discover and request shows and movies. Start by making the directory structure:
+
+```sh
+sudo mkdir -p /srv/jellyseerr/config
+```
+
+Make a `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/jellyseerr/docker-compose.yml
+```
+
+Paste the following:
+
+```yml                              
+version: '3'
+services:
+    jellyseerr:
+       container_name: jellyseerr
+       image: fallenbagel/jellyseerr:latest
+       ports:
+            - 5055:5055
+       environment:
+            - PUID=1000
+            - PGID=1000
+            - UMASK=002
+            - TZ=Europe/Stockholm
+       volumes:
+            - /srv/jellyseerr/config:/app/config
+            - /srv/data:/data
+       restart: unless-stopped
+```
+
+Save and exit, start it with:
+
+```sh
+cd /srv/jellyseerr && sudo docker compose up -d
+```
+
+Now visit Jellyseerr's web-ui at `[local ip]:5055`. Log in using your Jellyfin account and follow the start-up guide. Finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr.
+
+### Part 6: Music with Lidarr
 
 [Lidarr](https://lidarr.audio/) is a music collection manager. It allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using [hotio's](https://hotio.dev/containers/lidarr/) docker image, start by making the directory structure:
 
@@ -1490,96 +1561,10 @@ cd /srv/lidarr && sudo docker compose up -d
 
 Now visit lidarr's web-ui at `[local ip]:8686` and configure it. Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in prowlarr.
 
-### Part 5: Request media with Jellyseerr
-
-[Jellyseerr](https://hub.docker.com/r/fallenbagel/jellyseerr) is a media request manager for Jellyfin. It allows us and our users to discover and request media. Start by making the directory structure:
-
-```sh
-sudo mkdir -p /srv/jellyseerr/config
-```
-
-Make a `docker-compose.yml` file:
-
-```sh
-sudo nano /srv/jellyseerr/docker-compose.yml
-```
-
-Paste the following:
-
-```yml                              
-version: '3'
-services:
-    jellyseerr:
-       container_name: jellyseerr
-       image: fallenbagel/jellyseerr:latest
-       ports:
-            - 5055:5055
-       environment:
-            - PUID=1000
-            - PGID=1000
-            - UMASK=002
-            - TZ=Europe/Stockholm
-       volumes:
-            - /srv/jellyseerr/config:/app/config
-            - /srv/data:/data
-       restart: unless-stopped
-```
-
-Save and exit, start it with:
-
-```sh
-cd /srv/jellyseerr && sudo docker compose up -d
-```
-
-Now visit Jellyseerr's web-ui at `[local ip]:5055`. Log in using your Jellyfin account and follow the start-up guide. Finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr.
-
-### Part 6: Manage subtitles with Bazarr
-
-[Bazarr](https://www.bazarr.media/) is a subtitle downloader and manager. It integrates natively with Radarr and Sonnar. We will be using [hotio's](https://hotio.dev/containers/bazarr/) Docker image, get started by making the directory structure:
-
-```sh
-sudo mkdir -p /srv/bazarr/config
-```
-
-Now make a `docker-compose.yml` file:
-
-```sh
-sudo nano /srv/bazarr/docker-compose.yml
-```
-
-Paste the following:
-
-```yml                              
-version: "3.7"
-services:
-  bazarr:
-    container_name: bazarr
-    image: cr.hotio.dev/hotio/bazarr
-    ports:
-      - "6767:6767"
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - UMASK=002
-      - TZ=Europe/Stockholm
-    volumes:
-      - /srv/bazarr/config:/app/config
-      - /srv/data:/data
-    restart: unless-stopped
-```
-
-Save and exit, start it with:
-
-```sh
-cd /srv/bazarr && sudo docker compose up -d
-```
-
-Now visit Bazarr's web-ui at `[local ip]:6767`. Start by making a language profile and add subtitle providers, then connect to Radarr and Sonarr. When you know everything works as intended, finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr. For security, remember to add an authentication method.
-
 </p>
 </details>
 
---------------------
+
 
 ## Future services
 
@@ -1593,7 +1578,7 @@ This section is about the services I plan to implement, take a look at the table
 | [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) | Prevents image hotlinking, will be implemented alongside static webpage (_this isn't really a service but I will keep it here for future reference_). | Low  |
 | [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s | Low  |
 
---------------------
+
 
 ## Issues and solutions
 
@@ -1629,7 +1614,7 @@ I have now resorted to running it on the server itself and it's able to stop con
 </p>
 </details>
 
---------------------
+
 
 ## Reference tables
 
@@ -1654,8 +1639,6 @@ If we assume an average 2 hours of full system utilization per day, with the res
 
 Or a yearly power consumption of: $0.286*365 \approx 104 \textrm{ kWh/Year}$
 
-For comparison, running an [average dishwasher](https://energyusecalculator.com/electricity_dishwasher.htm) once a week for 3 hours consumes about $\approx 282 \textrm{ kWh/Year}$
-
 [^1]: [AnandTech MX500 review](https://www.anandtech.com/show/12263/the-crucial-mx500-500gb-review/8). Power draw for the 250GB model is inferred from the MX500 500GB results.
 
 [^2]: [TomsHardware i7-5960x review](https://www.tomshardware.com/reviews/intel-core-i7-5960x-haswell-e-cpu,3918-13.html). This number seems to agree with Crucials [own assessment](https://www.crucial.com/support/articles-faq-memory/how-much-power-does-memory-use).
@@ -1669,7 +1652,7 @@ For comparison, running an [average dishwasher](https://energyusecalculator.com/
 </p>
 </details>
 
---------------------
+
 
 ## License and usage
 
