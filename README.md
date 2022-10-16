@@ -1085,6 +1085,7 @@ Remember, when you've unmounted the USB you also need to lock it:
 sudo cryptsetup luksClose [volume name]
 ```
 </p>
+</details>
 
 Now we can copy the media-files from the USB to our media directory:
 
