@@ -98,24 +98,23 @@ After some [back of the napkin calculations](#reference-tables) I've estimated m
 
 ### Part 3: Case
 
-The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes; discreet and affordable with some room for expandability. It also included a 120 mm rear-mounted fan, however I replaced it with a Noctua [NF-A12X25 ULN](https://noctua.at/en/products/fan/nf-a12x25-uln) for reduced noise.
+The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes; discreet and affordable with some room for expandability. It included a 120 mm rear-mounted fan which I replaced with a [Noctua NF-A12X25 ULN](https://noctua.at/en/products/fan/nf-a12x25-uln) for noise reduction.
 
 ### Part 4: RAM
 
-As stated on intel's and ASRock's websites; the J5040 _officially_ supports up to 8GB of RAM.
-However, some reddit users report being able to use 16 or even 32GB with [varying results](https://libreddit.dcs0.hu/r/ASRock/comments/k8hpww/how_can_a_motherboard_support_more_ram_than_the/).
+The J5040 _officially_ supports up to 8GB of RAM, as stated on intel's and ASRock's websites. Despite this some reddit users report being able to use 16 or even 32GB with [varying results](https://libreddit.dcs0.hu/r/ASRock/comments/k8hpww/how_can_a_motherboard_support_more_ram_than_the/).
 
-With this in mind I decided to take a gamble with a [G.SKILL Ripjaws SO-DIMM 16GB Kit](https://www.gskill.com/product/2/197/1540865326/F4-2400C16D-16GRS).
+With this in mind I decided on a [G.SKILL Ripjaws SO-DIMM 16GB](https://www.gskill.com/product/2/197/1540865326/F4-2400C16D-16GRS) kit.
 
 ### Part 5: Storage
 
 Spinning hard-disk drives (HDD) are popular in home servers and NAS due to their high storage capacity and low price. However, they have reduced speeds and increased power draw compared to solid-state drives (SSD). Their moving parts also add noise and a significant [point of failure](https://en.wikipedia.org/wiki/Head_crash).
 
-I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/crucial-mx500-ssd) (_250GB bootdrive + 2TB storage drive_) as they provide a good balance between price and performance. They also support _Integrated Power Loss Immunity_ which aims to prevent data loss in case of a power outage.
+I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/crucial-mx500-ssd) (_250GB bootdrive + 2TB storage drive_) as they provide a good balance between price and performance. They also support _Integrated Power Loss Immunity_ which aims to prevent data loss in the case of a power outage.
 
 ### Part 6: Final build costs
 
-| Component type | Model name | Price (SEK*) |
+| Component type | Model name | Price [(SEK)](https://www.xe.com/currencyconverter/convert/?Amount=1000&From=SEK&To=USD) |
 | :--- | :--- | ---: |
 | CPU / Motherboard | [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp)| 1790 |
 | Power supply | [be quiet! SYSTEM POWER B9 (_300W_)](https://www.bequiet.com/en/powersupply/1285) | 440 |
@@ -128,12 +127,8 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 | Misc | [Cable ties](https://www.amazon.se/gp/product/B09GFMN616/) | 100 |
 | __Total:__ |  | __5910__ |
 
-[_*10 SEK = ~1 USD_ ](https://www.xe.com/currencyconverter/convert/?Amount=10&From=SEK&To=USD)
-
 </p>
 </details>
-
-
 
 ## Assembly and initial setup
 
@@ -245,8 +240,6 @@ Performance was as expected, the J5040 isn't going to play the latest AAA title 
 </p>
 </details>
 
-
-
 ## SSH
 
 This section is about basic SSH, such as local network access and some best practices. I will expand on this in an upcoming section where we will configure SSH outside of our home network.
@@ -256,7 +249,7 @@ This section is about basic SSH, such as local network access and some best prac
 
 ### Part 1: Prerequisite and local access
 
-SSH is a protocol that allows remote login and command line execution, something that will be very convenient when we continue to set up the server. We will be using [OpenSSH](https://www.openssh.com/) as our SSH deamon, it usually comes shipped by default on both server and desktop Linux distributions. If you lack the deamon it can be installed with:
+SSH is a protocol that allows remote login and command line execution, something that will be very convenient when we continue to set up the server. We will be using [OpenSSH](https://www.openssh.com/) as our SSH deamon, it usually comes shipped by default on both server and desktop Linux distributions. If you lack the deamon you can install it using the following two commands:
 
 For your client:
 
@@ -354,18 +347,16 @@ If everything worked correctly, the server should now be accessible only by your
 </p>
 </details>
 
-
-
 ## Docker
 
-This section is all about Docker and how to manage Docker containers.
+In this section we get started with [Docker](https://www.docker.com/) containers.
 
 <details><summary>Click to expand</summary>
 <p>
 
 ### Part 1: Installation
 
-[Docker](https://www.docker.com/) lets us set up containers to hold our services, making it easy to handle access and permissions. There are multiple ways to use docker, we will be using the `docker-compose` method which entails three steps:
+ Docker lets us set up containers to hold our services, making it easy to handle access and permissions. There are multiple ways to use Docker, we will be using the `compose` method which entails three steps:
 
 1. Create a `docker-compose.yml` file
 2. In the file, add any necessary parameters to make the service work (_these can often be pasted directly from the service's documentation_)
@@ -432,7 +423,7 @@ echo "deb [signed-by=/usr/share/keyrings/azlux-archive-keyring.gpg] http://packa
 sudo wget -O /usr/share/keyrings/azlux-archive-keyring.gpg  https://azlux.fr/repo.gpg
 ```
 
-> __GPG Error?__ The key is most likely out of date, visit the [maintainer](https://packages.azlux.fr/) to find the current key.
+> __GPG/Key Error?__ The key is most likely out of date, visit the [maintainer](https://packages.azlux.fr/) to find the current key.
 
 ```sh
 sudo apt update && sudo apt install docker-ctop
@@ -468,14 +459,13 @@ services:
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    restart: always
     environment:
       - TZ=Europe/Stockholm
       - WATCHTOWER_INCLUDE_RESTARTING=true
       - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_SCHEDULE=0 0 2 * * * # run daily at 2 am
+      - WATCHTOWER_SCHEDULE=0 0 2 * * * # run daily at 02:00
     command: [container names]
-
+    restart: always
 ```
 
 Save and exit, now start Watchtower with:
@@ -484,12 +474,10 @@ Save and exit, now start Watchtower with:
 cd /srv/watchtower && sudo docker compose up -d
 ```
 
-Watchtower will check for updates every night at 2 am. If it finds any it will download it, restart the container to apply the update and remove the old version.
+Watchtower will check for updates every night at 02:00. If it finds any it will download it, restart the container to apply the update and remove the old version.
 
 </p>
 </details>
-
-
 
 ## Remote access and perimeter security
 
@@ -539,7 +527,7 @@ Now configure it according to the official ddns-updater [documentation](https://
 }
 ```
 
-Save and exit. Now lets create a docker compose file:
+Save and exit. Now lets create a `docker-compose.yml` file:
 
 ```sh
 sudo nano /srv/ddns-updater/docker-compose.yml
@@ -559,6 +547,7 @@ services:
     volumes:
       - ./data:/updater/data
     environment:
+      - TZ=Europe/Stockholm
       - CONFIG=
       - PERIOD=5m
       - UPDATE_COOLDOWN_PERIOD=5m
@@ -575,13 +564,12 @@ services:
       - ROOT_URL=/
 
       # Backup
-      - BACKUP_PERIOD=0 # 0 to disable
+      - BACKUP_PERIOD=720h # monthly
       - BACKUP_DIRECTORY=/updater/data
 
       # Other
       - LOG_LEVEL=info
       - LOG_CALLER=hidden
-      - SHOUTRRR_ADDRESSES=
     restart: always
 ```
 
@@ -631,14 +619,14 @@ services:
   app:
     image: 'jc21/nginx-proxy-manager:latest'
     container_name: npm-app
-    restart: unless-stopped
     ports:
-      # These ports are in format <host-port>:<container-port>
+      # <host-port>:<container-port>
       - '80:80' # Public HTTP Port
       - '443:443' # Public HTTPS Port
       - '81:81' # Admin Web Port
-      # Add any other Stream port you want to expose
-      # - '21:21' # FTP
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt    
     environment:
       TZ: "Europe/Stockholm"
       DB_MYSQL_HOST: "db"
@@ -646,26 +634,22 @@ services:
       DB_MYSQL_USER: "npm"
       DB_MYSQL_PASSWORD: "npm"
       DB_MYSQL_NAME: "npm"
-      # Uncomment this if IPv6 is not enabled on your host
-      # DISABLE_IPV6: 'true'
-    volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
     depends_on:
       - db
+    restart: always
 
   db:
     image: 'jc21/mariadb-aria:latest'
     container_name: npm-db
-    restart: unless-stopped
+    volumes:
+      - ./data/mysql:/var/lib/mysql    
     environment:
       TZ: "Europe/Stockholm"
       MYSQL_ROOT_PASSWORD: 'npm'
       MYSQL_DATABASE: 'npm'
       MYSQL_USER: 'npm'
       MYSQL_PASSWORD: 'npm'
-    volumes:
-      - ./data/mysql:/var/lib/mysql
+    restart: always
 ```
 
 Save and exit. You should now be able to start NGINX proxy manager by running:
@@ -911,8 +895,6 @@ sudo systemctl enable fail2ban
 </p>
 </details>
 
-
-
 ## Dashboard with Homarr
 
 [Homarr](https://homarr.vercel.app/docs/about) is an easy to use dashboard that integrates well with ARR apps.
@@ -974,8 +956,6 @@ Save and check that Homarr is accessible at `homarr.domain.tld`. For increased s
 
 </p>
 </details>
-
-
 
 ## Multimedia streaming with Jellyfin
 
@@ -1121,8 +1101,6 @@ The Custom CSS setting can be found at `Dashboard -> General -> Custom CSS`. I h
 
 </p>
 </details>
-
-
 
 ## Torrenting with qflood
 
@@ -1279,8 +1257,6 @@ A recent version of qBittorrent broke Flood support, I will revisit this section
 
 </p>
 </details>
-
-
 
 ## Multimedia collection management with *Arr
 
@@ -1564,8 +1540,6 @@ Now visit lidarr's web-ui at `[local ip]:8686` and configure it. Finish up by cr
 </p>
 </details>
 
-
-
 ## Future services
 
 This section is about the services I plan to implement, take a look at the table below to get an idea about what's next:
@@ -1577,8 +1551,6 @@ This section is about the services I plan to implement, take a look at the table
 | [Umami](https://github.com/umami-software/umami) | Self-hosted, privacy focused web analytics. Will be implemented alongside static webpage | Low  |
 | [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) | Prevents image hotlinking, will be implemented alongside static webpage (_this isn't really a service but I will keep it here for future reference_). | Low  |
 | [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s | Low  |
-
-
 
 ## Issues and solutions
 
@@ -1613,8 +1585,6 @@ I have now resorted to running it on the server itself and it's able to stop con
 
 </p>
 </details>
-
-
 
 ## Reference tables
 
@@ -1651,8 +1621,6 @@ Or a yearly power consumption of: $0.286*365 \approx 104 \textrm{ kWh/Year}$
 
 </p>
 </details>
-
-
 
 ## License and usage
 
