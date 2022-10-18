@@ -65,7 +65,10 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Part 4: Subtitles with Bazarr](#part-4-subtitles-with-bazarr)
   - [Part 5: Request shows and movies with Jellyseerr](#part-5-request-shows-and-movies-with-jellyseerr)
   - [Part 6: Music with Lidarr](#part-6-music-with-lidarr)
-- [Future services](#future-services)
+- [TO-DO](#to-do)
+  - [Services](#services)
+  - [Security](#security)
+  - [Hardware](#hardware)
 - [Issues and solutions](#issues-and-solutions)
   - [Bricked motherboard](#bricked-motherboard)
   - [Containerized Fail2Ban](#containerized-fail2ban)
@@ -247,7 +250,35 @@ Single Core     | 547
 Multi Core      | 1858
 ```
 
-Performance was as expected, the J5040 isn't going to play the latest AAA title but it will be plenty for my use case.
+Performance was as expected, the J5040 isn't going to play the latest AAA title but it will be plenty for my use case. Before we continue we will configure our timezone to ensure correct date/time. Run:
+
+```sh
+sudo nano /etc/timezone
+```
+
+Replace the value with your timezone:
+
+```
+TZ='Europe/Stockholm'
+```
+
+Save and exit. Now run the following, replacing `Europe/Stockholm` with your own timezone:
+
+```sh
+sudo ln -sf /usr/share/Europe/Stockholm /etc/localtime
+```
+
+Then run:
+
+```sh
+sudo dpkg-reconfigure -f noninteractive tzdata
+```
+
+Finally, check that the timezone is correct with:
+
+```sh
+timedatectl
+```
 
 --------------------
 
@@ -1647,17 +1678,41 @@ Now visit lidarr's web-ui at `[local ip]:8686` and configure it. Finish up by cr
 </p>
 </details>
 
-## Future services
+## TO-DO
 
-This section is about the services I plan to implement, take a look at the table below to get an idea about what's next:
+This section contains my TO-DO list, what I plan to implement or what I need to take a look at.
 
-|  Service | Description | Priority |
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+### Services
+
+| Item | Details | Current status |
 | ------------- | ------------- | ------------- |
-| Data backup solution | [Restic](https://restic.net/) or [Borgmatic](https://torsion.org/borgmatic/). Will make backups/snapshots to an external SSD, compression is preferred | High |
-| [Static Web Server](https://sws.joseluisq.net/) | A static webpage server | Low |
-| [Umami](https://github.com/umami-software/umami) | Self-hosted, privacy focused web analytics. Will be implemented alongside static webpage | Low  |
-| [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) | Prevents image hotlinking, will be implemented alongside static webpage (_this isn't really a service but I will keep it here for future reference_). | Low  |
-| [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s | Low  |
+| [Static Web Server](https://sws.joseluisq.net/) | A static webpage server, will also implement [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) and [Umami](https://github.com/umami-software/umami). | Working on html/css-website to serve |
+| Data backup solution | [Restic](https://restic.net/) or [Borgmatic](https://torsion.org/borgmatic/). | Researching |
+| [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s. | On ice |
+
+### Security
+
+| Item | Details | Current status |
+| ------------- | ------------- | ------------- |
+| Fail2Ban-filter | Fix REGEX-filter for Fail2Ban, maybe split into seperate filters depending on service. | Researching |
+| Security audit | Do a security audit. Check Secuirty headers, open ports, UPnP settings on router. | On ice |
+
+### Hardware
+
+| Item | Details |
+| ------------- | ------------- |
+| SSD | A third SSD to store backups of both the server and some clients. 2TB, same Crucial model? |
+| SATA-cables | Better SATA cables, niche angles. |
+
+--------------------
+
+</p>
+</details>
 
 ## Issues and solutions
 
