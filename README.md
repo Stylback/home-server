@@ -49,7 +49,8 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Part 1: Consistent directories](#part-1-consistent-directories)
   - [Part 2: Install Jellyfin](#part-2-install-jellyfin)
   - [Part 3: Media transfer and streaming](#part-3-media-transfer-and-streaming)
-  - [Part 4: Customization](#part-4-customization)
+  - [Part 4: Hardware acceleration](#part-4-hardware-acceleration)
+  - [Part 5: Customization](#part-5-customization)
 - [Torrenting with qflood](#torrenting-with-qflood)
   - [Part 1: Configure Wireguard](#part-1-configure-wireguard)
   - [Part 2: Install qflood](#part-2-install-qflood)
@@ -1021,7 +1022,9 @@ services:
       - /srv/jellyfin/cache:/cache
       - /srv/data/media:/media
     devices:
-      - /dev/dri:/dev/dri
+      #- /dev/dri:/dev/dri # if below does not work, uncomment this
+      - /dev/dri/renderD128:/dev/dri/renderD128
+      - /dev/dri/card0:/dev/dri/card0
     restart: unless-stopped
 ```
 
@@ -1099,7 +1102,45 @@ Once your media-files are copied they will be automatically added to your Jellyf
 sudo umount /media/external
 ```
 
-### Part 4: Customization
+### Part 4: Hardware acceleration
+
+Our J0540 have extensive hardware support for different encoders thanks to Intel QuickSync. This will enable us to stream large media files at a lower bitrate to ensure a consistent experience. This process can either be done with software (_high CPU usage_) or hardware (_low CPU usage_). To enable the full range of hardware accelerated transcoding we will first need to enable ´guc´ and ´huc´ firmware as this is disabled by default for processors of 10th gen and earlier. Start by making a `modprobe` config file:
+
+```sh
+sudo nano /etc/modprobe.d/i915.conf
+```
+
+To enable both `guc` and `huc`, paste the following:
+
+```sh
+options i915 enable_guc=3
+```
+
+Rebuild grub boot entry, this will only apply to the current kernel:
+
+```sh
+sudo update-initramfs -u
+```
+
+Check that it's enabled:
+
+```sh
+sudo -i
+```
+
+```sh
+cat /sys/kernel/debug/dri/0/i915_capabilities
+```
+
+There should be an entry with `i915.enable_guc=3`.
+
+Reboot the server. Now go to Jellyfin `Settings -> Dashboard -> Playback -> Transcoding`. The following encode settings are supported on the J5040:
+
+![Jellyfin encoding settings for the J5040](https://github.com/Stylback/home-server/blob/main/media/jellyfin_encoding.png?raw=true)
+
+Finally, enable `Throttle Transcodes` at the bottom of the page and save.
+
+### Part 5: Customization
 
 Jellyfin supports [custom CSS](https://jellyfin.org/docs/general/clients/css-customization.html), you can either create your own or import one from the community. I will be using the Kaleidochromic preset from [Ultrachromic](https://github.com/CTalvio/Ultrachromic) combined with a tweak to hide `More Like This`:
 
