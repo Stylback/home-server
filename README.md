@@ -65,16 +65,17 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Part 4: Subtitles with Bazarr](#part-4-subtitles-with-bazarr)
   - [Part 5: Request shows and movies with Jellyseerr](#part-5-request-shows-and-movies-with-jellyseerr)
   - [Part 6: Music with Lidarr](#part-6-music-with-lidarr)
-- [TO-DO](#to-do)
-  - [Services](#services)
-  - [Security](#security)
-  - [Hardware](#hardware)
 - [Issues and solutions](#issues-and-solutions)
   - [Bricked motherboard](#bricked-motherboard)
   - [Containerized Fail2Ban](#containerized-fail2ban)
 - [Reference tables](#reference-tables)
   - [Approximating power consumption](#approximating-power-consumption)
 - [License and usage](#license-and-usage)
+- [TO-DO](#to-do)
+  - [Services](#services)
+  - [Security](#security)
+  - [Hardware](#hardware)
+  - [Other](#other)
 
 --------------------
 
@@ -1678,42 +1679,6 @@ Now visit lidarr's web-ui at `[local ip]:8686` and configure it. Finish up by cr
 </p>
 </details>
 
-## TO-DO
-
-This section contains my TO-DO list, what I plan to implement or what I need to take a look at.
-
-<details><summary>Click to expand</summary>
-<p>
-
---------------------
-
-### Services
-
-| Item | Details | Current status |
-| ------------- | ------------- | ------------- |
-| [Static Web Server](https://sws.joseluisq.net/) | A static webpage server, will also implement [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) and [Umami](https://github.com/umami-software/umami). | Working on html/css-website to serve |
-| Data backup solution | [Restic](https://restic.net/) or [Borgmatic](https://torsion.org/borgmatic/). | Researching |
-| [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s. | On ice |
-
-### Security
-
-| Item | Details | Current status |
-| ------------- | ------------- | ------------- |
-| Fail2Ban-filter | Fix REGEX-filter for Fail2Ban, maybe split into seperate filters depending on service. | Researching |
-| Security audit | Do a security audit. Check Secuirty headers, open ports, UPnP settings on router. | On ice |
-
-### Hardware
-
-| Item | Details |
-| ------------- | ------------- |
-| SSD | A third SSD to store backups of both the server and some clients. 2TB, same Crucial model? |
-| SATA-cables | Better SATA cables, niche angles. |
-
---------------------
-
-</p>
-</details>
-
 ## Issues and solutions
 
 Here I document anything particularly difficult that made me rethink an implementation.
@@ -1797,5 +1762,48 @@ Or a yearly power consumption of: $0.286*365 \approx 104 \textrm{ kWh/Year}$
 - Any resource I link, cite or otherwise refer to are subject to their respective licenses.
 - Any image used is my own and are subject to All Rights Reserved.
 - Everything else in this project is licensed under the terms of the [MIT license](https://mit-license.org/).
+
+## TO-DO
+
+This section contains my TO-DO list, future plans and some notes.
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+### Services
+
+| Item | Details | Current status |
+| ------------- | ------------- | ------------- |
+| [Static Web Server](https://sws.joseluisq.net/) | A static webpage server, will also implement [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) and [Umami](https://github.com/umami-software/umami). | Working on html/css-website to serve |
+| qflood | qflood support was broken on a recent qBittorrent version, have yet to implement it. | Waiting on qBittorrent to push a fix |
+| Data backup solution | [Restic](https://restic.net/) or [Borgmatic](https://torsion.org/borgmatic/). | Researching |
+| [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s. | On ice |
+
+### Security
+
+| Item | Details | Current status |
+| ------------- | ------------- | ------------- |
+| Fail2Ban-filter | Fix REGEX-filter for Fail2Ban, maybe split into seperate filters depending on service. | Researching |
+| Security audit | Do a security audit. Check Secuirty headers, open ports, UPnP settings on router. | On ice |
+
+### Hardware
+
+| Item | Details |
+| ------------- | ------------- |
+| SSD | A third SSD to store backups of both the server and some clients. 2TB, same Crucial model? |
+| SATA-cables | Better SATA cables, niche angles. |
+
+### Other
+
+| Item | Details | Current status |
+| ------------- | ------------- | ------------- |
+| New hardware photos | Take new photos for the hardware section to include the fan upgrade. | Waiting on next hardware upgrade |
+
+--------------------
+
+</p>
+</details>
 
 **[Back to top](#)**
