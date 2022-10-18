@@ -15,6 +15,8 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
 <details><summary>Click to expand</summary>
 <p>
 
+--------------------
+
 - [About](#about)
 - [Table of contents](#table-of-contents)
 - [Hardware choices](#hardware-choices)
@@ -71,6 +73,8 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Approximating power consumption](#approximating-power-consumption)
 - [License and usage](#license-and-usage)
 
+--------------------
+
 </p>
 </details>
 
@@ -80,6 +84,8 @@ This section is about the hardware I use, why I chose a particular piece of hard
 
 <details><summary>Click to expand</summary>
 <p>
+
+--------------------
 
 ### Part 1: CPU / Motherboard
 
@@ -129,6 +135,8 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 | Misc | [Cable ties](https://www.amazon.se/gp/product/B09GFMN616/) | 100 |
 | __Total:__ |  | __5910__ |
 
+--------------------
+
 </p>
 </details>
 
@@ -138,6 +146,8 @@ This section is about my experience putting the hardware together and verifying 
 
 <details><summary>Click to expand</summary>
 <p>
+
+--------------------
 
 ### Part 1: Assembly
 
@@ -239,6 +249,8 @@ Multi Core      | 1858
 
 Performance was as expected, the J5040 isn't going to play the latest AAA title but it will be plenty for my use case.
 
+--------------------
+
 </p>
 </details>
 
@@ -248,6 +260,8 @@ This section is about basic SSH, such as local network access and some best prac
 
 <details><summary>Click to expand</summary>
 <p>
+
+--------------------
 
 ### Part 1: Prerequisite and local access
 
@@ -346,6 +360,8 @@ Verify that everything works by first trying to connect to the server with `ssh 
 
 If everything worked correctly, the server should now be accessible only by your SSH-key and noone should be able to log in as root. As we changed the port number from the default we gain some resistance against automated attacks, but a persistent actor could still find the correct port after some trial and error.
 
+--------------------
+
 </p>
 </details>
 
@@ -355,6 +371,8 @@ In this section we get started with [Docker](https://www.docker.com/) containers
 
 <details><summary>Click to expand</summary>
 <p>
+
+--------------------
 
 ### Part 1: Installation
 
@@ -478,6 +496,8 @@ cd /srv/watchtower && sudo docker compose up -d
 
 If everything works as expected, Watchtower will check for new docker images every night at 02:00. If it finds any, it will download the image, stop the service, apply the new image, start tthe service and finally remove the old image.
 
+--------------------
+
 </p>
 </details>
 
@@ -487,6 +507,8 @@ This section is about secure, remote access. We will talk about custom domains, 
 
 <details><summary>Click to expand</summary>
 <p>
+
+--------------------
 
 ### Part 1: Aquire a custom domain
 
@@ -598,11 +620,15 @@ Check that everything is working by visting `[local-IP]:8000` in your browser, y
 <details><summary>Didn't work?</summary>
 <p>
 
+--------------------
+
 First, ensure that you are in `/srv/ddns-updater` and try again.
 
 If that didn't fix it you might be looking at a permission error, double-check the directory/file permissions with `ls -la`.
 
 If the problem still persist your best bet is to look at the logs. Run `sudo ctop` and take a look at the `ddns-updater` container.
+
+--------------------
 
 </p>
 </details>
@@ -901,6 +927,8 @@ Finally, make Fail2Ban run automatically on start:
 sudo systemctl enable fail2ban
 ```
 
+--------------------
+
 </p>
 </details>
 
@@ -910,6 +938,8 @@ sudo systemctl enable fail2ban
 
 <details><summary>Click to expand</summary>
 <p>
+
+--------------------
 
 First, lets create a `docker-compose.yml` and a directory to house it:
 
@@ -963,6 +993,8 @@ Access List:            Publicly Accessible
 
 Save and check that Homarr is accessible at `homarr.domain.tld`. For increased security, add a SSL-certificate and assign it a unique Access List entry.
 
+--------------------
+
 </p>
 </details>
 
@@ -972,6 +1004,8 @@ Save and check that Homarr is accessible at `homarr.domain.tld`. For increased s
 
 <details><summary>Click to expand</summary>
 <p>
+
+--------------------
 
 ### Part 1: Consistent directories
 
@@ -1070,6 +1104,8 @@ sudo mount /dev/[label] /media/external
 <details><summary>Is your USB LUKS encrypted?</summary>
 <p>
 
+--------------------
+
 Then you need to unlock it before mounting:
 
 ```sh
@@ -1087,6 +1123,9 @@ Remember, when you've unmounted the USB you also need to lock it:
 ```sh
 sudo cryptsetup luksClose [volume name]
 ```
+
+--------------------
+
 </p>
 </details>
 
@@ -1104,7 +1143,7 @@ sudo umount /media/external
 
 ### Part 4: Hardware acceleration
 
-Our J0540 have extensive hardware support for different encoders thanks to Intel QuickSync. This will enable us to stream large media files at a lower bitrate to ensure a consistent experience. This process can either be done with software (_high CPU usage_) or hardware (_low CPU usage_). To enable the full range of hardware accelerated transcoding we will first need to enable ´guc´ and ´huc´ firmware as this is disabled by default for processors of 10th gen and earlier. Start by making a `modprobe` config file:
+Our J0540 have extensive hardware support for different encoders thanks to Intel QuickSync. This will enable us to stream large media files at a lower bitrate to ensure a consistent experience. This process can either be done with software (_high CPU usage_) or hardware (_low CPU usage_). To enable the full range of hardware accelerated transcoding we will first need to enable `guc` and `huc` firmware as this is disabled by default for Intel processors of 10th generation and earlier. Start by making a `modprobe` config file:
 
 ```sh
 sudo nano /etc/modprobe.d/i915.conf
@@ -1153,6 +1192,8 @@ Jellyfin supports [custom CSS](https://jellyfin.org/docs/general/clients/css-cus
 
 The Custom CSS setting can be found at `Dashboard -> General -> Custom CSS`. I had to restart the Jellyfin container for the settings to take effect.
 
+--------------------
+
 </p>
 </details>
 
@@ -1162,6 +1203,8 @@ The Custom CSS setting can be found at `Dashboard -> General -> Custom CSS`. I h
 
 <details><summary>Click to expand</summary>
 <p>
+
+--------------------
 
 > NOTE: The BitTorrent protocol is a communcation protocol for peer-to-peer file sharing, it's an easy and accessible way for people to share their own or licensed works online. Before you contemplate downloading or sharing copyrighted content via the BitTorrent protocol, please check that those actions are not considered criminal by your local laws and regulations. I am not liabel in any way for your inability to use the BitTorrent protocol in accordance with said law.
 
@@ -1249,6 +1292,8 @@ cd /srv/qflood && sudo docker compose up -d
 <details><summary>Did you get an IPv6_table error?</summary>
 <p>
 
+--------------------
+
 It might be that there are no IPv6 tables on your server. To fix this we need to run:
 
 ```sh
@@ -1262,6 +1307,8 @@ echo "ip6table_filter" | sudo tee -a /etc/modules
 ```
 
 Save and reboot, check the container status with `ctop` to see if it's working.
+
+--------------------
 
 </p>
 </details>
@@ -1309,6 +1356,8 @@ Now that we know that port forwarding is working, let's do some `Options` tinker
 
 A recent version of qBittorrent broke Flood support, I will revisit this section when the issue has been resolved.
 
+--------------------
+
 </p>
 </details>
 
@@ -1318,6 +1367,8 @@ In this section we will be implementing a full suite of *Arr apps, adding a high
 
 <details><summary>Click to expand</summary>
 <p>
+
+--------------------
 
 ### Part 1: Indexers with Prowlarr
 
@@ -1591,6 +1642,8 @@ cd /srv/lidarr && sudo docker compose up -d
 
 Now visit lidarr's web-ui at `[local ip]:8686` and configure it. Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in prowlarr.
 
+--------------------
+
 </p>
 </details>
 
@@ -1612,6 +1665,8 @@ Here I document anything particularly difficult that made me rethink an implemen
 
 <details><summary>Click to expand</summary>
 <p>
+
+--------------------
 
 ### Bricked motherboard
 
@@ -1637,6 +1692,8 @@ I initially tried to run Fail2Ban in a docker container to streamline deployment
 
 I have now resorted to running it on the server itself and it's able to stop connections from banned IP addresses before they reach NGINX Proxy Manager. However it's not perfect, I seem unable to ban IP addresses that fail NGINX's Access List authentication. Perhaps these attempts are not logged or maybe the REGEX just fails to match them. I will revisit this issue at a later date and update accordingly.
 
+--------------------
+
 </p>
 </details>
 
@@ -1646,6 +1703,8 @@ Throughout the text I might refere to a table, this is where you can find it.
 
 <details><summary>Click to expand</summary>
 <p>
+
+--------------------
 
 ### Approximating power consumption
 
@@ -1672,6 +1731,8 @@ Or a yearly power consumption of: $0.286*365 \approx 104 \textrm{ kWh/Year}$
 [^4]: Noctua NF-A12X25 ULN [specification](https://noctua.at/en/products/fan/nf-a12x25-uln/specification).
 
 [^5]: [HardwareInfo low-load PSU test](https://web.archive.org/web/20130811112042/http://uk.hardware.info/productinfo/188792/be-quiet!-pure-power-l8-300w#tab:testresults). Inferred from the 22.5 W test of the _be quiet! Pure Power L8 300 W_.
+
+--------------------
 
 </p>
 </details>
