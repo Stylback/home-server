@@ -45,7 +45,6 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Part 2: Configure Dynamic DNS](#part-2-configure-dynamic-dns)
   - [Part 3: Configure NGINX Proxy manager](#part-3-configure-nginx-proxy-manager)
   - [Part 4: Set up remote SSH](#part-4-set-up-remote-ssh)
-  - [Part 5: Implement Fail2Ban](#part-5-implement-fail2ban)
 - [Dashboard with Homarr](#dashboard-with-homarr)
 - [Multimedia streaming with Jellyfin](#multimedia-streaming-with-jellyfin)
   - [Part 1: Consistent directories](#part-1-consistent-directories)
@@ -65,6 +64,10 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Part 4: Subtitles with Bazarr](#part-4-subtitles-with-bazarr)
   - [Part 5: Request shows and movies with Jellyseerr](#part-5-request-shows-and-movies-with-jellyseerr)
   - [Part 6: Music with Lidarr](#part-6-music-with-lidarr)
+- [Perimiter security with Fail2Ban](#perimiter-security-with-fail2ban)
+  - [Part 1: Overall idea and inital setup](#part-1-overall-idea-and-inital-setup)
+  - [Part 2: NGINX Proxy manager](#part-2-nginx-proxy-manager)
+  - [Part 3: Jellyfin](#part-3-jellyfin)
 - [Issues and solutions](#issues-and-solutions)
   - [Bricked motherboard](#bricked-motherboard)
   - [Containerized Fail2Ban](#containerized-fail2ban)
@@ -535,7 +538,7 @@ If everything works as expected, Watchtower will check for new docker images eve
 
 ## Remote access and perimeter security
 
-This section is about secure, remote access. We will talk about custom domains, Dynamic DNS, NGINX Proxy Manager, remote SSH and finally Fail2Ban.
+This section is about secure, remote access. We will talk about custom domains, Dynamic DNS, NGINX Proxy Manager and remote SSH.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -834,130 +837,6 @@ sudo systemctl restart ssh
 ```
 
 The connection will now be kept alive for 600 seconds of inactivity, you can change this to your liking.
-
-### Part 5: Implement Fail2Ban
-
-[Fail2Ban](https://github.com/fail2ban/fail2ban) is a service that scans log files and bans IP addresses that have multiple failed log-in attempts. We will make it listen to log files from NGINX Proxy Manager and prevent malicious hosts from spamming our services with authentication attempts.
-
-To get started with Fail2Ban we will install it with:
-
-```sh
-sudo apt update && sudo apt install fail2ban
-```
-
-Now start Fail2Ban:
-
-```sh
-sudo fail2ban-client start
-```
-
-We will create three different files; one action, one filter and one jail. First, create an action-file:
-
-```sh
-sudo nano /etc/fail2ban/action.d/docker-action.conf
-```
-
-Paste:
-
-```
-[Definition]
-actioncheck = iptables -n -L FORWARD | grep -q 'DOCKER-USER[ t]'
-actionban = iptables -I DOCKER-USER -s <ip> -j DROP
-actionunban = iptables -D DOCKER-USER -s <ip> -j DROP
-```
-
-Second, create a filter:
-
-```sh
-sudo nano /etc/fail2ban/filter.d/npm-docker.conf
-```
-
-Paste the following REGEX-expression from [hugalafutro](https://github.com/NginxProxyManager/nginx-proxy-manager/issues/39#issuecomment-907795521):
-
-```
-[INCLUDES]
-
-[Definition]
-
-failregex = ^<HOST>.+" (4\d\d|3\d\d) (\d\d\d|\d) .+$
-            ^.+ 4\d\d \d\d\d - .+ \[Client <HOST>\] \[Length .+\] ".+" .+$
-```
-
-> __NOTE__: This filter is overeager and might ban a user for legitimate usage such as reloading a web UI. I will revisit this regex at a later date, if you want to try your hands on creating your own filter I recommend [regex101](https://regex101.com/).
-
-Save and exit. Now create a jail-file:
-
-```sh
-sudo nano /etc/fail2ban/jail.d/npm-docker.local
-```
-
-Paste:
-
-```sh
-[npm-docker]
-enabled = true
-ignoreip = 127.0.0.1/8 192.168.1.0/24
-chain = INPUT
-filter  = npm-docker
-logpath = /srv/npm/data/logs/default-host_*.log
-          /srv/npm/data/logs/proxy-host-*_access.log
-maxretry = 2
-bantime  = -1 
-findtime = 86400
-action = docker-action
-```
-
-Save and exit. Now restart Fail2Ban with:
-
-```sh
-sudo fail2ban-client restart
-```
-
-Check that your jail is detected:
-
-```sh
-sudo fail2ban-client status npm-docker
-```
-
-Which should output something like this:
-
-```sh
-|- Filter
-|  |- Currently failed:	0
-|  |- Total failed:	0
-|  `- File list: /srv/npm/data/logs/proxy-host-1_access.log
-`- Actions
-   |- Currently banned:	0
-   |- Total banned:	0
-   `- Banned IP list:	
-```
-
-Check that it's banning correctly by visiting `nginx.domain.tld` on your cellular network or such. Type in the wrong password three times, you should not be able to do it a fourth time. Check the jail again:
-
-```sh
-sudo fail2ban-client status npm-docker
-```
-
-It should now show:
-
-```sh
-`- Actions
-   |- Currently banned:	1
-   |- Total banned:	1
-   `- Banned IP list:	[banned-IP]
-```
-
-You can unban yourself with:
-
-```sh
-sudo fail2ban-client unban --all
-```
-
-Finally, make Fail2Ban run automatically on start:
-
-```sh
-sudo systemctl enable fail2ban
-```
 
 --------------------
 
@@ -1673,6 +1552,250 @@ cd /srv/lidarr && sudo docker compose up -d
 ```
 
 Now visit lidarr's web-ui at `[local ip]:8686` and configure it. Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in prowlarr.
+
+--------------------
+
+</p>
+</details>
+
+## Perimiter security with Fail2Ban
+
+[Fail2Ban](https://github.com/fail2ban/fail2ban) is a service that can watch log files and take action, such as banning IP-addresses that have multiple failed log-in attempts.
+
+<details><summary>Click to expand</summary>
+<p>
+
+### Part 1: Overall idea and inital setup
+
+We want to detect and ban malicious behaviour towards our internet-exposed services, such as attempts to brute-force a password or DoS/DDoS attacks. For each service we will define a jail and filter, we will then have Fail2Ban watch the logs of that service and ban IPs that match said filter.
+
+To get started with Fail2Ban we will install it with:
+
+```sh
+sudo apt update && sudo apt install fail2ban
+```
+
+Start Fail2Ban with:
+
+```sh
+sudo fail2ban-client start
+```
+
+Make Fail2Ban run on start with:
+
+```sh
+sudo systemctl enable fail2ban
+```
+
+### Part 2: NGINX Proxy manager
+
+> __NOTE__: This section contains an overeager filter that will ban users for legitimate usage. I will probably change the filter to instead handle DoS/DDoS attempts by counting the number of connections per IP and second.
+
+<details><summary>Use at your own risk</summary>
+<p>
+
+--------------------
+
+We will create three different files; one action, one filter and one jail. First, create an action-file:
+
+```sh
+sudo nano /etc/fail2ban/action.d/docker-action.conf
+```
+
+Paste:
+
+```
+[Definition]
+actioncheck = iptables -n -L FORWARD | grep -q 'DOCKER-USER[ t]'
+actionban = iptables -I DOCKER-USER -s <ip> -j DROP
+actionunban = iptables -D DOCKER-USER -s <ip> -j DROP
+```
+
+Second, create a filter:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/npm-docker.conf
+```
+
+Paste the following REGEX-expression from [hugalafutro](https://github.com/NginxProxyManager/nginx-proxy-manager/issues/39#issuecomment-907795521):
+
+```
+[INCLUDES]
+
+[Definition]
+
+failregex = ^<HOST>.+" (4\d\d|3\d\d) (\d\d\d|\d) .+$
+            ^.+ 4\d\d \d\d\d - .+ \[Client <HOST>\] \[Length .+\] ".+" .+$
+```
+
+Save and exit. Now create a jail-file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/npm-docker.local
+```
+
+Paste:
+
+```sh
+[npm-docker]
+enabled = true
+ignoreip = 127.0.0.1/8 192.168.1.0/24
+chain = INPUT
+filter  = npm-docker
+logpath = /srv/npm/data/logs/default-host_*.log
+          /srv/npm/data/logs/proxy-host-*_access.log
+maxretry = 2
+bantime  = -1 
+findtime = 86400
+action = docker-action
+```
+
+Save and exit. Now restart Fail2Ban with:
+
+```sh
+sudo fail2ban-client restart
+```
+
+Check that your jail is detected:
+
+```sh
+sudo fail2ban-client status npm-docker
+```
+
+Which should output something like this:
+
+```sh
+|- Filter
+|  |- Currently failed:	0
+|  |- Total failed:	0
+|  `- File list: /srv/npm/data/logs/proxy-host-1_access.log
+`- Actions
+   |- Currently banned:	0
+   |- Total banned:	0
+   `- Banned IP list:	
+```
+
+Check that it's banning correctly by visiting `nginx.domain.tld` on your cellular network or such. Type in the wrong password three times, you should not be able to do it a fourth time. Check the jail again:
+
+```sh
+sudo fail2ban-client status npm-docker
+```
+
+It should now show:
+
+```sh
+`- Actions
+   |- Currently banned:	1
+   |- Total banned:	1
+   `- Banned IP list:	[banned-IP]
+```
+
+You can unban yourself with:
+
+```sh
+sudo fail2ban-client unban --all
+```
+
+--------------------
+
+</p>
+</details>
+
+
+### Part 3: Jellyfin
+
+There is an excellent but slightly outdated guide in Jellyfin's own [documentation](https://jellyfin.org/docs/general/networking/fail2ban.html). Below is a slightly modified version that works:
+
+First make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/jellyfin.local
+```
+
+Paste:
+
+```
+[jellyfin]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = jellyfin
+maxretry = 3
+bantime = 86400
+findtime = 43200
+logpath = /srv/jellyfin/config/log/*.log
+action = iptables-allports[name=jellyfin, chain=DOCKER-USER]
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/jellyfin.conf
+```
+
+Paste:
+
+```
+[Definition]
+failregex = ^.*Authentication request for .* has been denied \(IP: "<ADDR>"\)\.
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match a log with your filter:
+
+```
+fail2ban-regex /srv/jellyfin/config/log/log_20221022.log /etc/fail2ban/filter.d/jellyfin.conf
+```
+
+It should return something like this:
+
+```sh
+Running tests
+=============
+
+Use   failregex filter file : jellyfin, basedir: /etc/fail2ban
+Use         log file : /srv/jellyfin/config/log/log_20221022.log
+Use         encoding : UTF-8
+
+Results
+=======
+
+Ignoreregex: 0 total
+
+Date template hits:
+|- [# of hits] date format
+|  [377] {^LN-BEG}ExYear(?P<_sep>[-/.])Month(?P=_sep)Day(?:T|  ?)24hour:Minute:Second(?:[.,]Microseconds)?(?:\s*Zone offset)?
+`-
+
+Lines: 395 lines, 0 ignored, 1 matched, 394 missed
+[processed in 0.06 sec]
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status jellyfin
+```
+
+Which should output something like this:
+
+```sh
+|- Filter
+|  |- Currently failed:	1
+|  |- Total failed:	1
+|  `- File list: XXX
+`- Actions
+   |- Currently banned:	0
+   |- Total banned:	0
+   `- Banned IP list:	
+```
 
 --------------------
 
