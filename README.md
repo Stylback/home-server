@@ -40,7 +40,7 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Part 1: Installation](#part-1-installation)
   - [Part 2: Management with ctop](#part-2-management-with-ctop)
   - [Part 3: Automatic updates with Watchtower](#part-3-automatic-updates-with-watchtower)
-- [Remote access and perimeter security](#remote-access-and-perimeter-security)
+- [Remote access](#remote-access)
   - [Part 1: Aquire a custom domain](#part-1-aquire-a-custom-domain)
   - [Part 2: Configure Dynamic DNS](#part-2-configure-dynamic-dns)
   - [Part 3: Configure NGINX Proxy manager](#part-3-configure-nginx-proxy-manager)
@@ -64,7 +64,7 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Part 4: Subtitles with Bazarr](#part-4-subtitles-with-bazarr)
   - [Part 5: Request shows and movies with Jellyseerr](#part-5-request-shows-and-movies-with-jellyseerr)
   - [Part 6: Music with Lidarr](#part-6-music-with-lidarr)
-- [Perimiter security with Fail2Ban](#perimiter-security-with-fail2ban)
+- [Perimeter security with Fail2Ban](#perimeter-security-with-fail2ban)
   - [Part 1: Overall idea and inital setup](#part-1-overall-idea-and-inital-setup)
   - [Part 2: NGINX Proxy manager](#part-2-nginx-proxy-manager)
   - [Part 3: Jellyfin](#part-3-jellyfin)
@@ -536,7 +536,7 @@ If everything works as expected, Watchtower will check for new docker images eve
 </p>
 </details>
 
-## Remote access and perimeter security
+## Remote access
 
 This section is about secure, remote access. We will talk about custom domains, Dynamic DNS, NGINX Proxy Manager and remote SSH.
 
@@ -1558,7 +1558,7 @@ Now visit lidarr's web-ui at `[local ip]:8686` and configure it. Finish up by cr
 </p>
 </details>
 
-## Perimiter security with Fail2Ban
+## Perimeter security with Fail2Ban
 
 [Fail2Ban](https://github.com/fail2ban/fail2ban) is a service that can watch log files and take action, such as banning IP-addresses that have multiple failed log-in attempts.
 
@@ -1569,7 +1569,7 @@ Now visit lidarr's web-ui at `[local ip]:8686` and configure it. Finish up by cr
 
 We want to detect and ban malicious behaviour towards our internet-exposed services, such as attempts to brute-force a password or DoS/DDoS attacks. For each service we will define a jail and filter, we will then have Fail2Ban watch the logs of that service and ban IPs that match said filter.
 
-To get started with Fail2Ban we will install it with:
+In contrast to our other services we will not be using Fail2Ban in a Docker container ([_curious why?_](#issues-and-solutions)), we will instead install in directly on the OS. To get started, run:
 
 ```sh
 sudo apt update && sudo apt install fail2ban
