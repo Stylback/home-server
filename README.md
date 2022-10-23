@@ -69,6 +69,7 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Part 2: NGINX Proxy manager](#part-2-nginx-proxy-manager)
   - [Part 3: Jellyfin](#part-3-jellyfin)
   - [Part 4: Jellyseerr](#part-4-jellyseerr)
+  - [Part 5: Sonarr](#part-5-sonarr)
 - [Issues and solutions](#issues-and-solutions)
   - [Bricked motherboard](#bricked-motherboard)
   - [Containerized Fail2Ban](#containerized-fail2ban)
@@ -1570,7 +1571,7 @@ Now visit lidarr's web-ui at `[local ip]:8686` and configure it. Finish up by cr
 
 We want to detect and ban malicious behaviour towards our internet-exposed services, such as attempts to brute-force a password or DoS/DDoS attacks. For each service we will define a jail and filter, we will then have Fail2Ban watch the logs of that service and ban IPs that match said filter.
 
-In contrast to our other services we will not be using Fail2Ban in a Docker container ([_curious why?_](#issues-and-solutions)), we will instead install in directly on the OS. To get started, run:
+In contrast to our other services we will not be using Fail2Ban in a Docker container ([_curious why?_](#issues-and-solutions)), we will instead install it directly on the OS. To get started, run:
 
 ```sh
 sudo apt update && sudo apt install fail2ban
@@ -1800,7 +1801,7 @@ Which should output something like this:
 
 ### Part 4: Jellyseerr
 
-First make a `.local` file:
+First you need to enable proxy support in Jellyseerr. Navigate to `Settings -> Enable Proxy Support`, enable it and restart Jellyseerr. Now make a `.local` file:
 
 ```sh
 sudo nano /etc/fail2ban/jail.d/jellyseerr.local
@@ -1815,7 +1816,7 @@ backend = auto
 enabled = true
 port = 80,443
 protocol = tcp
-filter = jellyfin
+filter = jellyseerr
 maxretry = 3
 bantime = 86400
 findtime = 43200
@@ -1846,6 +1847,68 @@ You can test your filter by first using the wrong credentials and then match the
 
 ```
 fail2ban-regex /srv/jellyseerr/config/logs/overseerr.log /etc/fail2ban/filter.d/jellyseerr.conf
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status jellyseerr
+```
+
+### Part 5: Sonarr
+
+First make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/sonarr.local
+```
+
+Paste:
+
+```
+[sonarr]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = sonarr
+maxretry = 3
+bantime = 86400
+findtime = 43200
+logpath = /srv/sonarr/config/logs/sonarr.txt
+action = iptables-allports[name=sonarr, chain=DOCKER-USER]
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/sonarr.conf
+```
+
+Paste the following:
+
+```
+[Definition]
+failregex = .*\|Warn\|Auth\|Auth-Failure ip <ADDR>
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/sonarr/config/logs/sonarr.txt /etc/fail2ban/filter.d/sonarr.conf
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status sonarr
 ```
 
 --------------------
