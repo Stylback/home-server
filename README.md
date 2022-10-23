@@ -68,6 +68,7 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Part 1: Overall idea and inital setup](#part-1-overall-idea-and-inital-setup)
   - [Part 2: NGINX Proxy manager](#part-2-nginx-proxy-manager)
   - [Part 3: Jellyfin](#part-3-jellyfin)
+  - [Part 4: Jellyseerr](#part-4-jellyseerr)
 - [Issues and solutions](#issues-and-solutions)
   - [Bricked motherboard](#bricked-motherboard)
   - [Containerized Fail2Ban](#containerized-fail2ban)
@@ -1795,6 +1796,56 @@ Which should output something like this:
    |- Currently banned:	0
    |- Total banned:	0
    `- Banned IP list:	
+```
+
+### Part 4: Jellyseerr
+
+First make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/jellyseerr.local
+```
+
+Paste:
+
+```
+[jellyseerr]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = jellyfin
+maxretry = 3
+bantime = 86400
+findtime = 43200
+logpath = /srv/jellyseerr/config/logs/overseerr.log
+action = iptables-allports[name=jellyseerr, chain=DOCKER-USER]
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/jellyseerr.conf
+```
+
+We will use a modified version of the official [Overseerr](https://docs.overseerr.dev/extending-overseerr/fail2ban) Fail2Ban-filter, paste the following:
+
+```
+[Definition]
+failregex = .*\[info\]\[Auth\]\: Failed login attempt.*"ip":"<ADDR>"
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/jellyseerr/config/logs/overseerr.log /etc/fail2ban/filter.d/jellyseerr.conf
 ```
 
 --------------------
