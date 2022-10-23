@@ -70,6 +70,10 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Part 3: Jellyfin](#part-3-jellyfin)
   - [Part 4: Jellyseerr](#part-4-jellyseerr)
   - [Part 5: Sonarr](#part-5-sonarr)
+  - [Part 6: Radarr](#part-6-radarr)
+  - [Part 7: Lidarr](#part-7-lidarr)
+  - [Part 8: Prowlarr](#part-8-prowlarr)
+  - [Part 9: NPM](#part-9-npm)
 - [Issues and solutions](#issues-and-solutions)
   - [Bricked motherboard](#bricked-motherboard)
   - [Containerized Fail2Ban](#containerized-fail2ban)
@@ -879,9 +883,10 @@ services:
       - PGID=1000
       - UMASK=002
       - TZ=Europe/Stockholm
+      - PASSWORD= # Enter a log-in password
     volumes:
-      - ./homarr/configs:/app/data/configs
-      - ./homarr/icons:/app/public/icons
+      - ./configs:/app/data/configs
+      - ./icons:/app/public/icons
     restart: unless-stopped
 ```
 
@@ -904,7 +909,7 @@ Websocket Support:      No
 Access List:            Publicly Accessible
 ```
 
-Save and check that Homarr is accessible at `homarr.domain.tld`. For increased security, add a SSL-certificate and assign it a unique Access List entry.
+Save and check that Homarr is accessible at `homarr.domain.tld`, add a SSL-certificate for increased security.
 
 --------------------
 
@@ -1909,6 +1914,230 @@ You can also check the status of the jail with:
 
 ```sh
 sudo fail2ban-client status sonarr
+```
+
+### Part 6: Radarr
+
+First make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/radarr.local
+```
+
+Paste:
+
+```
+[radarr]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = radarr
+maxretry = 3
+bantime = 86400
+findtime = 43200
+logpath = /srv/radarr/config/logs/radarr.txt
+action = iptables-allports[name=sonarr, chain=DOCKER-USER]
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/radarr.conf
+```
+
+Paste the following:
+
+```
+[Definition]
+failregex = .*\|Warn\|Auth\|Auth-Failure ip <ADDR>
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/radarr/config/logs/radarr.txt /etc/fail2ban/filter.d/radarr.conf
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status radarr
+```
+
+### Part 7: Lidarr
+
+First make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/lidarr.local
+```
+
+Paste:
+
+```
+[lidarr]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = lidarr
+maxretry = 3
+bantime = 86400
+findtime = 43200
+logpath = /srv/lidarr/config/logs/Lidarr.txt
+action = iptables-allports[name=sonarr, chain=DOCKER-USER]
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/lidarr.conf
+```
+
+Paste the following:
+
+```
+[Definition]
+failregex = .*\|Warn\|Auth\|Auth-Failure ip <ADDR>
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/lidarr/config/logs/Lidarr.txt /etc/fail2ban/filter.d/lidarr.conf
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status lidarr
+```
+
+### Part 8: Prowlarr
+
+First make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/prowlarr.local
+```
+
+Paste:
+
+```
+[prowlarr]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = prowlarr
+maxretry = 3
+bantime = 86400
+findtime = 43200
+logpath = /srv/prowlarr/config/logs/prowlarr.txt
+action = iptables-allports[name=sonarr, chain=DOCKER-USER]
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/prowlarr.conf
+```
+
+Paste the following:
+
+```
+[Definition]
+failregex = .*\|Warn\|Auth\|Auth-Failure ip <ADDR>
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/prowlarr/config/logs/prowlarr.txt /etc/fail2ban/filter.d/prowlarr.conf
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status prowlarr
+```
+
+### Part 9: NPM
+
+First make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/npm.local
+```
+
+Paste:
+
+```
+[npm]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = npm
+maxretry = 3
+bantime = 86400
+findtime = 43200
+logpath = /srv/npm/data/logs/proxy-host-1_access.log
+action = iptables-allports[name=sonarr, chain=DOCKER-USER]
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/npm.conf
+```
+
+Paste the following:
+
+```
+[Definition]
+failregex = .*401 401 - POST.*\[Client <ADDR>\]
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/npm/data/logs/proxy-host-1_access.log /etc/fail2ban/filter.d/npm.conf
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status npm
 ```
 
 --------------------
