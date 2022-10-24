@@ -66,6 +66,7 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Part 6: Music with Lidarr](#part-6-music-with-lidarr)
 - [Perimeter security with Fail2Ban](#perimeter-security-with-fail2ban)
   - [Part 1: Overall idea and inital setup](#part-1-overall-idea-and-inital-setup)
+    - [Useful Fail2Ban commands](#useful-fail2ban-commands)
   - [Part 2: NGINX Proxy manager](#part-2-nginx-proxy-manager)
   - [Part 3: Jellyfin](#part-3-jellyfin)
   - [Part 4: Jellyseerr](#part-4-jellyseerr)
@@ -73,7 +74,7 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Part 6: Radarr](#part-6-radarr)
   - [Part 7: Lidarr](#part-7-lidarr)
   - [Part 8: Prowlarr](#part-8-prowlarr)
-  - [Part 9: NPM](#part-9-npm)
+  - [Archive - Old NPM](#archive---old-npm)
 - [Issues and solutions](#issues-and-solutions)
   - [Bricked motherboard](#bricked-motherboard)
   - [Containerized Fail2Ban](#containerized-fail2ban)
@@ -1061,7 +1062,7 @@ sudo umount /media/external
 
 ### Part 4: Hardware acceleration
 
-Our J0540 have extensive hardware support for different encoders thanks to Intel QuickSync. This will enable us to stream large media files at a lower bitrate to ensure a consistent experience. This process can either be done with software (_high CPU usage_) or hardware (_low CPU usage_). To enable the full range of hardware accelerated transcoding we will first need to enable `guc` and `huc` firmware as this is disabled by default for Intel processors of 10th generation and earlier. Start by making a `modprobe` config file:
+Our J0540 have extensive hardware support for different encoders thanks to Intel QuickSync. This will enable us to stream large media files at a lower bitrate, saving bandwidth at the cost of processing power. This process can either be done with software (_high CPU usage_) or hardware (_low CPU usage_). To enable the full range of hardware accelerated transcoding we will first need to enable the `guc` and `huc` firmware, as they are disabled by default for Intel processors of 10th generation and earlier. Start by making a `modprobe` config file:
 
 ```sh
 sudo nano /etc/modprobe.d/i915.conf
@@ -1099,7 +1100,7 @@ Finally, enable `Throttle Transcodes` at the bottom of the page and save.
 
 ### Part 5: Customization
 
-Jellyfin supports [custom CSS](https://jellyfin.org/docs/general/clients/css-customization.html), you can either create your own or import one from the community. I will be using the Kaleidochromic preset from [Ultrachromic](https://github.com/CTalvio/Ultrachromic) combined with a tweak to hide `More Like This`:
+Jellyfin supports [custom CSS](https://jellyfin.org/docs/general/clients/css-customization.html), you can either create your own or import one from the community. I will be using the _Kaleidochromic_ preset from the [Ultrachromic](https://github.com/CTalvio/Ultrachromic) project combined with a tweak to hide `More Like This`:
 
 ```css
 @import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/presets/kaleidochromic_preset.css');
@@ -1594,113 +1595,86 @@ Make Fail2Ban run on start with:
 sudo systemctl enable fail2ban
 ```
 
-### Part 2: NGINX Proxy manager
+#### Useful Fail2Ban commands
 
-> __NOTE__: This section contains an overeager filter that will ban users for legitimate usage. I will probably change the filter to instead handle DoS/DDoS attempts by counting the number of connections per IP and second.
-
-<details><summary>Use at your own risk</summary>
-<p>
-
---------------------
-
-We will create three different files; one action, one filter and one jail. First, create an action-file:
+Unban yourself with:
 
 ```sh
-sudo nano /etc/fail2ban/action.d/docker-action.conf
+sudo fail2ban-client unban [your ip]
 ```
 
-Paste:
-
-```
-[Definition]
-actioncheck = iptables -n -L FORWARD | grep -q 'DOCKER-USER[ t]'
-actionban = iptables -I DOCKER-USER -s <ip> -j DROP
-actionunban = iptables -D DOCKER-USER -s <ip> -j DROP
-```
-
-Second, create a filter:
-
-```sh
-sudo nano /etc/fail2ban/filter.d/npm-docker.conf
-```
-
-Paste the following REGEX-expression from [hugalafutro](https://github.com/NginxProxyManager/nginx-proxy-manager/issues/39#issuecomment-907795521):
-
-```
-[INCLUDES]
-
-[Definition]
-
-failregex = ^<HOST>.+" (4\d\d|3\d\d) (\d\d\d|\d) .+$
-            ^.+ 4\d\d \d\d\d - .+ \[Client <HOST>\] \[Length .+\] ".+" .+$
-```
-
-Save and exit. Now create a jail-file:
-
-```sh
-sudo nano /etc/fail2ban/jail.d/npm-docker.local
-```
-
-Paste:
-
-```sh
-[npm-docker]
-enabled = true
-ignoreip = 127.0.0.1/8 192.168.1.0/24
-chain = INPUT
-filter  = npm-docker
-logpath = /srv/npm/data/logs/default-host_*.log
-          /srv/npm/data/logs/proxy-host-*_access.log
-maxretry = 2
-bantime  = -1 
-findtime = 86400
-action = docker-action
-```
-
-Save and exit. Now restart Fail2Ban with:
-
-```sh
-sudo fail2ban-client restart
-```
-
-Check that your jail is detected:
-
-```sh
-sudo fail2ban-client status npm-docker
-```
-
-Which should output something like this:
-
-```sh
-|- Filter
-|  |- Currently failed:	0
-|  |- Total failed:	0
-|  `- File list: /srv/npm/data/logs/proxy-host-1_access.log
-`- Actions
-   |- Currently banned:	0
-   |- Total banned:	0
-   `- Banned IP list:	
-```
-
-Check that it's banning correctly by visiting `nginx.domain.tld` on your cellular network or such. Type in the wrong password three times, you should not be able to do it a fourth time. Check the jail again:
-
-```sh
-sudo fail2ban-client status npm-docker
-```
-
-It should now show:
-
-```sh
-`- Actions
-   |- Currently banned:	1
-   |- Total banned:	1
-   `- Banned IP list:	[banned-IP]
-```
-
-You can unban yourself with:
+Unban _everyone_ with:
 
 ```sh
 sudo fail2ban-client unban --all
+```
+
+Check jail status:
+
+```sh
+sudo fail2ban-client status [jail name]
+```
+
+See if a filter will catch something in a logfile (_great for testing/debugging_):
+
+```
+fail2ban-regex [path to logfile] [path to filter]
+```
+
+### Part 2: NGINX Proxy manager
+
+First make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/npm.local
+```
+
+Paste:
+
+```
+[npm]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = npm
+maxretry = 3
+bantime = 86400
+findtime = 43200
+logpath = /srv/npm/data/logs/proxy-host-1_access.log
+action = iptables-allports[name=sonarr, chain=DOCKER-USER]
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/npm.conf
+```
+
+Paste the following:
+
+```
+[Definition]
+failregex = .*401 401 - POST.*\[Client <ADDR>\]
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/npm/data/logs/proxy-host-1_access.log /etc/fail2ban/filter.d/npm.conf
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status npm
 ```
 
 --------------------
@@ -2084,61 +2058,95 @@ You can also check the status of the jail with:
 sudo fail2ban-client status prowlarr
 ```
 
-### Part 9: NPM
+### Archive - Old NPM
 
-First make a `.local` file:
+> __NOTE__: This section contains an overeager filter that will ban users for legitimate usage. I will probably change the filter to instead handle DoS/DDoS attempts by counting the number of connections per IP and second.
+
+<details><summary>Use at your own risk</summary>
+<p>
+
+--------------------
+
+We will create three different files; one action, one filter and one jail. First, create an action-file:
 
 ```sh
-sudo nano /etc/fail2ban/jail.d/npm.local
+sudo nano /etc/fail2ban/action.d/docker-action.conf
 ```
 
 Paste:
 
 ```
-[npm]
-
-backend = auto
-enabled = true
-port = 80,443
-protocol = tcp
-filter = npm
-maxretry = 3
-bantime = 86400
-findtime = 43200
-logpath = /srv/npm/data/logs/proxy-host-1_access.log
-action = iptables-allports[name=sonarr, chain=DOCKER-USER]
-```
-
-Save and exit. Now make a `.conf` file:
-
-```sh
-sudo nano /etc/fail2ban/filter.d/npm.conf
-```
-
-Paste the following:
-
-```
 [Definition]
-failregex = .*401 401 - POST.*\[Client <ADDR>\]
+actioncheck = iptables -n -L FORWARD | grep -q 'DOCKER-USER[ t]'
+actionban = iptables -I DOCKER-USER -s <ip> -j DROP
+actionunban = iptables -D DOCKER-USER -s <ip> -j DROP
 ```
 
-Restart Fail2Ban to apply the new settings:
+Second, create a filter:
 
 ```sh
-sudo systemctl restart fail2ban
+sudo nano /etc/fail2ban/filter.d/npm-docker.conf
 ```
 
-You can test your filter by first using the wrong credentials and then match the log with your filter:
+Paste the following REGEX-expression from [hugalafutro](https://github.com/NginxProxyManager/nginx-proxy-manager/issues/39#issuecomment-907795521):
 
 ```
-fail2ban-regex /srv/npm/data/logs/proxy-host-1_access.log /etc/fail2ban/filter.d/npm.conf
+[INCLUDES]
+
+[Definition]
+
+failregex = ^<HOST>.+" (4\d\d|3\d\d) (\d\d\d|\d) .+$
+            ^.+ 4\d\d \d\d\d - .+ \[Client <HOST>\] \[Length .+\] ".+" .+$
 ```
 
-You can also check the status of the jail with:
+Save and exit. Now create a jail-file:
 
 ```sh
-sudo fail2ban-client status npm
+sudo nano /etc/fail2ban/jail.d/npm-docker.local
 ```
+
+Paste:
+
+```sh
+[npm-docker]
+enabled = true
+ignoreip = 127.0.0.1/8 192.168.1.0/24
+chain = INPUT
+filter  = npm-docker
+logpath = /srv/npm/data/logs/default-host_*.log
+          /srv/npm/data/logs/proxy-host-*_access.log
+maxretry = 2
+bantime  = -1 
+findtime = 86400
+action = docker-action
+```
+
+Save and exit. Now restart Fail2Ban with:
+
+```sh
+sudo fail2ban-client restart
+```
+
+Check that your jail is detected:
+
+```sh
+sudo fail2ban-client status npm-docker
+```
+
+Which should output something like this:
+
+```sh
+|- Filter
+|  |- Currently failed:	0
+|  |- Total failed:	0
+|  `- File list: /srv/npm/data/logs/proxy-host-1_access.log
+`- Actions
+   |- Currently banned:	0
+   |- Total banned:	0
+   `- Banned IP list:	
+```
+
+Check that it's banning correctly by visiting `nginx.domain.tld` on your cellular network or such. Type in the wrong password three times, you should not be able to do it a fourth time.
 
 --------------------
 
@@ -2251,7 +2259,7 @@ This section contains my TO-DO list, future plans and some notes.
 
 | Item | Details | Current status |
 | ------------- | ------------- | ------------- |
-| Fail2Ban-filter | Fix REGEX-filter for Fail2Ban, maybe split into seperate filters depending on service. | Researching |
+| Fail2Ban-filter | Fix REGEX-filter for Fail2Ban, maybe split into seperate filters depending on service. | Mostly done |
 | Security audit | Do a security audit. Check Secuirty headers, open ports, UPnP settings on router. | On ice |
 
 ### Hardware
