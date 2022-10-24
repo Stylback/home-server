@@ -1679,10 +1679,6 @@ sudo fail2ban-client status npm
 
 --------------------
 
-</p>
-</details>
-
-
 ### Part 3: Jellyfin
 
 There is an excellent but slightly outdated guide in Jellyfin's own [documentation](https://jellyfin.org/docs/general/networking/fail2ban.html). Below is a slightly modified version that works:
@@ -1735,47 +1731,10 @@ You can test your filter by first using the wrong credentials and then match a l
 fail2ban-regex /srv/jellyfin/config/log/log_20221022.log /etc/fail2ban/filter.d/jellyfin.conf
 ```
 
-It should return something like this:
-
-```sh
-Running tests
-=============
-
-Use   failregex filter file : jellyfin, basedir: /etc/fail2ban
-Use         log file : /srv/jellyfin/config/log/log_20221022.log
-Use         encoding : UTF-8
-
-Results
-=======
-
-Ignoreregex: 0 total
-
-Date template hits:
-|- [# of hits] date format
-|  [377] {^LN-BEG}ExYear(?P<_sep>[-/.])Month(?P=_sep)Day(?:T|  ?)24hour:Minute:Second(?:[.,]Microseconds)?(?:\s*Zone offset)?
-`-
-
-Lines: 395 lines, 0 ignored, 1 matched, 394 missed
-[processed in 0.06 sec]
-```
-
 You can also check the status of the jail with:
 
 ```sh
 sudo fail2ban-client status jellyfin
-```
-
-Which should output something like this:
-
-```sh
-|- Filter
-|  |- Currently failed:	1
-|  |- Total failed:	1
-|  `- File list: XXX
-`- Actions
-   |- Currently banned:	0
-   |- Total banned:	0
-   `- Banned IP list:	
 ```
 
 ### Part 4: Jellyseerr
@@ -2147,6 +2106,11 @@ Which should output something like this:
 ```
 
 Check that it's banning correctly by visiting `nginx.domain.tld` on your cellular network or such. Type in the wrong password three times, you should not be able to do it a fourth time.
+
+--------------------
+
+</p>
+</details>
 
 --------------------
 
