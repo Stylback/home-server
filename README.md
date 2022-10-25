@@ -1092,7 +1092,7 @@ cat /sys/kernel/debug/dri/0/i915_capabilities
 
 There should be an entry with `i915.enable_guc=3`.
 
-Reboot the server. Now go to Jellyfin `Settings -> Dashboard -> Playback -> Transcoding`. The following encode settings are supported on the J5040:
+Reboot the server. Now go to Jellyfin `Settings → Dashboard → Playback → Transcoding`. The following encode settings are supported on the J5040:
 
 ![Jellyfin encoding settings for the J5040](https://github.com/Stylback/home-server/blob/main/media/jellyfin_encoding.png?raw=true)
 
@@ -1109,7 +1109,7 @@ Jellyfin supports [custom CSS](https://jellyfin.org/docs/general/clients/css-cus
 #similarCollapsible { display: none; }
 ```
 
-The Custom CSS setting can be found at `Dashboard -> General -> Custom CSS`. I had to restart the Jellyfin container for the settings to take effect.
+The Custom CSS setting can be found at `Dashboard → General → Custom CSS`. I had to restart the Jellyfin container for the settings to take effect.
 
 --------------------
 
@@ -1176,23 +1176,24 @@ services:
     container_name: qflood
     image: cr.hotio.dev/hotio/qflood
     ports:
-      - "8080:8080" #qBittorrent
-      - "3000:3000" #Flood
-      - "8118:8118" #internal qBittorrent app-to-app communication
+      - "8080:8080" #qbittorrent
+      - "3000:3000" #flood
+      - "8118:8118"
     environment:
       - PUID=1000
       - PGID=1000
       - UMASK=002
       - TZ=Europe/Stockholm
       - VPN_ENABLED=true
-      - VPN_LAN_NETWORK=[local inet]/24
+      - VPN_LAN_NETWORK=[local IP]/24
       - VPN_CONF=wg0
       - VPN_ADDITIONAL_PORTS
       - VPN_IP_CHECK_DELAY=5
       - PRIVOXY_ENABLED=false
       - FLOOD_AUTH=false
     volumes:
-      - /etc:/config
+      - /etc/wireguard:/config/wireguard
+      - /srv/qflood/config:/config
       - /srv/data/torrents:/data/torrents
     cap_add:
       - NET_ADMIN
@@ -1241,7 +1242,7 @@ Password: adminadmin
 
 ### Part 3: qBittorrent settings
 
-Next up is port forwarding. In Mullvad, go to your account and "Port Forwarding". Identify your server and add a port for it. In qBittorrent's Web UI, go to `Tools -> Options -> Connection -> Listening Port` and change the default port to your forwarded port. Then launch `ctop`, select `qflood` and choose `exec shell`. Run the following two commands:
+Next up is port forwarding. In Mullvad, go to your account and "Port Forwarding". Identify your server and add a port for it. In qBittorrent's Web UI, go to `Tools → Options → Connection → Listening Port` and change the default port to your forwarded port. Then launch `ctop`, select `qflood` and choose `exec shell`. Run the following two commands:
 
 ```sh
 iptables -I INPUT -p tcp --dport [forwarded port] -j ACCEPT
@@ -1270,6 +1271,14 @@ Now that we know that port forwarding is working, let's do some `Options` tinker
 | Alternative Rate Limits | Disable | 1500 KiB/s | About 12 Mbit/s, a good limit to prevent daytime broadband shortage. |
 | Schedule the use of alternative rate limits | Disable | 07:00 to 01:00, Every day | Will give us a our limited rate between 07:00 - 01:00 and our global rate between 01:00 - 07:00. |
 | Username/Password | admin / adminadmin |  | Default credentials are a security hazard. |
+
+Finally, let us change the default web UI to something darker. I prefer [Dracula](https://draculatheme.com/qbittorrent):
+
+```sh
+cd /srv/qflood/config && git clone https://github.com/dracula/qbittorrent.git
+```
+
+Now go to `Tools → Options → Web UI → Use alternative Web UI`, enable it and paste `/config/qbittorrent/webui`. Save, the new UI should load by itself.
 
 ### Part 4: Configure Flood
 
@@ -1739,7 +1748,7 @@ sudo fail2ban-client status jellyfin
 
 ### Part 4: Jellyseerr
 
-First you need to enable proxy support in Jellyseerr. Navigate to `Settings -> Enable Proxy Support`, enable it and restart Jellyseerr. Now make a `.local` file:
+First you need to enable proxy support in Jellyseerr. Navigate to `Settings → Enable Proxy Support`, enable it and restart Jellyseerr. Now make a `.local` file:
 
 ```sh
 sudo nano /etc/fail2ban/jail.d/jellyseerr.local
@@ -2146,9 +2155,9 @@ Lesson learned, think thrice before manually flashing your BIOS. I have since re
 
 > __TL;DR:__ Containarized Fail2Ban didn't work so I've switched to running it directly on the OS.
 
-I initially tried to run Fail2Ban in a docker container to streamline deployment. I managed to get the filter and jail working but not banning. Fail2Ban would correctly detect authentication fails and "ban" the associated IP address. This "ban" would in reality not result in denied connections, the client could continue to spam authentication attempts. There seemed to be no clear way to propagate the banned addresses up the IP-tables chain and block connections.
+I initially tried to run Fail2Ban in a docker container to streamline deployment. I managed to get the filter and jail working but not banning. Fail2Ban would correctly detect authentication fails and "ban" the associated IP address. This "ban" would in reality not result in denied connections, the client could continue with authentication attempts. There seemed to be no clear way to propagate the banned addresses up the IP-tables chain and block connections.
 
-I have now resorted to running it on the server itself and it's able to stop connections from banned IP addresses before they reach NGINX Proxy Manager. However it's not perfect, I seem unable to ban IP addresses that fail NGINX's Access List authentication. Perhaps these attempts are not logged or maybe the REGEX just fails to match them. I will revisit this issue at a later date and update accordingly.
+I have now resorted to running it on the server itself and it's able to stop connections from banned IP addresses to _most_ of my services. Some services such as Homarr does not log authentication attempts and as such Fail2Ban have nothing to go on.
 
 --------------------
 
@@ -2223,7 +2232,8 @@ This section contains my TO-DO list, future plans and some notes.
 
 | Item | Details | Current status |
 | ------------- | ------------- | ------------- |
-| Fail2Ban-filter | Fix REGEX-filter for Fail2Ban, maybe split into seperate filters depending on service. | Mostly done |
+| Fail2Ban-filter | Fix REGEX-filter for Fail2Ban, maybe split into seperate filters depending on service. | Mostly done, figuring out the last few services. |
+| Fail2Ban-filter | Implement DoS/DDoS protection | Researching |
 | Security audit | Do a security audit. Check Secuirty headers, open ports, UPnP settings on router. | On ice |
 
 ### Hardware
