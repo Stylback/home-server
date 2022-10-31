@@ -31,6 +31,9 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Part 2: Testing RAM stability](#part-2-testing-ram-stability)
   - [Part 3: BIOS tweaks](#part-3-bios-tweaks)
   - [Part 4: Installing the OS](#part-4-installing-the-os)
+    - [Benchmarking](#benchmarking)
+    - [Timezone setup](#timezone-setup)
+    - [Removing Ubuntu Pro messages](#removing-ubuntu-pro-messages)
 - [SSH](#ssh)
   - [Part 1: Prerequisite and local access](#part-1-prerequisite-and-local-access)
   - [Part 2: Create a Hostname alias](#part-2-create-a-hostname-alias)
@@ -74,6 +77,7 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Part 6: Radarr](#part-6-radarr)
   - [Part 7: Lidarr](#part-7-lidarr)
   - [Part 8: Prowlarr](#part-8-prowlarr)
+  - [Part 9: qBittorrent](#part-9-qbittorrent)
   - [Archive - Old NPM](#archive---old-npm)
 - [Issues and solutions](#issues-and-solutions)
   - [Bricked motherboard](#bricked-motherboard)
@@ -200,6 +204,8 @@ After confirming RAM stability I installed [Ubuntu Server 22.04 LTS](https://ubu
 
 I assigned the 250GB drive as boot drive, consuming about half of its available storage. The rest was partitioned and mounted to `/home` for any application or service that needs to store data there. As the 2TB drive is going to be used as the primary storage unit it was partioned and mounted at `/srv`.
 
+#### Benchmarking
+
 After creating a user and logging in for the first time, I updated the system with:
 
 ```sh
@@ -261,13 +267,17 @@ Single Core     | 547
 Multi Core      | 1858
 ```
 
-Performance was as expected, the J5040 isn't going to play the latest AAA title but it will be plenty for my use case. Before we continue we will configure our timezone to ensure correct date/time. Run:
+Performance was as expected, the J5040 isn't going to play the latest AAA title but it will be plenty for my use case. 
+
+#### Timezone setup
+
+We will configure our timezone to ensure correct date and time formats, run:
 
 ```sh
 sudo nano /etc/timezone
 ```
 
-Replace the value with your timezone:
+Replace the value with your timezone like so:
 
 ```
 TZ='Europe/Stockholm'
@@ -290,6 +300,29 @@ Finally, check that the timezone is correct with:
 ```sh
 timedatectl
 ```
+
+#### Removing Ubuntu Pro messages
+
+Canonical sometimes promote their [Ubuntu Pro](https://ubuntu.com/pro) service when you run `apt upgrade`. If you don't want these messages to appear, first remove the message templates:
+
+```sh
+sudo rm /var/lib/ubuntu-advantage/messages/*.tmpl
+```
+
+Then go to the messages.py file:
+
+```sh
+sudo nano /usr/lib/python3/dist-packages/uaclient/messages.py
+```
+
+Find and change `SS_LEARN_MORE` and `TRY_UBUNTU_PRO_BETA`:
+
+```
+SS_LEARN_MORE = "" 
+TRY_UBUNTU_PRO_BETA = ""
+```
+
+Save and exit, reboot the server to properly apply the changes.
 
 --------------------
 
@@ -1582,6 +1615,8 @@ Now visit lidarr's web-ui at `[local ip]:8686` and configure it. Finish up by cr
 <details><summary>Click to expand</summary>
 <p>
 
+--------------------
+
 ### Part 1: Overall idea and inital setup
 
 We want to detect and ban malicious behaviour towards our internet-exposed services, such as attempts to brute-force a password or DoS/DDoS attacks. For each service we will define a jail and filter, we will then have Fail2Ban watch the logs of that service and ban IPs that match said filter.
@@ -1627,7 +1662,7 @@ sudo fail2ban-client status [jail name]
 See if a filter will catch something in a logfile (_great for testing/debugging_):
 
 ```
-fail2ban-regex [path to logfile] [path to filter]
+fail2ban-regex [path to logfile] [path to filter] --print-all-matched
 ```
 
 ### Part 2: NGINX Proxy manager
@@ -1677,7 +1712,7 @@ sudo systemctl restart fail2ban
 You can test your filter by first using the wrong credentials and then match the log with your filter:
 
 ```
-fail2ban-regex /srv/npm/data/logs/proxy-host-1_access.log /etc/fail2ban/filter.d/npm.conf
+fail2ban-regex /srv/npm/data/logs/proxy-host-1_access.log /etc/fail2ban/filter.d/npm.conf --print-all-matched
 ```
 
 You can also check the status of the jail with:
@@ -1685,8 +1720,6 @@ You can also check the status of the jail with:
 ```sh
 sudo fail2ban-client status npm
 ```
-
---------------------
 
 ### Part 3: Jellyfin
 
@@ -1737,7 +1770,7 @@ sudo systemctl restart fail2ban
 You can test your filter by first using the wrong credentials and then match a log with your filter:
 
 ```
-fail2ban-regex /srv/jellyfin/config/log/log_20221022.log /etc/fail2ban/filter.d/jellyfin.conf
+fail2ban-regex /srv/jellyfin/config/log/log_20221022.log /etc/fail2ban/filter.d/jellyfin.conf --print-all-matched
 ```
 
 You can also check the status of the jail with:
@@ -1793,7 +1826,7 @@ sudo systemctl restart fail2ban
 You can test your filter by first using the wrong credentials and then match the log with your filter:
 
 ```
-fail2ban-regex /srv/jellyseerr/config/logs/overseerr.log /etc/fail2ban/filter.d/jellyseerr.conf
+fail2ban-regex /srv/jellyseerr/config/logs/overseerr.log /etc/fail2ban/filter.d/jellyseerr.conf --print-all-matched
 ```
 
 You can also check the status of the jail with:
@@ -1849,7 +1882,7 @@ sudo systemctl restart fail2ban
 You can test your filter by first using the wrong credentials and then match the log with your filter:
 
 ```
-fail2ban-regex /srv/sonarr/config/logs/sonarr.txt /etc/fail2ban/filter.d/sonarr.conf
+fail2ban-regex /srv/sonarr/config/logs/sonarr.txt /etc/fail2ban/filter.d/sonarr.conf --print-all-matched
 ```
 
 You can also check the status of the jail with:
@@ -1905,7 +1938,7 @@ sudo systemctl restart fail2ban
 You can test your filter by first using the wrong credentials and then match the log with your filter:
 
 ```
-fail2ban-regex /srv/radarr/config/logs/radarr.txt /etc/fail2ban/filter.d/radarr.conf
+fail2ban-regex /srv/radarr/config/logs/radarr.txt /etc/fail2ban/filter.d/radarr.conf --print-all-matched
 ```
 
 You can also check the status of the jail with:
@@ -1961,7 +1994,7 @@ sudo systemctl restart fail2ban
 You can test your filter by first using the wrong credentials and then match the log with your filter:
 
 ```
-fail2ban-regex /srv/lidarr/config/logs/Lidarr.txt /etc/fail2ban/filter.d/lidarr.conf
+fail2ban-regex /srv/lidarr/config/logs/Lidarr.txt /etc/fail2ban/filter.d/lidarr.conf --print-all-matched
 ```
 
 You can also check the status of the jail with:
@@ -2017,7 +2050,7 @@ sudo systemctl restart fail2ban
 You can test your filter by first using the wrong credentials and then match the log with your filter:
 
 ```
-fail2ban-regex /srv/prowlarr/config/logs/prowlarr.txt /etc/fail2ban/filter.d/prowlarr.conf
+fail2ban-regex /srv/prowlarr/config/logs/prowlarr.txt /etc/fail2ban/filter.d/prowlarr.conf --print-all-matched
 ```
 
 You can also check the status of the jail with:
@@ -2025,6 +2058,63 @@ You can also check the status of the jail with:
 ```sh
 sudo fail2ban-client status prowlarr
 ```
+
+### Part 9: qBittorrent
+
+First disable qbittorrents own ban-action by going to `Options -> Web UI -> Ban client after consecutive failures` and set it to `0`. Next make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/qbittorrent.local
+```
+
+Paste:
+
+```
+[qbittorrent]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = qbittorrent
+maxretry = 3
+bantime = 86400
+findtime = 43200
+logpath = /srv/qflood/config/data/logs/qbittorrent.log
+action = iptables-allports[name=qbittorrent, chain=DOCKER-USER]
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/qbittorrent.conf
+```
+
+Paste the following:
+
+```
+[Definition]
+failregex = \(W\).*WebAPI login failure. Reason: invalid credentials.*::ffff:<ADDR>
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/qflood/config/data/logs/qbittorrent.log /etc/fail2ban/filter.d/qbittorrent.conf --print-all-matched
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status qbittorrent
+```
+
 
 ### Archive - Old NPM
 
