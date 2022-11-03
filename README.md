@@ -17,6 +17,8 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
 
 --------------------
 
+__Please note:__ Hyperlinks for subsections will not work if that section is collapsed.
+
 - [About](#about)
 - [Table of contents](#table-of-contents)
 - [Hardware choices](#hardware-choices)
@@ -86,10 +88,6 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Approximating power consumption](#approximating-power-consumption)
 - [License and usage](#license-and-usage)
 - [TO-DO](#to-do)
-  - [Services](#services)
-  - [Security](#security)
-  - [Hardware](#hardware)
-  - [Other](#other)
 
 --------------------
 
@@ -2302,42 +2300,26 @@ Or a yearly power consumption of: $0.286*365 \approx 104 \textrm{ kWh/Year}$
 
 ## TO-DO
 
-This section contains my TO-DO list, future plans and some notes.
+This section contains my TO-DO list.
 
 <details><summary>Click to expand</summary>
 <p>
 
 --------------------
 
-### Services
-
-| Item | Details | Current status |
+| Item | Details | Status |
 | ------------- | ------------- | ------------- |
-| [Static Web Server](https://sws.joseluisq.net/) | A static webpage server, will also implement [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) and [Umami](https://github.com/umami-software/umami). | Working on html/css-website to serve |
-| qflood | qflood support was broken on a recent qBittorrent version, have yet to implement it. | Waiting on qBittorrent to push a fix |
-| Data backup solution | [Restic](https://restic.net/) or [Borgmatic](https://torsion.org/borgmatic/). | Researching |
-| [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s. | On ice |
-
-### Security
-
-| Item | Details | Current status |
-| ------------- | ------------- | ------------- |
-| Fail2Ban-filter | Fix REGEX-filter for Fail2Ban, maybe split into seperate filters depending on service. | Mostly done, figuring out the last few services. |
-| Fail2Ban-filter | Implement DoS/DDoS protection | Researching |
-| Security audit | Do a security audit. Check Secuirty headers, open ports, UPnP settings on router. | On ice |
-
-### Hardware
-
-| Item | Details |
-| ------------- | ------------- |
-| SSD | A third SSD to store backups of both the server and some clients. 2TB, same Crucial model? |
-| SATA-cables | Better SATA cables, niche angles. |
-
-### Other
-
-| Item | Details | Current status |
-| ------------- | ------------- | ------------- |
-| New hardware photos | Take new photos for the hardware section to include the fan upgrade. | Waiting on next hardware upgrade |
+| [Static Web Server](https://sws.joseluisq.net/) | A static webpage server, will also implement [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) and [Umami](https://github.com/umami-software/umami). | Working on html/css-website to serve. |
+| Implement qflood | qflood support was broken on a recent qBittorrent version, have yet to implement it. | Waiting on qBittorrent to push a fix. |
+| Data backup solution | [Restic](https://restic.net/) or [Borgmatic](https://torsion.org/borgmatic/). | Researching. |
+| Fail2Ban-filter | Make Fail2Ban REGEX-filters for services where it's possible. | Mostly done, figuring out the last few services. |
+| DoS/DDoS protection | Implement DoS/DDoS protection for NGINX | Researching. |
+| Security audit | Check HTTP Security headers, do some port knocking. | Not yet started. |
+| New hardware photos | Take new photos for the hardware section to include the fan upgrade. | Waiting on next hardware upgrade. |
+| Implement [Gotify](https://gotify.net/) | Self-hosted, event-based notifications | Not yet started. |
+| Implement [Password pusher](https://github.com/pglombardo/PasswordPusher) | Easy way to share passwords securily. | Not yet started. |
+| Streamline Fail2Ban documentation | There is a lot of repition in the Fail2Ban section, will try to streamline it for a better reading experience. | Not yet started, must first complete the last few REGEX-filters. |
+| [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s, might be fun for game nights. | Not yet started, low priority. |
 
 --------------------
 
