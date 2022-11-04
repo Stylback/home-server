@@ -4,9 +4,9 @@
 
 This project is all about my home server, here I document my implementations step-by-step so that I may more easily reproduce them at a later date. 
 
-I could've not started my journey towards self-hosting were it not for the open source community, as such my documentation is and will always remain open for others to read and learn from. If you're looking to use this documentation in one of your own projects, private or commercial, please see the [license and usage](#license-and-usage) section for more information.
+I could've not started my journey towards self-hosting were it not for the open source community, as such my documentation is and will always be open for others to read and learn from. If you're looking to use this documentation in one of your own projects, private or commercial, please see the [license and usage](#license-and-usage) section for more information.
 
-Do you have questions? Create an [issue](https://github.com/Stylback/home-server/issues) with the `question` tag and I will answer it to the best of my ability.
+Do you have a question? Create an [issue](https://github.com/Stylback/home-server/issues) with the `question` tag and I will answer it to the best of my ability.
 
 Got feedback or suggestions? I would love to hear it, please create an [issue](https://github.com/Stylback/home-server/issues) with the `suggestion` tag and we can take it from there.
 
@@ -741,7 +741,11 @@ If the problem still persist your best bet is to look at the logs. Run `sudo cto
 
 ### Part 3: Configure NGINX Proxy manager
 
-[NGINX Proxy Manager](https://nginxproxymanager.com/) combines the true and tested reverse proxy [NGINX](https://www.nginx.com/) with an easy-to-use GUI and [Let's Encrypt](https://letsencrypt.org/) integration. To get started, create a directory:
+[NGINX Proxy Manager](https://nginxproxymanager.com/) combines the true and tested reverse proxy [NGINX](https://www.nginx.com/) with an easy-to-use GUI and [Let's Encrypt](https://letsencrypt.org/) integration. 
+
+> Please note; moving forward I might refer to NGINX Proxy Manager as _NPM_ or _npm_ for brevity, take care not to confuse this with the popular JavaScript packet manager [npm](https://www.npmjs.com/).
+
+Now to get started with NPM, create a directory:
 
 ```sh
 sudo mkdir /srv/npm
@@ -771,7 +775,7 @@ services:
     environment:
       TZ: "Europe/Stockholm"
       DB_MYSQL_HOST: "db"
-      DB_MYSQL_PORT: 3306
+      DB_MYSQL_PORT: 3306/
       DB_MYSQL_USER: "npm"
       DB_MYSQL_PASSWORD: "npm"
       DB_MYSQL_NAME: "npm"
@@ -1702,7 +1706,7 @@ maxretry = 3
 bantime = -1
 findtime = 86400
 logpath = /srv/npm/data/logs/proxy-host-1_access.log
-action = iptables-allports[name=sonarr, chain=DOCKER-USER]
+action = iptables-allports[name=npm, chain=DOCKER-USER]
 ```
 
 Save and exit. Now make a `.conf` file:
@@ -1928,7 +1932,7 @@ maxretry = 3
 bantime = -1
 findtime = 86400
 logpath = /srv/radarr/config/logs/radarr.txt
-action = iptables-allports[name=sonarr, chain=DOCKER-USER]
+action = iptables-allports[name=radarr, chain=DOCKER-USER]
 ```
 
 Save and exit. Now make a `.conf` file:
@@ -1984,7 +1988,7 @@ maxretry = 3
 bantime = -1
 findtime = 86400
 logpath = /srv/lidarr/config/logs/Lidarr.txt
-action = iptables-allports[name=sonarr, chain=DOCKER-USER]
+action = iptables-allports[name=lidarr, chain=DOCKER-USER]
 ```
 
 Save and exit. Now make a `.conf` file:
@@ -2040,7 +2044,7 @@ maxretry = 3
 bantime = -1
 findtime = 86400
 logpath = /srv/prowlarr/config/logs/prowlarr.txt
-action = iptables-allports[name=sonarr, chain=DOCKER-USER]
+action = iptables-allports[name=prowlarr, chain=DOCKER-USER]
 ```
 
 Save and exit. Now make a `.conf` file:
@@ -2162,7 +2166,7 @@ Lesson learned, think thrice before manually flashing your BIOS. I have since re
 
 ### ddns-updater
 
-> __TL;DR:__ Multiple keys for Njalla was not supported for ddns-updater so I switched to a wildcard domain with a single key.
+> __TL;DR:__ Multiple keys for Njalla was not supported for ddns-updater so I've switched to a wildcard domain with a single key.
 
 My initial idea was to manually add subdomains in Njallas dashboard and then use the provided key to update its DNS-record with ddns-updater. It turned out that ddns-updater does not support multiple keys for Njalla, after an hour or two of research I decided to try a wildcard domain instead which would use the same key for all my subdomains. It was successful and has actually made subdomains easier to manage as I can just add them via NGINX Proxy Manager.
 
@@ -2172,9 +2176,9 @@ This only works as I have all my services on the same local network, if I for ex
 
 > __TL;DR:__ Containarized Fail2Ban didn't work so I've switched to running it directly on the OS.
 
-I initially tried to run Fail2Ban in a docker container to streamline deployment. I managed to get the filter and jail working but not banning. Fail2Ban would correctly detect authentication fails and "ban" the associated IP address. This "ban" would in reality not result in denied connections, the client could continue with authentication attempts. There seemed to be no clear way to propagate the banned addresses up the IP-tables chain and block connections.
+I initially tried to run Fail2Ban in a docker container to streamline deployment. I managed to get the filter and jail working but not banning. Fail2Ban would correctly detect authentication fails and "ban" the associated IP address. However this "ban" would in reality not result in denied connections and the client could continue with authentication attempts. There seemed to be no clear way to propagate the banned addresses up the IP-tables chain and block connections.
 
-I have now resorted to running it on the server itself and it's able to stop connections from banned IP addresses to _most_ of my services. Some services such as Homarr does not log authentication attempts and as such Fail2Ban have nothing to go on.
+I have now resorted to running it on the server itself and it's able to stop connections from banned IP addresses to _most_ of my services, some services such as Homarr does not log authentication attempts and as such Fail2Ban has nothing tangible to go on.
 
 --------------------
 
