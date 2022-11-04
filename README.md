@@ -17,13 +17,14 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
 
 --------------------
 
-__Please note:__ Hyperlinks for subsections will not work if that section is collapsed.
+*__Please note:__ Hyperlinks for subsections will not work if that section is collapsed.*
 
 - [About](#about)
 - [Table of contents](#table-of-contents)
 - [Hardware choices](#hardware-choices)
   - [Part 1: CPU / Motherboard](#part-1-cpu--motherboard)
   - [Part 2: Power supply (PSU)](#part-2-power-supply-psu)
+    - [Approximating power consumption](#approximating-power-consumption)
   - [Part 3: Case and fan](#part-3-case-and-fan)
   - [Part 4: RAM](#part-4-ram)
   - [Part 5: Storage](#part-5-storage)
@@ -62,7 +63,7 @@ __Please note:__ Hyperlinks for subsections will not work if that section is col
   - [Part 2: Install qflood](#part-2-install-qflood)
   - [Part 3: qBittorrent settings](#part-3-qbittorrent-settings)
   - [Part 4: Configure Flood](#part-4-configure-flood)
-- [Multimedia collection management with *Arr](#multimedia-collection-management-with-arr)
+- [Multimedia collection management with *arr](#multimedia-collection-management-with-arr)
   - [Part 1: Indexers with Prowlarr](#part-1-indexers-with-prowlarr)
   - [Part 2: Movies with Radarr](#part-2-movies-with-radarr)
   - [Part 3: Series with Sonarr](#part-3-series-with-sonarr)
@@ -80,12 +81,11 @@ __Please note:__ Hyperlinks for subsections will not work if that section is col
   - [Part 7: Lidarr](#part-7-lidarr)
   - [Part 8: Prowlarr](#part-8-prowlarr)
   - [Part 9: qBittorrent](#part-9-qbittorrent)
-  - [Archive - Old NPM](#archive---old-npm)
+- [Gotify](#gotify)
 - [Issues and solutions](#issues-and-solutions)
-  - [Bricked motherboard](#bricked-motherboard)
+  - [Motherboard](#motherboard)
+  - [ddns-updater](#ddns-updater)
   - [Containerized Fail2Ban](#containerized-fail2ban)
-- [Reference tables](#reference-tables)
-  - [Approximating power consumption](#approximating-power-consumption)
 - [License and usage](#license-and-usage)
 - [TO-DO](#to-do)
 
@@ -120,7 +120,43 @@ Ideally, the server will be running 24/7, 365 days a year. As such, high efficie
 
 What __is__ the efficiency at 50% load? That is determined by the [80+ Rating](https://en.wikipedia.org/wiki/80_Plus). A `80+ White` will be 80-85% efficient at 50% load while a `80+ Titanium` will be 94-96% efficient.
 
-After some [back of the napkin calculations](#reference-tables) I've estimated my system to draw between 10 to 23W. As such my ideal PSU would be a power-brick style 50-100W PICO-PSU. I've had no luck finding such a model with the right mix of power-cables and have instead opted for a traditional ATX PSU. At 300W, the [SYSTEM POWER B9 from be quiet!](https://www.bequiet.com/en/powersupply/1285) offers a better low-load efficiency compared to the more common 450/500W models with the added benefit of providing some headroom for upgrades.
+After some back of the napkin calculations (_see "Approximating power consumption" below_) I've estimated my system to draw between 10 to 23W. As such my ideal PSU would be a power-brick style 50-100W PICO-PSU. I've had no luck finding such a model with the right mix of power-cables and have instead opted for a traditional ATX PSU. At 300W, the [SYSTEM POWER B9 from be quiet!](https://www.bequiet.com/en/powersupply/1285) offers a better low-load efficiency compared to the more common 450/500W models with the added benefit of providing some headroom for upgrades.
+
+<details><summary>Approximating power consumption, click to expand</summary>
+<p>
+
+--------------------
+
+#### Approximating power consumption
+
+| Component | Power draw (_idle_) [W] | Power draw (_active_) [W] |
+| :--- | ---: | ---: |
+| Crucial MX500 1TB | 0.10<sup>1</sup> | 0.54<sup>1</sup> |
+| Crucial MX500 250GB | 0.08<sup>1</sup> | 0.54<sup>1</sup> |
+| G.SKILL Ripjaws SO-DIMM 16GB | 6.00<sup>2</sup> | 6.00<sup>2</sup> |
+| ASRock J5040-ITX | 0.70<sup>3</sup> | 10.00<sup>3</sup> |
+| NF-A12X25 ULN | 0.6<sup>4</sup> | 0.6<sup>4</sup> |
+| Total (_100% efficiency_): | 7.48 | 17.68 |
+| __Total (_70% efficiency_^<sup>5</sup>):__ | __10.7__ | __25.3__ |
+
+If we assume an average 2 hours of full system utilization per day, with the rest being equivalent to an idle power state, we can approximate the daily power consumption to: $\frac{25.3 \times 2 + 10.7 \times 22}{1000} \approx 0.286 \textrm{ kWh/Day}$
+
+Or a yearly power consumption of: $0.286*365 \approx 104 \textrm{ kWh/Year}$
+
+<sup>1. [AnandTech MX500 review](https://www.anandtech.com/show/12263/the-crucial-mx500-500gb-review/8). Power draw for the 250GB model is inferred from the MX500 500GB results.</sup>
+
+<sup>2. [TomsHardware i7-5960x review](https://www.tomshardware.com/reviews/intel-core-i7-5960x-haswell-e-cpu,3918-13.html). This number seems to agree with Crucials [own assessment](https://www.crucial.com/support/articles-faq-memory/how-much-power-does-memory-use).</sup>
+
+<sup>3. Inferred from Dr. Helmut Neukirchen's [power consumption test](https://uni.hi.is/helmut/2021/06/07/power-consumption-of-raspberry-pi-4-versus-intel-j4105-system/) of the J4105, as it has the same TDP as the J5040. I also subtracted 3 W from the authors measurements which is the estimated power consumption of a 8GB stick of DDR4 RAM.</sup>
+
+<sup>4. Noctua NF-A12X25 ULN [specification](https://noctua.at/en/products/fan/nf-a12x25-uln/specification).</sup>
+
+<sup>5. [HardwareInfo low-load PSU test](https://web.archive.org/web/20130811112042/http://uk.hardware.info/productinfo/188792/be-quiet!-pure-power-l8-300w#tab:testresults). Inferred from the 22.5 W test of the _be quiet! Pure Power L8 300 W_.</sup>
+
+--------------------
+
+</p>
+</details>
 
 ### Part 3: Case and fan
 
@@ -686,9 +722,7 @@ You should now be able to start ddns-updater by running:
 sudo docker compose up -d
 ```
 
-Check that everything is working by visting `[local-IP]:8000` in your browser, you should see a `Success` message under `Update status`:
-
-![Screenshot of DDNS-updater web page](https://github.com/Stylback/home-server/blob/main/media/ddns_screenshot.png?raw=true)
+Check that everything is working by visting `[local-IP]:8000` in your browser, you should see a `Success` message under `Update status`.
 
 <details><summary>Didn't work?</summary>
 <p>
@@ -883,7 +917,7 @@ The connection will now be kept alive for 600 seconds of inactivity, you can cha
 
 ## Dashboard with Homarr
 
-[Homarr](https://homarr.vercel.app/docs/about) is an easy to use dashboard that integrates well with ARR apps.
+[Homarr](https://homarr.vercel.app/docs/about) is an easy to use dashboard that integrates well with *arr apps.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -950,7 +984,7 @@ Save and check that Homarr is accessible at `homarr.domain.tld`, add a SSL-certi
 
 ## Multimedia streaming with Jellyfin
 
-[Jellfin](https://jellyfin.org/) is a free, open source and self-hosted multimedia streaming server.
+[Jellyfin](https://jellyfin.org/) is a free, open source and self-hosted multimedia streaming server.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -1320,9 +1354,9 @@ A recent version of qBittorrent broke Flood support, I will revisit this section
 </p>
 </details>
 
-## Multimedia collection management with *Arr
+## Multimedia collection management with *arr
 
-In this section we will be implementing a full suite of *Arr apps, adding a high degree of automation to our media collection. We will be looking at Prowlarr, Radarr, Sonarr, Bazarr, Jellyseerr and finally Lidarr.
+In this section we will be implementing a full suite of *arr-apps, adding a high degree of automation to our media collection. We will be looking at Prowlarr, Radarr, Sonarr, Bazarr, Jellyseerr and finally Lidarr.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -1331,7 +1365,7 @@ In this section we will be implementing a full suite of *Arr apps, adding a high
 
 ### Part 1: Indexers with Prowlarr
 
-[Prowlarr](https://github.com/Prowlarr/Prowlarr/) is an indexer manager that integrates with other *Arr-apps. We will be using [hotio's](https://hotio.dev/containers/prowlarr/) Docker image, get started by making the directory structure:
+[Prowlarr](https://github.com/Prowlarr/Prowlarr/) is an indexer manager that integrates with other *arr-apps. We will be using [hotio's](https://hotio.dev/containers/prowlarr/) Docker image, get started by making the directory structure:
 
 ```sh
 sudo mkdir -p /srv/prowlarr/config
@@ -1619,7 +1653,7 @@ Now visit lidarr's web-ui at `[local ip]:8686` and configure it. Finish up by cr
 
 We want to detect and ban malicious behaviour towards our internet-exposed services, such as attempts to brute-force a password or DoS/DDoS attacks. For each service we will define a jail and filter, we will then have Fail2Ban watch the logs of that service and ban IPs that match said filter.
 
-In contrast to our other services we will not be using Fail2Ban in a Docker container ([_curious why?_](#issues-and-solutions)), we will instead install it directly on the OS. To get started, run:
+In contrast to our other services we will not be using Fail2Ban in a Docker container (_curious why? see_ [_here_](#issues-and-solutions) _for my experience_), we will instead install it directly on the OS. To get started, run:
 
 ```sh
 sudo apt update && sudo apt install fail2ban
@@ -1682,8 +1716,8 @@ port = 80,443
 protocol = tcp
 filter = npm
 maxretry = 3
-bantime = 86400
-findtime = 43200
+bantime = -1
+findtime = 86400
 logpath = /srv/npm/data/logs/proxy-host-1_access.log
 action = iptables-allports[name=sonarr, chain=DOCKER-USER]
 ```
@@ -1721,7 +1755,7 @@ sudo fail2ban-client status npm
 
 ### Part 3: Jellyfin
 
-There is an excellent but slightly outdated guide in Jellyfin's own [documentation](https://jellyfin.org/docs/general/networking/fail2ban.html). Below is a slightly modified version that works:
+There is an excellent but slightly outdated guide in Jellyfin's own [documentation](https://jellyfin.org/docs/general/networking/fail2ban.html). Below is a modified version that works:
 
 First make a `.local` file:
 
@@ -1740,8 +1774,8 @@ port = 80,443
 protocol = tcp
 filter = jellyfin
 maxretry = 3
-bantime = 86400
-findtime = 43200
+bantime = -1
+findtime = 86400
 logpath = /srv/jellyfin/config/log/*.log
 action = iptables-allports[name=jellyfin, chain=DOCKER-USER]
 ```
@@ -1796,8 +1830,8 @@ port = 80,443
 protocol = tcp
 filter = jellyseerr
 maxretry = 3
-bantime = 86400
-findtime = 43200
+bantime = -1
+findtime = 86400
 logpath = /srv/jellyseerr/config/logs/overseerr.log
 action = iptables-allports[name=jellyseerr, chain=DOCKER-USER]
 ```
@@ -1852,8 +1886,8 @@ port = 80,443
 protocol = tcp
 filter = sonarr
 maxretry = 3
-bantime = 86400
-findtime = 43200
+bantime = -1
+findtime = 86400
 logpath = /srv/sonarr/config/logs/sonarr.txt
 action = iptables-allports[name=sonarr, chain=DOCKER-USER]
 ```
@@ -1908,8 +1942,8 @@ port = 80,443
 protocol = tcp
 filter = radarr
 maxretry = 3
-bantime = 86400
-findtime = 43200
+bantime = -1
+findtime = 86400
 logpath = /srv/radarr/config/logs/radarr.txt
 action = iptables-allports[name=sonarr, chain=DOCKER-USER]
 ```
@@ -1964,8 +1998,8 @@ port = 80,443
 protocol = tcp
 filter = lidarr
 maxretry = 3
-bantime = 86400
-findtime = 43200
+bantime = -1
+findtime = 86400
 logpath = /srv/lidarr/config/logs/Lidarr.txt
 action = iptables-allports[name=sonarr, chain=DOCKER-USER]
 ```
@@ -2020,8 +2054,8 @@ port = 80,443
 protocol = tcp
 filter = prowlarr
 maxretry = 3
-bantime = 86400
-findtime = 43200
+bantime = -1
+findtime = 86400
 logpath = /srv/prowlarr/config/logs/prowlarr.txt
 action = iptables-allports[name=sonarr, chain=DOCKER-USER]
 ```
@@ -2076,8 +2110,8 @@ port = 80,443
 protocol = tcp
 filter = qbittorrent
 maxretry = 3
-bantime = 86400
-findtime = 43200
+bantime = -1
+findtime = 86400
 logpath = /srv/qflood/config/data/logs/qbittorrent.log
 action = iptables-allports[name=qbittorrent, chain=DOCKER-USER]
 ```
@@ -2113,101 +2147,21 @@ You can also check the status of the jail with:
 sudo fail2ban-client status qbittorrent
 ```
 
-
-### Archive - Old NPM
-
-> __NOTE__: This section contains an overeager filter that will ban users for legitimate usage. I will probably change the filter to instead handle DoS/DDoS attempts by counting the number of connections per IP and second.
-
-<details><summary>Use at your own risk</summary>
-<p>
-
---------------------
-
-We will create three different files; one action, one filter and one jail. First, create an action-file:
-
-```sh
-sudo nano /etc/fail2ban/action.d/docker-action.conf
-```
-
-Paste:
-
-```
-[Definition]
-actioncheck = iptables -n -L FORWARD | grep -q 'DOCKER-USER[ t]'
-actionban = iptables -I DOCKER-USER -s <ip> -j DROP
-actionunban = iptables -D DOCKER-USER -s <ip> -j DROP
-```
-
-Second, create a filter:
-
-```sh
-sudo nano /etc/fail2ban/filter.d/npm-docker.conf
-```
-
-Paste the following REGEX-expression from [hugalafutro](https://github.com/NginxProxyManager/nginx-proxy-manager/issues/39#issuecomment-907795521):
-
-```
-[INCLUDES]
-
-[Definition]
-
-failregex = ^<HOST>.+" (4\d\d|3\d\d) (\d\d\d|\d) .+$
-            ^.+ 4\d\d \d\d\d - .+ \[Client <HOST>\] \[Length .+\] ".+" .+$
-```
-
-Save and exit. Now create a jail-file:
-
-```sh
-sudo nano /etc/fail2ban/jail.d/npm-docker.local
-```
-
-Paste:
-
-```sh
-[npm-docker]
-enabled = true
-ignoreip = 127.0.0.1/8 192.168.1.0/24
-chain = INPUT
-filter  = npm-docker
-logpath = /srv/npm/data/logs/default-host_*.log
-          /srv/npm/data/logs/proxy-host-*_access.log
-maxretry = 2
-bantime  = -1 
-findtime = 86400
-action = docker-action
-```
-
-Save and exit. Now restart Fail2Ban with:
-
-```sh
-sudo fail2ban-client restart
-```
-
-Check that your jail is detected:
-
-```sh
-sudo fail2ban-client status npm-docker
-```
-
-Which should output something like this:
-
-```sh
-|- Filter
-|  |- Currently failed:	0
-|  |- Total failed:	0
-|  `- File list: /srv/npm/data/logs/proxy-host-1_access.log
-`- Actions
-   |- Currently banned:	0
-   |- Total banned:	0
-   `- Banned IP list:	
-```
-
-Check that it's banning correctly by visiting `nginx.domain.tld` on your cellular network or such. Type in the wrong password three times, you should not be able to do it a fourth time.
-
 --------------------
 
 </p>
 </details>
+
+## Gotify
+
+In this section I will implement [Gotify](https://gotify.net/) to create notifications after specific events, such as when Watchtower updates an image or when a user makes a media request in Jellyseerr.
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+Coming soon!
 
 --------------------
 
@@ -2216,20 +2170,20 @@ Check that it's banning correctly by visiting `nginx.domain.tld` on your cellula
 
 ## Issues and solutions
 
-Here I document anything particularly difficult that made me rethink an implementation.
+Sometimes things doesn't go as planned and you have to rethink an implementation, here are some of the lessons I've learned.
 
 <details><summary>Click to expand</summary>
 <p>
 
 --------------------
 
-### Bricked motherboard
+### Motherboard
 
 > __TL;DR:__ Initially made the build with a Biostar J4105NHU, a BIOS-update broke RAM-support and trying to revert back to the previously known working version bricked it.
 
 I initially used a [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013), the motherboard shipped with BIOS-version __J41BW929.BSS__ and worked flawlessly with a pair of 8GB RAM-modules.
 
-A couple of days go by and I shut the system down to do some cable-management, after which it refused to boot. I figured I messed something up with the cables and put everything back as it was, no luck.
+A couple of days go by and I shut the system down to do some cable-management, after which it refused to boot. I figured I messed something up and put everything back as it was, no luck.
 
 I removed one of the RAM-modules and tried again, nothing.
 
@@ -2239,6 +2193,14 @@ I pop the CMOS again, boot with a single module and see the BIOS-version was upd
 
 Lesson learned, think thrice before manually flashing your BIOS. I have since replaced the board with an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp). I also had to replace my RAM-modules with SO-DIMM ones due to board incompatibility.
 
+### ddns-updater
+
+> __TL;DR:__ Multiple keys for Njalla was not supported for ddns-updater so I switched to a wildcard domain with a single key.
+
+My initial idea was to manually add subdomains in Njallas dashboard and then use the provided key to update its DNS-record with ddns-updater. It turned out that ddns-updater does not support multiple keys for Njalla, after an hour or two of research I decided to try a wildcard domain instead which would use the same key for all my subdomains. It was successful and has actually made subdomains easier to manage as I can just add them via NGINX Proxy Manager.
+
+This only works as I have all my services on the same local network, if I for example also had a VPS off-site I would not be able to update both my its and my local servers DNS-record with this method.
+
 ### Containerized Fail2Ban
 
 > __TL;DR:__ Containarized Fail2Ban didn't work so I've switched to running it directly on the OS.
@@ -2246,46 +2208,6 @@ Lesson learned, think thrice before manually flashing your BIOS. I have since re
 I initially tried to run Fail2Ban in a docker container to streamline deployment. I managed to get the filter and jail working but not banning. Fail2Ban would correctly detect authentication fails and "ban" the associated IP address. This "ban" would in reality not result in denied connections, the client could continue with authentication attempts. There seemed to be no clear way to propagate the banned addresses up the IP-tables chain and block connections.
 
 I have now resorted to running it on the server itself and it's able to stop connections from banned IP addresses to _most_ of my services. Some services such as Homarr does not log authentication attempts and as such Fail2Ban have nothing to go on.
-
---------------------
-
-</p>
-</details>
-
-## Reference tables
-
-Throughout the text I might refere to a table, this is where you can find it.
-
-<details><summary>Click to expand</summary>
-<p>
-
---------------------
-
-### Approximating power consumption
-
-| Component | Power draw (_idle_) [W] | Power draw (_active_) [W] |
-| :--- | ---: | ---: |
-| Crucial MX500 1TB | 0.10[^1] | 0.54[^1] |
-| Crucial MX500 250GB | 0.08[^1] | 0.54[^1] |
-| G.SKILL Ripjaws SO-DIMM 16GB | 6.00[^2] | 6.00[^2] |
-| ASRock J5040-ITX | 0.70[^3] | 10.00[^3] |
-| NF-A12X25 ULN | 0.6[^4] | 0.6[^4] |
-| Total (_100% efficiency_): | 7.48 | 17.68 |
-| __Total (_70% efficiency_[^5]):__ | __10.7__ | __25.3__ |
-
-If we assume an average 2 hours of full system utilization per day, with the rest being equivalent to an idle power state, we can approximate the daily power consumption to: $\frac{25.3 \times 2 + 10.7 \times 22}{1000} \approx 0.286 \textrm{ kWh/Day}$
-
-Or a yearly power consumption of: $0.286*365 \approx 104 \textrm{ kWh/Year}$
-
-[^1]: [AnandTech MX500 review](https://www.anandtech.com/show/12263/the-crucial-mx500-500gb-review/8). Power draw for the 250GB model is inferred from the MX500 500GB results.
-
-[^2]: [TomsHardware i7-5960x review](https://www.tomshardware.com/reviews/intel-core-i7-5960x-haswell-e-cpu,3918-13.html). This number seems to agree with Crucials [own assessment](https://www.crucial.com/support/articles-faq-memory/how-much-power-does-memory-use).
-
-[^3]: Inferred from Dr. Helmut Neukirchen's [power consumption test](https://uni.hi.is/helmut/2021/06/07/power-consumption-of-raspberry-pi-4-versus-intel-j4105-system/) of the J4105, as it has the same TDP as the J5040. I also subtracted 3 W from the authors measurements which is the estimated power consumption of a 8GB stick of DDR4 RAM.
-
-[^4]: Noctua NF-A12X25 ULN [specification](https://noctua.at/en/products/fan/nf-a12x25-uln/specification).
-
-[^5]: [HardwareInfo low-load PSU test](https://web.archive.org/web/20130811112042/http://uk.hardware.info/productinfo/188792/be-quiet!-pure-power-l8-300w#tab:testresults). Inferred from the 22.5 W test of the _be quiet! Pure Power L8 300 W_.
 
 --------------------
 
@@ -2311,14 +2233,14 @@ This section contains my TO-DO list.
 | ------------- | ------------- | ------------- |
 | [Static Web Server](https://sws.joseluisq.net/) | A static webpage server, will also implement [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) and [Umami](https://github.com/umami-software/umami). | Working on html/css-website to serve. |
 | Implement qflood | qflood support was broken on a recent qBittorrent version, have yet to implement it. | Waiting on qBittorrent to push a fix. |
-| Data backup solution | [Restic](https://restic.net/) or [Borgmatic](https://torsion.org/borgmatic/). | Researching. |
+| Data backup solution | Regular backups with [Restic](https://restic.net/) or [Borgmatic](https://torsion.org/borgmatic/). | Will try to snag an extra SSD during a sale to use as a dedicated backup drive. |
 | Fail2Ban-filter | Make Fail2Ban REGEX-filters for services where it's possible. | Mostly done, figuring out the last few services. |
 | DoS/DDoS protection | Implement DoS/DDoS protection for NGINX | Researching. |
 | Security audit | Check HTTP Security headers, do some port knocking. | Not yet started. |
 | New hardware photos | Take new photos for the hardware section to include the fan upgrade. | Waiting on next hardware upgrade. |
-| Implement [Gotify](https://gotify.net/) | Self-hosted, event-based notifications | Not yet started. |
+| Implement [Gotify](https://gotify.net/) | Self-hosted, event-based notifications. | Researching. |
 | Implement [Password pusher](https://github.com/pglombardo/PasswordPusher) | Easy way to share passwords securily. | Not yet started. |
-| Streamline Fail2Ban documentation | There is a lot of repition in the Fail2Ban section, will try to streamline it for a better reading experience. | Not yet started, must first complete the last few REGEX-filters. |
+| Streamline Fail2Ban documentation | There is a lot of repetition in the Fail2Ban section, will try to streamline it for a better reading experience. | Not yet started, must first complete the last few REGEX-filters. |
 | [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s, might be fun for game nights. | Not yet started, low priority. |
 
 --------------------
