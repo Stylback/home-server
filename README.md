@@ -4,7 +4,7 @@
 
 This project is all about my home server, here I document my implementations step-by-step so that I may more easily reproduce them at a later date. 
 
-I could've not started my journey towards self-hosting were it not for the open source community, as such my documentation is and will always remain open for others to read and learn from. For more information, please see the [License and usage](#license-and-usage) section.
+I could've not started my journey towards self-hosting were it not for the open source community, as such my documentation is and will always remain open for others to read and learn from. If you're looking to use this documentation in one of your own projects, private or commercial, please see the [license and usage](#license-and-usage) section for more information.
 
 Do you have questions? Create an [issue](https://github.com/Stylback/home-server/issues) with the `question` tag and I will answer it to the best of my ability.
 
@@ -81,7 +81,6 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Part 7: Lidarr](#part-7-lidarr)
   - [Part 8: Prowlarr](#part-8-prowlarr)
   - [Part 9: qBittorrent](#part-9-qbittorrent)
-- [Gotify](#gotify)
 - [Issues and solutions](#issues-and-solutions)
   - [Motherboard](#motherboard)
   - [ddns-updater](#ddns-updater)
@@ -1040,7 +1039,6 @@ services:
       - /srv/jellyfin/cache:/cache
       - /srv/data/media:/media
     devices:
-      #- /dev/dri:/dev/dri # if below does not work, uncomment this
       - /dev/dri/renderD128:/dev/dri/renderD128
       - /dev/dri/card0:/dev/dri/card0
     restart: unless-stopped
@@ -1323,7 +1321,7 @@ It should return:
 {"ip":"[Mullvad's IP]","port":[forwarded port],"reachable":true}/
 ```
 
-Now that we know that port forwarding is working, let's do some `Options` tinkering in qBittorrent. These are the changes I made:
+Now that we know that port forwarding is working, let's do some `Options` tinkering in qBittorrent. These are some of the changes I made:
 
 | Setting | Default | Set to | Reason |
 | ------------- | ------------- |------------- |------------- |
@@ -1446,22 +1444,7 @@ Save and exit, start it with:
 cd /srv/radarr && sudo docker compose up -d
 ```
 
-Now visit Radarr's web-ui at `[local ip]:7878` and configure it. I made the following changes:
-
-| Setting | Default | Set to | Reason |
-| ------------- | ------------- |------------- |------------- |
-| Rename Movies | Disable | Enable | Will make the naming scheme uniform across out collection. |
-| Colon Replacement | Disable | Enable, Replace with Space Dash Space | Removes `:` from file names, makes it easier to extract metadata. |
-| Import Extra Files | Disable | Enable | Will add extra files such as subtitles. |
-| Add Root Folder | none | `/data/media/movies` | The folders radarr will use to manage our collection. |
-| Quality Profile | No custom profile | Custom profiles that suite your quality and language requirements | Ensures you only have media of the language and quality you want. |
-| Delay profile | Both Usenet and Torrent | Only Torrent | We will not be using the Usenet protocol |
-| Qualities | No custom values | Some custom values | Granular file-size controls. If quality is your main concern, follow TRaSH's [best practices](https://trash-guides.info/Radarr/Radarr-Quality-Settings-File-Size/). |
-| Add Download Client | Might be automatically detected | qBittorrent | The download client that will handle requests from radarr. |
-| Authentication | No authentication | Forms | Will require a username and password before accessing radarr, great for security as we will expose the service to the internet. |
-| UI | Imperial standard | Whatever you feel like | Make it personal. |
-
-Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in Prowlarr.
+Now visit Radarr's web-ui at `[local ip]:7878` and configure it to your liking. Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in Prowlarr.
 
 ### Part 3: Series with Sonarr
 
@@ -2152,22 +2135,6 @@ sudo fail2ban-client status qbittorrent
 </p>
 </details>
 
-## Gotify
-
-In this section I will implement [Gotify](https://gotify.net/) to create notifications after specific events, such as when Watchtower updates an image or when a user makes a media request in Jellyseerr.
-
-<details><summary>Click to expand</summary>
-<p>
-
---------------------
-
-Coming soon!
-
---------------------
-
-</p>
-</details>
-
 ## Issues and solutions
 
 Sometimes things doesn't go as planned and you have to rethink an implementation, here are some of the lessons I've learned.
@@ -2232,15 +2199,15 @@ This section contains my TO-DO list.
 | Item | Details | Status |
 | ------------- | ------------- | ------------- |
 | [Static Web Server](https://sws.joseluisq.net/) | A static webpage server, will also implement [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) and [Umami](https://github.com/umami-software/umami). | Working on html/css-website to serve. |
-| Implement qflood | qflood support was broken on a recent qBittorrent version, have yet to implement it. | Waiting on qBittorrent to push a fix. |
 | Data backup solution | Regular backups with [Restic](https://restic.net/) or [Borgmatic](https://torsion.org/borgmatic/). | Will try to snag an extra SSD during a sale to use as a dedicated backup drive. |
-| Fail2Ban-filter | Make Fail2Ban REGEX-filters for services where it's possible. | Mostly done, figuring out the last few services. |
+| Fail2Ban-filter | Make Fail2Ban REGEX-filters for services where possible. | Mostly done, figuring out the last few services. |
 | DoS/DDoS protection | Implement DoS/DDoS protection for NGINX | Researching. |
 | Security audit | Check HTTP Security headers, do some port knocking. | Not yet started. |
-| New hardware photos | Take new photos for the hardware section to include the fan upgrade. | Waiting on next hardware upgrade. |
 | Implement [Gotify](https://gotify.net/) | Self-hosted, event-based notifications. | Researching. |
-| Implement [Password pusher](https://github.com/pglombardo/PasswordPusher) | Easy way to share passwords securily. | Not yet started. |
 | Streamline Fail2Ban documentation | There is a lot of repetition in the Fail2Ban section, will try to streamline it for a better reading experience. | Not yet started, must first complete the last few REGEX-filters. |
+| Implement qflood | qflood support was broken on a recent qBittorrent version, have yet to implement it. | Waiting on qBittorrent to push a fix. |
+| Implement [Password pusher](https://github.com/pglombardo/PasswordPusher) | Easy way to share passwords securily. | Not yet started. |
+| New hardware photos | Take new photos for the hardware section to include the fan upgrade. | Waiting on next hardware upgrade. |
 | [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s, might be fun for game nights. | Not yet started, low priority. |
 
 --------------------
