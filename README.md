@@ -1,4 +1,4 @@
-<p align="center"><img src="https://github.com/Stylback/home-server/blob/main/media/homarr.png?raw=true" alt="Dashboard screenshot"/></p>
+<p align="center"><img src="https://github.com/Stylback/home-server/blob/main/media/dashboard.png?raw=true" alt="Dashboard screenshot"/></p>
 
 ## About
 
@@ -81,6 +81,7 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Part 7: Lidarr](#part-7-lidarr)
   - [Part 8: Prowlarr](#part-8-prowlarr)
   - [Part 9: qBittorrent](#part-9-qbittorrent)
+  - [Part 10: Gotify](#part-10-gotify)
 - [Notifications with Gotify](#notifications-with-gotify)
   - [Part 1: Initial setup](#part-1-initial-setup)
   - [Part 2: Jellyseer](#part-2-jellyseer)
@@ -2140,6 +2141,74 @@ You can also check the status of the jail with:
 sudo fail2ban-client status qbittorrent
 ```
 
+### Part 10: Gotify
+
+By default Gotify lets Docker handle its logs, to make it write to a file we can access we need to add an entrypoint to the `docker-compose.yml` file like so:
+
+```yml
+version: "3"
+services:
+  gotify:
+    container_name: gotify
+    image: gotify/server
+    entrypoint: sh -c "/app/gotify-app 2>&1 | tee /app/data/gotify.log"
+    ...
+```
+
+Save and exit, next make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/gotify.local
+```
+
+Paste:
+
+```
+[gotify]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = gotify
+maxretry = 3
+bantime = -1
+findtime = 86400
+logpath = /srv/gotify/data/gotify.log
+action = iptables-allports[name=gotify, chain=DOCKER-USER]
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/gotify.conf
+```
+
+Paste the following:
+
+```
+[Definition]
+failregex = ^.*\| 401 \|.*\| <ADDR> \|
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/gotify/data/gotify.log /etc/fail2ban/filter.d/gotify.conf --print-all-matched
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status gotify
+```
+
 --------------------
 
 </p>
@@ -2147,7 +2216,7 @@ sudo fail2ban-client status qbittorrent
 
 ## Notifications with Gotify
 
-In this section I will implement [Gotify](https://gotify.net/) to create notifications after certain events.
+In this section I will implement [Gotify](https://gotify.net/), which is a self-hosted notification server.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -2218,11 +2287,13 @@ sudo nano /srv/watchtower/docker-compose.yml
 
 Add the following lines to the `environment` list:
 
+```yml
 - WATCHTOWER_NOTIFICATIONS=gotify
 - WATCHTOWER_NOTIFICATION_GOTIFY_URL=[your Gotify URL]
 - WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN=[your token]
 - WATCHTOWER_NOTIFICATIONS_LEVEL=info
 - WATCHTOWER_NO_STARTUP_MESSAGE=true
+```
 
 While you're at it, add Gotify to the `command` list. Save, exit and restart the container to apply the new settings.
 
@@ -2262,7 +2333,7 @@ bantime = -1
 findtime = 86400
 logpath = /srv/sonarr/config/logs/sonarr.txt
 action = iptables-allports[name=sonarr, chain=DOCKER-USER]
-	     gotify
+	 gotify
 ```
 
 >NOTE: The indentation for actions are important, they should both share the same indentation depth.
