@@ -81,6 +81,12 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Part 7: Lidarr](#part-7-lidarr)
   - [Part 8: Prowlarr](#part-8-prowlarr)
   - [Part 9: qBittorrent](#part-9-qbittorrent)
+- [Notifications with Gotify](#notifications-with-gotify)
+  - [Part 1: Initial setup](#part-1-initial-setup)
+  - [Part 2: Jellyseer](#part-2-jellyseer)
+  - [Part 3: Watchtower](#part-3-watchtower)
+  - [Part 4: Fail2Ban](#part-4-fail2ban)
+  - [Part 5: Finishing up](#part-5-finishing-up)
 - [Issues and solutions](#issues-and-solutions)
   - [Motherboard](#motherboard)
   - [ddns-updater](#ddns-updater)
@@ -2080,7 +2086,7 @@ sudo fail2ban-client status prowlarr
 
 ### Part 9: qBittorrent
 
-First disable qbittorrents own ban-action by going to `Options -> Web UI -> Ban client after consecutive failures` and set it to `0`. Next make a `.local` file:
+First disable qbittorrents own ban-action by going to `Options → Web UI → Ban client after consecutive failures` and set it to `0`. Next make a `.local` file:
 
 ```sh
 sudo nano /etc/fail2ban/jail.d/qbittorrent.local
@@ -2133,6 +2139,149 @@ You can also check the status of the jail with:
 ```sh
 sudo fail2ban-client status qbittorrent
 ```
+
+--------------------
+
+</p>
+</details>
+
+## Notifications with Gotify
+
+In this section I will implement [Gotify](https://gotify.net/) to create notifications after certain events.
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+### Part 1: Initial setup
+
+Start by making the directory structure:
+
+```sh
+sudo mkdir -p /srv/gotify/data
+```
+
+Then create a `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/gotify/docker-compose.yml
+```
+
+Paste the following:
+
+```yml
+version: "3"
+services:
+  gotify:
+    container_name: gotify
+    image: gotify/server
+    ports:
+      - 1245:80
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+      - GOTIFY_DEFAULTUSER_NAME=admin
+      - GOTIFY_DEFAULTUSER_PASS=admin
+    volumes:
+      - "./data:/app/data"
+    restart: unless-stopped
+```
+
+Save and exit. Now run:
+
+```sh
+cd /srv/gotify && sudo docker compose up -d
+```
+
+Go to Web UI at `[local ip]:1245` and log in with the default credentials `admin, admin`, then go to `USERS → CREATE USER` and make your actual user. Finish up by deleting the default one.
+
+Now go to NGINX Proxy Manager and make a Proxy Host Entry with SSL and websocket support, make sure that you can access Gotify on this adress before continuing.
+
+### Part 2: Jellyseer
+
+We will have Gotify send us a notification whenever a user makes a media request or if there is an issue in the request process. To start, visit Gotify and go to `APPS → CREATE APPLICATION`. Create a new application for Jellyseerr and take note of the token.
+
+Jellyseerr have native Gotify integration, as such we can simply enable it in the settings. Go to `Settings → Notifications → Gotify`, enable the agent and enter your URL and application token. Next, choose what kind of notifications you want and save.
+
+### Part 3: Watchtower
+
+We will have Gotify notify us whenever Watchtower updated a Docker image. Just like with Jellyseer it has native integration, as such we can just follow the [official](https://containrrr.dev/watchtower/notifications/) documentation.
+
+To start, visit Gotify and go to `APPS → CREATE APPLICATION`. Create a new application for Watchtower and take note of the token. Next, let us edit Watchtowers `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/watchtower/docker-compose.yml
+```
+
+Add the following lines to the `environment` list:
+
+- WATCHTOWER_NOTIFICATIONS=gotify
+- WATCHTOWER_NOTIFICATION_GOTIFY_URL=[your Gotify URL]
+- WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN=[your token]
+- WATCHTOWER_NOTIFICATIONS_LEVEL=info
+- WATCHTOWER_NO_STARTUP_MESSAGE=true
+
+While you're at it, add Gotify to the `command` list. Save, exit and restart the container to apply the new settings.
+
+### Part 4: Fail2Ban
+
+We will have Gotify notify us whenever an IP was banned and give us some more information about their attempts prior to said ban. To start, visit Gotify and go to `APPS → CREATE APPLICATION`. Create a new application for Fail2Ban and take note of the token.
+
+Next we will create the `action.d` file that will trigger the message, run:
+
+```sh
+sudo nano /etc/fail2ban/action.d/gotify.conf
+```
+
+Paste the following, using your own URL and token:
+
+```
+[Definition]
+actionban = curl "https://gotify.domain.tld/message?token=your_token_here" -F title="[Fail2Ban] <name>" -F message="Banned IP: <ip> Details: `grep '<ip>' <logpath>`" -F "priority=5"
+```
+
+Save and exit. Now add the `gotify` action to your jails like so:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/sonarr.local
+```
+
+```
+[sonarr]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = sonarr
+maxretry = 3
+bantime = -1
+findtime = 86400
+logpath = /srv/sonarr/config/logs/sonarr.txt
+action = iptables-allports[name=sonarr, chain=DOCKER-USER]
+	     gotify
+```
+
+>NOTE: The indentation for actions are important, they should both share the same indentation depth.
+
+Finish up by restarting Fail2Ban:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+### Part 5: Finishing up
+
+By default all notifications will use Gotify's own icon. To add a little flair, upload your own icons by clicking on the little upload icon to the left of the `Name` field.
+
+![Gotify screenshot](https://github.com/Stylback/home-server/blob/main/media/gotify_screenshot.jpg?raw=true)
+
+Gotify have an excellent android app which makes it significantly easier to keep track of notifications. You can find more information [here](https://github.com/gotify/android).
+
+Finally, don't forget to add Gotify to Homarr and protect it with a Fail2Ban filter.
 
 --------------------
 
@@ -2207,7 +2356,6 @@ This section contains my TO-DO list.
 | Fail2Ban-filter | Make Fail2Ban REGEX-filters for services where possible. | Mostly done, figuring out the last few services. |
 | DoS/DDoS protection | Implement DoS/DDoS protection for NGINX | Researching. |
 | Security audit | Check HTTP Security headers, do some port knocking. | Not yet started. |
-| Implement [Gotify](https://gotify.net/) | Self-hosted, event-based notifications. | Researching. |
 | Streamline Fail2Ban documentation | There is a lot of repetition in the Fail2Ban section, will try to streamline it for a better reading experience. | Not yet started, must first complete the last few REGEX-filters. |
 | Implement qflood | qflood support was broken on a recent qBittorrent version, have yet to implement it. | Waiting on qBittorrent to push a fix. |
 | Implement [Password pusher](https://github.com/pglombardo/PasswordPusher) | Easy way to share passwords securily. | Not yet started. |
