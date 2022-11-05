@@ -782,7 +782,7 @@ services:
     environment:
       TZ: "Europe/Stockholm"
       DB_MYSQL_HOST: "db"
-      DB_MYSQL_PORT: 3306/
+      DB_MYSQL_PORT: 3306
       DB_MYSQL_USER: "npm"
       DB_MYSQL_PASSWORD: "npm"
       DB_MYSQL_NAME: "npm"
@@ -2087,7 +2087,7 @@ sudo fail2ban-client status prowlarr
 
 ### Part 9: qBittorrent
 
-First disable qbittorrents own ban-action by going to `Options → Web UI → Ban client after consecutive failures` and set it to `0`. Next make a `.local` file:
+First disable qbittorrents own ban-action by going to `Options → Web UI → Ban client after consecutive failures` and set it to `0`. Next, make a `.local` file:
 
 ```sh
 sudo nano /etc/fail2ban/jail.d/qbittorrent.local
@@ -2143,7 +2143,7 @@ sudo fail2ban-client status qbittorrent
 
 ### Part 10: Gotify
 
-By default Gotify lets Docker handle its logs, to make it write to a file we can access we need to add an entrypoint to the `docker-compose.yml` file like so:
+By default Gotify lets Docker handle its logs, to make it write to a file we need to add an entrypoint to the `docker-compose.yml` file like so:
 
 ```yml
 version: "3"
@@ -2155,7 +2155,7 @@ services:
     ...
 ```
 
-Save and exit, next make a `.local` file:
+Save, exit and restart the container. Gotify will now write logs to a `gotify.log` file in our `/data` folder. Next, make a `.local` file:
 
 ```sh
 sudo nano /etc/fail2ban/jail.d/gotify.local
@@ -2348,7 +2348,7 @@ sudo systemctl restart fail2ban
 
 By default all notifications will use Gotify's own icon. To add a little flair, upload your own icons by clicking on the little upload icon to the left of the `Name` field.
 
-![Gotify screenshot](https://github.com/Stylback/home-server/blob/main/media/gotify_screenshot.jpg?raw=true)
+![Gotify screenshot](https://github.com/Stylback/home-server/blob/main/media/gotify_screenshot.png?raw=true)
 
 Gotify have an excellent android app which makes it significantly easier to keep track of notifications. You can find more information [here](https://github.com/gotify/android).
 
