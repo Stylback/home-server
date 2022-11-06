@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+  qflood:
+    container_name: qflood
+    image: cr.hotio.dev/hotio/qflood
+    ports:
+      - 8080:8080 #qbittorrent
+      - 3000:3000 #flood
+      - 8118:8118
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+      - VPN_ENABLED=true
+      - VPN_LAN_NETWORK=x.x.x.x/24
+      - VPN_CONF=wg0
+      - VPN_ADDITIONAL_PORTS
+      - VPN_IP_CHECK_DELAY=5
+      - PRIVOXY_ENABLED=false
+      - FLOOD_AUTH=false
+    volumes:
+      - /etc/wireguard:/config/wireguard
+      - ./config:/config
+      - /srv/data/torrents:/data/torrents
+    cap_add:
+      - NET_ADMIN
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv6.conf.all.disable_ipv6=0
+    restart: unless-stopped
+
+networks:
+  default:
+    name: boulder

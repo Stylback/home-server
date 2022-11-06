@@ -24,7 +24,6 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
 - [Hardware choices](#hardware-choices)
   - [CPU / Motherboard](#cpu--motherboard)
   - [Power supply (PSU)](#power-supply-psu)
-    - [Approximating power consumption](#approximating-power-consumption)
   - [Case and fan](#case-and-fan)
   - [RAM](#ram)
   - [Storage](#storage)
@@ -34,118 +33,104 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Testing RAM stability](#testing-ram-stability)
   - [BIOS tweaks](#bios-tweaks)
   - [Installing the OS](#installing-the-os)
-    - [Benchmarking](#benchmarking)
-    - [Timezone setup](#timezone-setup)
-    - [Removing Ubuntu Pro messages](#removing-ubuntu-pro-messages)
-- [Remote access with SSH](#remote-access-with-ssh)
+  - [Benchmark](#benchmark)
+  - [Timezone setup](#timezone-setup)
+  - [Remove Ubuntu Pro messages](#remove-ubuntu-pro-messages)
+- [Secure Shell (SSH)](#secure-shell-ssh)
   - [Prerequisite and local access](#prerequisite-and-local-access)
   - [Create a Hostname alias](#create-a-hostname-alias)
   - [Generate and use SSH-keys](#generate-and-use-ssh-keys)
   - [Hardening](#hardening)
-  - [Remote SSH](#remote-ssh)
+  - [Remote SSH access](#remote-ssh-access)
 - [Perimeter security with Fail2Ban](#perimeter-security-with-fail2ban)
   - [Inital setup](#inital-setup)
   - [Useful Fail2Ban commands](#useful-fail2ban-commands)
-  - [Integration: Gotify](#integration-gotify)
+  - [Integrate with Gotify](#integrate-with-gotify)
 - [Application containers with Docker](#application-containers-with-docker)
   - [Initial setup](#initial-setup)
   - [Managing containers with ctop](#managing-containers-with-ctop)
+- [Automate updates with Watchtower](#automate-updates-with-watchtower)
+  - [Docker setup](#docker-setup)
+  - [Integrate with Gotify](#integrate-with-gotify-1)
+- [Dynamic DNS with ddns-updater](#dynamic-dns-with-ddns-updater)
+  - [Docker setup](#docker-setup-1)
+  - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager)
+  - [Protect with Fail2Ban](#protect-with-fail2ban)
+  - [Integrate with Homarr](#integrate-with-homarr)
+  - [Integrate with Watchtower](#integrate-with-watchtower)
 - [Nginx Proxy Manager](#nginx-proxy-manager)
   - [Aquire a domain](#aquire-a-domain)
-  - [Docker image](#docker-image)
-  - [Stream port for remote SSH](#stream-port-for-remote-ssh)
-  - [Protect with Fail2Ban](#protect-with-fail2ban)
-  - [Integrate with other services](#integrate-with-other-services)
-    - [Homarr](#homarr)
-    - [Watchtower](#watchtower)
-- [Dynamic DNS with ddns-updater](#dynamic-dns-with-ddns-updater)
-  - [Docker image](#docker-image-1)
-  - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager)
+  - [Docker setup](#docker-setup-2)
   - [Protect with Fail2Ban](#protect-with-fail2ban-1)
-  - [Integrate with other services](#integrate-with-other-services-1)
-    - [Homarr](#homarr-1)
-    - [Watchtower](#watchtower-1)
+  - [Integrate with Homarr](#integrate-with-homarr-1)
+  - [Integrate with Watchtower](#integrate-with-watchtower-1)
 - [Notifications with Gotify](#notifications-with-gotify)
-  - [Docker image](#docker-image-2)
+  - [Docker setup](#docker-setup-3)
   - [Customization](#customization)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-1)
   - [Protect with Fail2Ban](#protect-with-fail2ban-2)
-  - [Integrate with other services](#integrate-with-other-services-2)
-    - [Homarr](#homarr-2)
-    - [Watchtower](#watchtower-2)
-- [Automate updates with Watchtower](#automate-updates-with-watchtower)
-  - [Docker image](#docker-image-3)
-  - [Integrate with other services](#integrate-with-other-services-3)
-    - [Gotify](#gotify)
+  - [Integrate with Homarr](#integrate-with-homarr-2)
+  - [Integrate with Watchtower](#integrate-with-watchtower-2)
 - [Dashboard with Homarr](#dashboard-with-homarr)
-  - [Docker image](#docker-image-4)
+  - [Docker setup](#docker-setup-4)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-2)
   - [Protect with Fail2Ban](#protect-with-fail2ban-3)
-  - [Integrate with other services](#integrate-with-other-services-4)
-    - [Watchtower](#watchtower-3)
+  - [Integrate with Watchtower](#integrate-with-watchtower-3)
 - [Multimedia streaming with Jellyfin](#multimedia-streaming-with-jellyfin)
   - [Consistent directories](#consistent-directories)
-  - [Docker image](#docker-image-5)
+  - [Docker setup](#docker-setup-5)
   - [Media transfer and streaming](#media-transfer-and-streaming)
   - [Hardware acceleration](#hardware-acceleration)
   - [Customization](#customization-1)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-3)
   - [Protect with Fail2Ban](#protect-with-fail2ban-4)
-  - [Integrate with other services](#integrate-with-other-services-5)
-    - [Homarr](#homarr-3)
-    - [Watchtower](#watchtower-4)
+  - [Integrate with Homarr](#integrate-with-homarr-3)
+  - [Integrate with Watchtower](#integrate-with-watchtower-4)
 - [Torrenting with qflood](#torrenting-with-qflood)
   - [Wireguard](#wireguard)
-  - [Docker image](#docker-image-6)
+  - [Docker setup](#docker-setup-6)
   - [qBittorrent settings](#qbittorrent-settings)
   - [Flood settings](#flood-settings)
   - [Protect with Fail2Ban](#protect-with-fail2ban-5)
-  - [Integrate with other services](#integrate-with-other-services-6)
-    - [Homarr](#homarr-4)
-    - [Watchtower](#watchtower-5)
+  - [Integrate with Homarr](#integrate-with-homarr-4)
+  - [Integrate with Watchtower](#integrate-with-watchtower-5)
 - [Indexers with Prowlarr](#indexers-with-prowlarr)
-  - [Docker image](#docker-image-7)
+  - [Docker setup](#docker-setup-7)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-4)
   - [Protect with Fail2Ban](#protect-with-fail2ban-6)
-  - [Integrate with other services](#integrate-with-other-services-7)
-    - [Homarr](#homarr-5)
-    - [Watchtower](#watchtower-6)
+  - [Integrate with Homarr](#integrate-with-homarr-5)
+  - [Integrate with Watchtower](#integrate-with-watchtower-6)
 - [Movies with Radarr](#movies-with-radarr)
-  - [Docker image](#docker-image-8)
+  - [Docker setup](#docker-setup-8)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-5)
   - [Protect with Fail2Ban](#protect-with-fail2ban-7)
-  - [Integrate with other services](#integrate-with-other-services-8)
-    - [Homarr](#homarr-6)
-    - [Watchtower](#watchtower-7)
+  - [Integrate with Homarr](#integrate-with-homarr-6)
+  - [Integrate with Watchtower](#integrate-with-watchtower-7)
 - [Series with Sonarr](#series-with-sonarr)
-  - [Docker image](#docker-image-9)
+  - [Docker setup](#docker-setup-9)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-6)
   - [Protect with Fail2Ban](#protect-with-fail2ban-8)
-  - [Integrate with other services](#integrate-with-other-services-9)
-    - [Homarr](#homarr-7)
-    - [Watchtower](#watchtower-8)
+  - [Integrate with Homarr](#integrate-with-homarr-7)
+  - [Integrate with Watchtower](#integrate-with-watchtower-8)
 - [Subtitles with Bazarr](#subtitles-with-bazarr)
-  - [Docker image](#docker-image-10)
+  - [Docker setup](#docker-setup-10)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-7)
   - [Protect with Fail2Ban](#protect-with-fail2ban-9)
-  - [Integrate with other services](#integrate-with-other-services-10)
-    - [Homarr](#homarr-8)
-    - [Watchtower](#watchtower-9)
+  - [Integrate with Homarr](#integrate-with-homarr-8)
+  - [Integrate with Watchtower](#integrate-with-watchtower-9)
 - [Request media with Jellyseerr](#request-media-with-jellyseerr)
-  - [Docker image](#docker-image-11)
+  - [Docker setup](#docker-setup-11)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-8)
   - [Protect with Fail2Ban](#protect-with-fail2ban-10)
-  - [Integrate with other services](#integrate-with-other-services-11)
-    - [Homarr](#homarr-9)
-    - [Watchtower](#watchtower-10)
-    - [Gotify](#gotify-1)
+  - [Integrate with Homarr](#integrate-with-homarr-9)
+  - [Integrate with Watchtower](#integrate-with-watchtower-10)
+  - [Integrate with Gotify](#integrate-with-gotify-2)
 - [Music with Lidarr](#music-with-lidarr)
-  - [Docker image](#docker-image-12)
+  - [Docker setup](#docker-setup-12)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-9)
   - [Protect with Fail2Ban](#protect-with-fail2ban-11)
-  - [Integrate with other services](#integrate-with-other-services-12)
-    - [Homarr](#homarr-10)
-    - [Watchtower](#watchtower-11)
+  - [Integrate with Homarr](#integrate-with-homarr-10)
+  - [Integrate with Watchtower](#integrate-with-watchtower-11)
 - [Issues and solutions](#issues-and-solutions)
   - [Motherboard](#motherboard)
   - [ddns-updater](#ddns-updater)
@@ -189,8 +174,6 @@ After some back of the napkin calculations (_see "Approximating power consumptio
 <p>
 
 --------------------
-
-#### Approximating power consumption
 
 | Component | Power draw (_idle_) [W] | Power draw (_active_) [W] |
 | :--- | ---: | ---: |
@@ -301,7 +284,7 @@ After confirming RAM stability I installed [Ubuntu Server 22.04 LTS](https://ubu
 
 I assigned the 250GB drive as boot drive, consuming about half of its available storage. The rest was partitioned and mounted to `/home` for any application or service that needs to store data there. As the 2TB drive is going to be used as the primary storage unit it was partioned and mounted at `/srv`.
 
-#### Benchmarking
+### Benchmark
 
 After creating a user and logging in for the first time, I updated the system with:
 
@@ -366,7 +349,7 @@ Multi Core      | 1858
 
 Performance was as expected, the J5040 isn't going to play the latest AAA title but it will be plenty for my use case. 
 
-#### Timezone setup
+### Timezone setup
 
 We will configure our timezone to ensure correct date and time formats, run:
 
@@ -398,7 +381,7 @@ Finally, check that the timezone is correct with:
 timedatectl
 ```
 
-#### Removing Ubuntu Pro messages
+### Remove Ubuntu Pro messages
 
 Canonical sometimes promote their [Ubuntu Pro](https://ubuntu.com/pro) service when you run `apt upgrade`. If you don't want these messages to appear, first remove the message templates:
 
@@ -426,7 +409,7 @@ Save and exit, reboot the server to properly apply the changes.
 </p>
 </details>
 
-## Remote access with SSH
+## Secure Shell (SSH)
 
 This section is about basic SSH, such as local network access and some best practices. I will expand on this in an upcoming section where we will configure SSH outside of our home network.
 
@@ -532,9 +515,82 @@ Verify that everything works by first trying to connect to the server with `ssh 
 
 If everything worked correctly, the server should now be accessible only by your SSH-key and noone should be able to log in as root. As we changed the port number from the default we gain some resistance against automated attacks, but a persistent actor could still find the correct port after some trial and error.
 
-### Remote SSH
+### Remote SSH access
 
-Please see the [Nginx](#nginx-proxy-manager) section.
+>NOTE: At this point you might not yet have [Nginx Proxy Manager](#nginx-proxy-manager) set up. If that's the case, skip this section for now.
+
+First we need to decide on a port we will expose, look through the [list](https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers) and add a port-forwarding rule for that port in your router, I chose `8022`. Next, go to Nginx Proxy Manager and navigate to `Streams`, add a new stream with the following settings:
+
+```
+Incoming port:          8022
+Forward Hostname / IP:  [local-ip]
+Forward Port:           [your local SSH port]
+TCP Forwarding:         Yes
+UDP Forwarding:         No
+```
+
+Save and exit. Now we need to add our new port in our `docker-compose.yml` for Nginx Proxy Manager. Run:
+
+```sh
+sudo nano /srv/nginx/docker-compose.yml
+```
+
+Add the new port as such:
+
+```yml
+    ports:
+      - 80:80 # Public HTTP Port
+      - 443:443 # Public HTTPS Port
+      - 81:81 # Admin Web Port
+      - 8022:8022 # Remote SSH port
+```
+
+Save and exit. Rebuild the container with:
+
+```sh
+cd /srv/nginx && sudo docker compose up -d --build
+```
+
+Now we will create a new host entry in our SSH config file. On your client, run:
+
+```sh
+sudo nano ~/.ssh/config
+```
+
+Below your existing alias, add:
+
+```
+Host alias-remote
+  Hostname ssh.domain.tld
+  Port port
+  User username
+```
+
+Save and exit. Now test that everything works by running:
+
+```sh
+ssh alias-remote
+```
+
+By default our remote connection will time out after a period of inactivity, to keep the connection alive we need to make an adjustment in our config file. On your server, run:
+
+```sh
+sudo nano /etc/ssh/sshd_config
+```
+
+Find, uncomment and change the values to:
+
+```
+TCPKeepAlive yes
+ClientAliveInterval 600
+ClientAliveCountMax 1
+```
+
+Save and exit. Restart the SSH service by running:
+
+```sh
+sudo systemctl restart ssh
+```
 
 --------------------
 
@@ -598,9 +654,9 @@ See if a filter will catch something in a logfile (_great for testing/debugging_
 fail2ban-regex [path to logfile] [path to filter] --print-all-matched
 ```
 
-### Integration: Gotify
+### Integrate with Gotify
 
-> NOTE: Skip this until you have [Gotify](#notifications-with-gotify) up and running.
+>NOTE: At this point you might not yet have [Gotify](#notifications-with-gotify) set up. If that's the case, skip this section for now.
 
 We will have Gotify notify us whenever an IP was banned and give us some more information about their attempts prior to said ban. To start, visit Gotify and go to `APPS → CREATE APPLICATION`. Create a new application for Fail2Ban and take note of the token.
 
@@ -747,39 +803,27 @@ sudo ctop
 </p>
 </details>
 
-## Nginx Proxy Manager
+## Automate updates with Watchtower
 
-[Nginx Proxy Manager](https://nginxproxymanager.com/) combines the true and tested reverse proxy [Nginx](https://www.nginx.com/) with an easy-to-use GUI and [Let's Encrypt](https://letsencrypt.org/) integration. 
+We will use [Watchtower](https://containrrr.dev/watchtower/) to automatically find and apply updates to our docker images. 
 
 <details><summary>Click to expand</summary>
 <p>
 
 --------------------
 
-### Aquire a domain
+### Docker setup
 
-Up until this point we have only been able to access our server while on the same local network, to access it remotely we will utilize a custom domain.
-
-To get a custom domain you will need to purchase it from a domain registrar. There are plenty of domain registrars but I've gone with [Njalla](https://njal.la/) due to their great track record and privacy policy. Their pricing is somewhat higher than their competitors, so you might consider [namecheap](https://www.namecheap.com/) if you're looking for an affordable alternative.
-
-### Docker image
-
-To get started, lets create a Docker network. I named mine `boulder` but you can choose whatever name you like:
+To get started, make a directory:
 
 ```sh
-sudo docker network create boulder
+sudo mkdir /srv/watchtower
 ```
 
-Then, create a directory:
+Now make a `docker-compose.yml` file:
 
 ```sh
-sudo mkdir /srv/nginx
-```
-
-Now create a `docker-compose.yml` file:
-
-```sh
-sudo nano /srv/nginx/docker-compose.yml
+sudo nano /srv/watchtower/docker-compose.yml
 ```
 
 Paste the following:
@@ -787,234 +831,50 @@ Paste the following:
 ```yml
 version: "3"
 services:
-  nginx:
-    image: jc21/nginx-proxy-manager:latest
-    container_name: nginx
-    ports:
-      #<host-port>:<container-port>
-      - 80:80 # Public HTTP Port
-      - 443:443 # Public HTTPS Port
-      - 81:81 # Admin Web Port
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
     environment:
-      - PUID=1000
-      - PGID=1000
-      - UMASK=002
-      - TZ=Europe/Stockholm     
+      - TZ=Europe/Stockholm
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_SCHEDULE=0 0 2 * * * # run daily at 2 am
     volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: always
+    command: watchtower
 
 networks:
   default:
     name: boulder
 ```
 
-Save and exit. You should now be able to start Nginx proxy manager by running:
+Save and exit, now start Watchtower with:
 
 ```sh
-cd /srv/nginx && sudo docker compose up -d
+cd /srv/watchtower && sudo docker compose up -d
 ```
 
-It will take couple of seconds to set up. It might not return terminal control to you afterwards, in that case exit the process with `ctrl-z`. Check that everything is working by typing `[local-IP]:81` in your browser. Log in with the default email and password:
+If everything works as expected, Watchtower will check for new docker images every night at 02:00. If it finds any, it will download the image, stop the service, apply the new image, start tthe service and finally remove the old image.
 
-```
-Email:    admin@example.com
-Password: changeme
-```
+### Integrate with Gotify
 
-On your first log-in you will be prompted to change the username and password.
+>NOTE: At this point you might not yet have [Gotify](#notifications-with-gotify) set up. If that's the case, skip this section for now.
 
-Now let's make a remotely accessible log-in page for our Nginx Proxy Manager. First you need to enable port forwarding on your router for port `80` and `443` by following the manual provided with your router. When you've configured port-forwarding you can go to the Proxy Hosts tab and add a new Proxy Host with something like this:
-
-```
-DETAILS
-Domain names:           nginx.domain.tld
-Scheme:                 http
-Forward Hostname / IP:  nginx
-Forward Port:           81
-Cache Assets:           Yes
-Block Common Expolits:  Yes
-Websocket Support:      No
-Access List:            Pubicly Accessible
-
-SSL
-SSL Certificate:        Request a New SSL Certificate
-Force SSL:              Yes
-HSTS Enabled:           Yes
-HTTP/2 Support:         No
-HSTS Subdomains:        No
-```
-
-Save and visit `nginx.domain.tld`, you should be greeted with a log-in page. Now Go to `NPM -> Settings -> Default site -> Edit` and change it from `Congratulations Page` to `404 page`.
-
-### Stream port for remote SSH
-
-First we need to decide on a port we will expose, look through the [list](https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers) and add a port-forwarding rule for that port in your router. Next, go to Nginx Proxy Manager and navigate to `Streams`, add a new stream with the following settings:
-
-```
-Incoming port:          [your new port]
-Forward Hostname / IP:  [local-ip]
-Forward Port:           [your local SSH port]
-TCP Forwarding:         Yes
-UDP Forwarding:         No
-```
-Save and exit. Now we need to add our new port in our `docker-compose.yml` for Nginx Proxy Manager. Run:
-
-```sh
-sudo nano /srv/nginx/docker-compose.yml
-```
-
-Add the new port as such:
-
-```yml
-    ports:
-      - '80:80' # Public HTTP Port
-      - '443:443' # Public HTTPS Port
-      - '81:81' # Admin Web Port
-      - '[new port]:[new port]' # Remote SSH port
-```
-
-Save and exit. Rebuild the container with:
-
-```sh
-cd /srv/nginx && sudo docker compose up -d --build
-```
-
-Now we will create a new host entry in our SSH config file. On your client, run:
-
-```sh
-sudo nano ~/.ssh/config
-```
-
-Below your existing alias, add:
-
-```
-Host alias-remote
-  Hostname ssh.domain.tld
-  Port port
-  User username
-```
-
-Save and exit. Now test that everything works by running:
-
-```sh
-ssh alias-remote
-```
-
-By default our remote connection will time out after a period of inactivity, to keep the connection alive we need to make an adjustment in our config file. On your server, run:
-
-```sh
-sudo nano /etc/ssh/sshd_config
-```
-
-Find, uncomment and change the values to:
-
-```
-TCPKeepAlive yes
-ClientAliveInterval 600
-ClientAliveCountMax 1
-```
-
-Save and exit. Restart the SSH service by running:
-
-```sh
-sudo systemctl restart ssh
-```
-
-### Protect with Fail2Ban
-
-First identify Nginx's proxy-host_access.log for Nginx Proxy Manager:
-
-```sh
-grep -rnw '/srv/nginx/data/logs' -e 'nginx.'
-```
-
-In my case it was `proxy-host-2_access.log`. Now make a `.local` file:
-
-```sh
-sudo nano /etc/fail2ban/jail.d/npm.local
-```
-
-Paste:
-
-```
-[nginx]
-
-backend = auto
-enabled = true
-port = 80,443
-protocol = tcp
-filter = nginx
-maxretry = 3
-bantime = -1
-findtime = 86400
-logpath = /srv/nginx/data/logs/proxy-host-2_access.log
-action = iptables-allports[name=nginx, chain=DOCKER-USER]
-	 gotify
-```
-
-Save and exit. Now make a `.conf` file:
-
-```sh
-sudo nano /etc/fail2ban/filter.d/nginx.conf
-```
-
-Paste the following:
-
-```
-[Definition]
-failregex = .*401 401 - POST.*\[Client <ADDR>\]
-```
-
-Restart Fail2Ban to apply the new settings:
-
-```sh
-sudo systemctl restart fail2ban
-```
-
-You can test your filter by first using the wrong credentials and then match the log with your filter:
-
-```
-fail2ban-regex /srv/nginx/data/logs/proxy-host-2_access.log /etc/fail2ban/filter.d/nginx.conf --print-all-matched
-```
-
-You can also check the status of the jail with:
-
-```sh
-sudo fail2ban-client status nginx
-```
-
-### Integrate with other services
-
-#### Homarr
-
-Go to Homarr and click `Add a service`:
-
-```
-Service name:           Nginx Proxy Manager
-Icon URL:               https://nginxproxymanager.com/icon.png
-Service URL:            http://x.x.x.x:81
-On Click URL:           https://nginx.domain.tld
-Service type:           Other
-Category:               Network
-```
-
-Click `Save service`, now go to `Settings → Save a copy → Confirm` to save the state of your dashboard.
-
-#### Watchtower
-
-To automatically update the docker image we need to add it to Watchtower, run:
+We will have Gotify notify us whenever Watchtower updated a Docker image. To start, visit Gotify and go to `APPS → CREATE APPLICATION`. Create a new application for Watchtower and take note of the token. Next, let us edit Watchtowers `docker-compose.yml` file:
 
 ```sh
 sudo nano /srv/watchtower/docker-compose.yml
 ```
 
-Add the container name like so:
+Add the following lines to the `environment` list:
 
 ```yml
-    ...
-    command: watchtower [other containers] nginx
+- WATCHTOWER_NOTIFICATIONS=gotify
+- WATCHTOWER_NOTIFICATION_GOTIFY_URL=[your Gotify URL]
+- WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN=[your token]
+- WATCHTOWER_NOTIFICATIONS_LEVEL=info
+- WATCHTOWER_NO_STARTUP_MESSAGE=true
 ```
 
 Save and exit. To apply the settings we need to rebuild the Watchtower image:
@@ -1039,7 +899,7 @@ We want our domain to point to our routers IP-address. This address, called a dy
 
 To get started, log into Njalla (_or your registrar of choice_) and add a new DNS record to your domain. This new record should be __DYNAMIC__ and be named __*__, this will create a dynamic __wildcard__ domain. Njalla will provide us with the key we need to update the IP-address of the DNS record, if you're using another registrar they might have other ways of conveying IP-changes.
 
-### Docker image
+### Docker setup
 
 Create the directory structure:
 
@@ -1133,23 +993,9 @@ cd /srv/ddns-updater && sudo docker compose up -d
 
 Check that everything is working by visting `[local-IP]:8000` in your browser, you should see a `Success` message under `Update status`.
 
-<details><summary>Didn't work?</summary>
-<p>
-
---------------------
-
-First, ensure that you are in `/srv/ddns-updater` and try again.
-
-If that didn't fix it you might be looking at a permission error, double-check the directory/file permissions with `ls -la`.
-
-If the problem still persist your best bet is to look at the logs. Run `sudo ctop` and take a look at the `ddns-updater` container.
-
---------------------
-
-</p>
-</details>
-
 ### Add to Nginx proxy Manager
+
+>NOTE: At this point you might not yet have [Nginx proxy Manager](#nginx-proxy-manager) set up. If that's the case, skip this section for now.
 
 Go to Nginx Proxy Manager and make a new Access List:
 
@@ -1254,9 +1100,9 @@ You can also check the status of the jail with:
 sudo fail2ban-client status ddns
 ```
 
-### Integrate with other services
+### Integrate with Homarr
 
-#### Homarr
+>NOTE: At this point you might not yet have [Homarr](#dashboard-with-homarr) set up. If that's the case, skip this section for now.
 
 Go to Homarr and click `Add a service`:
 
@@ -1271,7 +1117,7 @@ Category:               Network
 
 Click `Save service`, now go to `Settings → Save a copy → Confirm` to save the state of your dashboard.
 
-#### Watchtower
+### Integrate with Watchtower
 
 To automatically update the docker image we need to add it to Watchtower, run:
 
@@ -1297,6 +1143,215 @@ cd /srv/watchtower && sudo docker compose up -d --build
 </p>
 </details>
 
+## Nginx Proxy Manager
+
+[Nginx Proxy Manager](https://nginxproxymanager.com/) combines the true and tested reverse proxy [Nginx](https://www.nginx.com/) with an easy-to-use GUI and [Let's Encrypt](https://letsencrypt.org/) integration. 
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+### Aquire a domain
+
+Up until this point we have only been able to access our server while on the same local network, to access it remotely we will utilize a custom domain.
+
+To get a custom domain you will need to purchase it from a domain registrar. There are plenty of domain registrars but I've gone with [Njalla](https://njal.la/) due to their great track record and privacy policy. Their pricing is somewhat higher than their competitors, so you might consider [namecheap](https://www.namecheap.com/) if you're looking for an affordable alternative.
+
+### Docker setup
+
+To get started, lets create a Docker network. I named mine `boulder` but you can choose whatever name you like:
+
+```sh
+sudo docker network create boulder
+```
+
+Then, create a directory:
+
+```sh
+sudo mkdir /srv/nginx
+```
+
+Now create a `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/nginx/docker-compose.yml
+```
+
+Paste the following:
+
+```yml
+version: "3"
+services:
+  nginx:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx
+    ports:
+      #<host-port>:<container-port>
+      - 80:80 # Public HTTP Port
+      - 443:443 # Public HTTPS Port
+      - 81:81 # Admin Web Port
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm     
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    restart: always
+
+networks:
+  default:
+    name: boulder
+```
+
+Save and exit. You should now be able to start Nginx proxy manager by running:
+
+```sh
+cd /srv/nginx && sudo docker compose up -d
+```
+
+It will take couple of seconds to set up. It might not return terminal control to you afterwards, in that case exit the process with `ctrl-z`. Check that everything is working by typing `[local-IP]:81` in your browser. Log in with the default email and password:
+
+```
+Email:    admin@example.com
+Password: changeme
+```
+
+On your first log-in you will be prompted to change the username and password.
+
+Now let's make a remotely accessible log-in page for our Nginx Proxy Manager. First you need to enable port forwarding on your router for port `80` and `443` by following the manual provided with your router. When you've configured port-forwarding you can go to the Proxy Hosts tab and add a new Proxy Host with something like this:
+
+```
+DETAILS
+Domain names:           nginx.domain.tld
+Scheme:                 http
+Forward Hostname / IP:  nginx
+Forward Port:           81
+Cache Assets:           Yes
+Block Common Expolits:  Yes
+Websocket Support:      No
+Access List:            Pubicly Accessible
+
+SSL
+SSL Certificate:        Request a New SSL Certificate
+Force SSL:              Yes
+HSTS Enabled:           Yes
+HTTP/2 Support:         No
+HSTS Subdomains:        No
+```
+
+Save and visit `nginx.domain.tld`, you should be greeted with a log-in page. Now Go to `NPM -> Settings -> Default site -> Edit` and change it from `Congratulations Page` to `404 page`.
+
+### Protect with Fail2Ban
+
+First identify Nginx's proxy-host_access.log for Nginx Proxy Manager:
+
+```sh
+grep -rnw '/srv/nginx/data/logs' -e 'nginx.'
+```
+
+In my case it was `proxy-host-2_access.log`. Now make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/npm.local
+```
+
+Paste:
+
+```
+[nginx]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = nginx
+maxretry = 3
+bantime = -1
+findtime = 86400
+logpath = /srv/nginx/data/logs/proxy-host-2_access.log
+action = iptables-allports[name=nginx, chain=DOCKER-USER]
+	 gotify
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/nginx.conf
+```
+
+Paste the following:
+
+```
+[Definition]
+failregex = .*401 401 - POST.*\[Client <ADDR>\]
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/nginx/data/logs/proxy-host-2_access.log /etc/fail2ban/filter.d/nginx.conf --print-all-matched
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status nginx
+```
+
+
+
+### Integrate with Homarr
+
+>NOTE: At this point you might not yet have [Homarr](#dashboard-with-homarr) set up. If that's the case, skip this section for now.
+
+Go to Homarr and click `Add a service`:
+
+```
+Service name:           Nginx Proxy Manager
+Icon URL:               https://nginxproxymanager.com/icon.png
+Service URL:            http://x.x.x.x:81
+On Click URL:           https://nginx.domain.tld
+Service type:           Other
+Category:               Network
+```
+
+Click `Save service`, now go to `Settings → Save a copy → Confirm` to save the state of your dashboard.
+
+### Integrate with Watchtower
+
+To automatically update the docker image we need to add it to Watchtower, run:
+
+```sh
+sudo nano /srv/watchtower/docker-compose.yml
+```
+
+Add the container name like so:
+
+```yml
+    ...
+    command: watchtower [other containers] nginx
+```
+
+Save and exit. To apply the settings we need to rebuild the Watchtower image:
+
+```sh
+cd /srv/watchtower && sudo docker compose up -d --build
+```
+
+--------------------
+
+</p>
+</details>
+
 ## Notifications with Gotify
 
 In this section I will implement [Gotify](https://gotify.net/), which is a self-hosted notification server.
@@ -1306,7 +1361,7 @@ In this section I will implement [Gotify](https://gotify.net/), which is a self-
 
 --------------------
 
-### Docker image
+### Docker setup
 
 Start by making the directory structure:
 
@@ -1461,9 +1516,9 @@ You can also check the status of the jail with:
 sudo fail2ban-client status gotify
 ```
 
-### Integrate with other services
+### Integrate with Homarr
 
-#### Homarr
+>NOTE: At this point you might not yet have [Homarr](#dashboard-with-homarr) set up. If that's the case, skip this section for now.
 
 Go to Homarr and click `Add a service`:
 
@@ -1479,7 +1534,7 @@ API key:                xxxxxxxx
 
 Click `Save service`, now go to `Settings → Save a copy → Confirm` to save the state of your dashboard.
 
-#### Watchtower
+### Integrate with Watchtower
 
 To automatically update the docker image we need to add it to Watchtower, run:
 
@@ -1505,91 +1560,6 @@ cd /srv/watchtower && sudo docker compose up -d --build
 </p>
 </details>
 
-## Automate updates with Watchtower
-
-We will use [Watchtower](https://containrrr.dev/watchtower/) to automatically find and apply updates to our docker images. 
-
-<details><summary>Click to expand</summary>
-<p>
-
---------------------
-
-### Docker image
-
-To get started, make a directory:
-
-```sh
-sudo mkdir /srv/watchtower
-```
-
-Now make a `docker-compose.yml` file:
-
-```sh
-sudo nano /srv/watchtower/docker-compose.yml
-```
-
-Paste the following:
-
-```yml
-version: "3"
-services:
-  watchtower:
-    container_name: watchtower
-    image: containrrr/watchtower
-    environment:
-      - TZ=Europe/Stockholm
-      - WATCHTOWER_INCLUDE_RESTARTING=true
-      - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_SCHEDULE=0 0 2 * * * # run daily at 2 am
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: always
-    command: watchtower
-
-networks:
-  default:
-    name: boulder
-```
-
-Save and exit, now start Watchtower with:
-
-```sh
-cd /srv/watchtower && sudo docker compose up -d
-```
-
-If everything works as expected, Watchtower will check for new docker images every night at 02:00. If it finds any, it will download the image, stop the service, apply the new image, start tthe service and finally remove the old image.
-
-### Integrate with other services
-
-#### Gotify
-
-We will have Gotify notify us whenever Watchtower updated a Docker image. To start, visit Gotify and go to `APPS → CREATE APPLICATION`. Create a new application for Watchtower and take note of the token. Next, let us edit Watchtowers `docker-compose.yml` file:
-
-```sh
-sudo nano /srv/watchtower/docker-compose.yml
-```
-
-Add the following lines to the `environment` list:
-
-```yml
-- WATCHTOWER_NOTIFICATIONS=gotify
-- WATCHTOWER_NOTIFICATION_GOTIFY_URL=[your Gotify URL]
-- WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN=[your token]
-- WATCHTOWER_NOTIFICATIONS_LEVEL=info
-- WATCHTOWER_NO_STARTUP_MESSAGE=true
-```
-
-Save and exit. To apply the settings we need to rebuild the Watchtower image:
-
-```sh
-cd /srv/watchtower && sudo docker compose up -d --build
-```
-
---------------------
-
-</p>
-</details>
-
 ## Dashboard with Homarr
 
 [Homarr](https://homarr.vercel.app/docs/about) is an easy to use dashboard that integrates well with *arr apps.
@@ -1599,7 +1569,7 @@ cd /srv/watchtower && sudo docker compose up -d --build
 
 --------------------
 
-### Docker image
+### Docker setup
 
 Make the directory structure:
 
@@ -1732,9 +1702,7 @@ You can also check the status of the jail with:
 sudo fail2ban-client status homarr
 ```
 
-### Integrate with other services
-
-#### Watchtower
+### Integrate with Watchtower
 
 To automatically update the docker image we need to add it to Watchtower, run:
 
@@ -1783,7 +1751,7 @@ Now configure directory permissions with:
 sudo chown -R $USER:$USER /srv/data && sudo chmod -R a=,a+rX,u+w,g+w /srv/data
 ```
 
-### Docker image
+### Docker setup
 
 We will be using [Hotios Jellyfin image](https://hotio.dev/containers/jellyfin/). Start by creating a directory:
 
@@ -2023,9 +1991,7 @@ You can also check the status of the jail with:
 sudo fail2ban-client status jellyfin
 ```
 
-### Integrate with other services
-
-#### Homarr
+### Integrate with Homarr
 
 Go to Homarr and click `Add a service`:
 
@@ -2040,7 +2006,7 @@ Category:               Media
 
 Click `Save service`, now go to `Settings → Save a copy → Confirm` to save the state of your dashboard.
 
-#### Watchtower
+### Integrate with Watchtower
 
 To automatically update the docker image we need to add it to Watchtower, run:
 
@@ -2103,7 +2069,7 @@ Confirm that you have a connection, then disconnect with:
 wg-quick down wg0
 ```
 
-### Docker image
+### Docker setup
 
 Now we can install qflood, start by creating a directory:
 
@@ -2301,9 +2267,7 @@ You can also check the status of the jail with:
 sudo fail2ban-client status qbittorrent
 ```
 
-### Integrate with other services
-
-#### Homarr
+### Integrate with Homarr
 
 Go to Homarr and click `Add a service`:
 
@@ -2320,7 +2284,7 @@ Password:               xxxxxxxx
 
 Click `Save service`, now go to `Settings → Save a copy → Confirm` to save the state of your dashboard.
 
-#### Watchtower
+### Integrate with Watchtower
 
 To automatically update the docker image we need to add it to Watchtower, run:
 
@@ -2355,7 +2319,7 @@ cd /srv/watchtower && sudo docker compose up -d --build
 
 --------------------
 
-### Docker image
+### Docker setup
 
 We will be using [hotio's](https://hotio.dev/containers/prowlarr/) Docker image, get started by making the directory structure:
 
@@ -2483,9 +2447,7 @@ You can also check the status of the jail with:
 sudo fail2ban-client status prowlarr
 ```
 
-### Integrate with other services
-
-#### Homarr
+### Integrate with Homarr
 
 First go to Prowlarr and get your API key, then go to Homarr and click `Add a service`:
 
@@ -2501,7 +2463,7 @@ API key:                xxxxxxxx
 
 Click `Save service`, now go to `Settings → Save a copy → Confirm` to save the state of your dashboard.
 
-#### Watchtower
+### Integrate with Watchtower
 
 To automatically update the docker image we need to add it to Watchtower, run:
 
@@ -2536,7 +2498,7 @@ cd /srv/watchtower && sudo docker compose up -d --build
 
 --------------------
 
-### Docker image
+### Docker setup
 
 We will be using [hotio's](https://hotio.dev/containers/radarr/) Docker image, start by making the directory structure:
 
@@ -2665,9 +2627,7 @@ You can also check the status of the jail with:
 sudo fail2ban-client status radarr
 ```
 
-### Integrate with other services
-
-#### Homarr
+### Integrate with Homarr
 
 First go to Radarr and get your API key, then go to Homarr and click `Add a service`:
 
@@ -2683,7 +2643,7 @@ API key:                xxxxxxxx
 
 Click `Save service`, now go to `Settings → Save a copy → Confirm` to save the state of your dashboard.
 
-#### Watchtower
+### Integrate with Watchtower
 
 To automatically update the docker image we need to add it to Watchtower, run:
 
@@ -2718,7 +2678,7 @@ cd /srv/watchtower && sudo docker compose up -d --build
 
 --------------------
 
-### Docker image
+### Docker setup
 
 We will be using [hotio's](https://hotio.dev/containers/sonarr/) Docker image, start by making the directory structure:
 
@@ -2847,9 +2807,7 @@ You can also check the status of the jail with:
 sudo fail2ban-client status sonarr
 ```
 
-### Integrate with other services
-
-#### Homarr
+### Integrate with Homarr
 
 First go to Sonarr and get your API key, then go to Homarr and click `Add a service`:
 
@@ -2865,7 +2823,7 @@ API key:                xxxxxxxx
 
 Click `Save service`, now go to `Settings → Save a copy → Confirm` to save the state of your dashboard.
 
-#### Watchtower
+### Integrate with Watchtower
 
 To automatically update the docker image we need to add it to Watchtower, run:
 
@@ -2900,7 +2858,7 @@ cd /srv/watchtower && sudo docker compose up -d --build
 
 --------------------
 
-### Docker image
+### Docker setup
 
 We will be using [hotio's](https://hotio.dev/containers/bazarr/) Docker image, get started by making the directory structure:
 
@@ -3052,9 +3010,7 @@ You can also check the status of the jail with:
 sudo fail2ban-client status bazarr
 ```
 
-### Integrate with other services
-
-#### Homarr
+### Integrate with Homarr
 
 Go to Homarr and click `Add a service`:
 
@@ -3069,7 +3025,7 @@ Category:               Media
 
 Click `Save service`, now go to `Settings → Save a copy → Confirm` to save the state of your dashboard.
 
-#### Watchtower
+### Integrate with Watchtower
 
 To automatically update the docker image we need to add it to Watchtower, run:
 
@@ -3104,7 +3060,7 @@ cd /srv/watchtower && sudo docker compose up -d --build
 
 --------------------
 
-### Docker image
+### Docker setup
 
 Start by making the directory structure:
 
@@ -3240,9 +3196,7 @@ You can also check the status of the jail with:
 sudo fail2ban-client status jellyseerr
 ```
 
-### Integrate with other services
-
-#### Homarr
+### Integrate with Homarr
 
 First go to Jellyseerr and get your API key, then go to Homarr and click `Add a service`:
 
@@ -3258,7 +3212,7 @@ API key:                xxxxxxxx
 
 Click `Save service`, now go to `Settings → Save a copy → Confirm` to save the state of your dashboard.
 
-#### Watchtower
+### Integrate with Watchtower
 
 To automatically update the docker image we need to add it to Watchtower, run:
 
@@ -3279,7 +3233,7 @@ Save and exit. To apply the settings we need to rebuild the Watchtower image:
 cd /srv/watchtower && sudo docker compose up -d --build
 ```
 
-#### Gotify
+### Integrate with Gotify
 
 We will have Gotify send us a notification whenever a user makes a media request or if there is an issue in the request process. To start, visit Gotify and go to `APPS → CREATE APPLICATION`. Create a new application for Jellyseerr and take note of the token.
 
@@ -3299,7 +3253,7 @@ Jellyseerr have native Gotify integration, as such we can simply enable it in th
 
 --------------------
 
-### Docker image
+### Docker setup
 
 We will be using [hotio's](https://hotio.dev/containers/lidarr/) docker image, start by making the directory structure:
 
@@ -3428,9 +3382,7 @@ You can also check the status of the jail with:
 sudo fail2ban-client status lidarr
 ```
 
-### Integrate with other services
-
-#### Homarr
+### Integrate with Homarr
 
 First go to Lidarr and get your API key, then go to Homarr and click `Add a service`:
 
@@ -3446,7 +3398,7 @@ API key:                xxxxxxxx
 
 Click `Save service`, now go to `Settings → Save a copy → Confirm` to save the state of your dashboard.
 
-#### Watchtower
+### Integrate with Watchtower
 
 To automatically update the docker image we need to add it to Watchtower, run:
 

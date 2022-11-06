@@ -1,0 +1,23 @@
+version: "3"
+services:
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    environment:
+      - TZ=Europe/Stockholm
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_SCHEDULE=0 0 2 * * * # run daily at 2 am
+      - WATCHTOWER_NOTIFICATIONS=gotify
+      - WATCHTOWER_NOTIFICATION_GOTIFY_URL=xxxxxx
+      - WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN=xxxxxx
+      - WATCHTOWER_NOTIFICATIONS_LEVEL=info
+      - WATCHTOWER_NO_STARTUP_MESSAGE=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    command: bazarr ddns-updater homarr jellyfin jellyseerr lidarr nginx prowlarr qflood radarr sonarr gotify watchtower
+
+networks:
+  default:
+    name: boulder
