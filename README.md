@@ -12,12 +12,12 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
 
 ## Table of contents
 
+*__NOTE:__ Hyperlinks for subsections will not work if that section is collapsed.*
+
 <details><summary>Click to expand</summary>
 <p>
 
 --------------------
-
-*__Please note:__ Hyperlinks for subsections will not work if that section is collapsed.*
 
 - [About](#about)
 - [Table of contents](#table-of-contents)
@@ -25,7 +25,7 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [CPU / Motherboard](#cpu--motherboard)
   - [Power supply (PSU)](#power-supply-psu)
   - [Case and fan](#case-and-fan)
-  - [RAM](#ram)
+  - [System memory (RAM)](#system-memory-ram)
   - [Storage](#storage)
   - [Final build costs](#final-build-costs)
 - [Assembly and initial setup](#assembly-and-initial-setup)
@@ -131,6 +131,12 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Protect with Fail2Ban](#protect-with-fail2ban-11)
   - [Integrate with Homarr](#integrate-with-homarr-10)
   - [Integrate with Watchtower](#integrate-with-watchtower-11)
+- [PlanarAlly](#planarally)
+  - [Docker setup](#docker-setup-13)
+  - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-10)
+  - [Protect with Fail2Ban](#protect-with-fail2ban-12)
+  - [Integrate with Homarr](#integrate-with-homarr-11)
+  - [Integrate with Watchtower](#integrate-with-watchtower-12)
 - [Issues and solutions](#issues-and-solutions)
   - [Motherboard](#motherboard)
   - [ddns-updater](#ddns-updater)
@@ -144,7 +150,7 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
 
 ## Hardware choices
 
-This section is about the hardware I use, why I chose a particular piece of hardware and what trade-offs are to be expected compared to similar choices.
+My reasoning behind the hardware I use.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -208,7 +214,7 @@ Or a yearly power consumption of: $0.286*365 \approx 104 \textrm{ kWh/Year}$
 
 The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes; discreet and affordable with some room for expandability. I wasn't fully satisfied with the noise level of the included rear-mounted 120mm fan, as such I replaced it with a [Noctua NF-A12X25 ULN](https://noctua.at/en/products/fan/nf-a12x25-uln).
 
-### RAM
+### System memory (RAM)
 
 The J5040 __officially__ supports up to 8GB of RAM as stated on intel's and ASRock's websites. Despite this [some](https://libreddit.dcs0.hu/r/ASRock/comments/k8hpww/how_can_a_motherboard_support_more_ram_than_the/) reddit users report being able to use 16 or even 32GB with varying results. With this in mind I decided on a [G.SKILL Ripjaws SO-DIMM 16GB](https://www.gskill.com/product/2/197/1540865326/F4-2400C16D-16GRS) kit.
 
@@ -240,7 +246,7 @@ I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/cruci
 
 ## Assembly and initial setup
 
-This section is about my experience putting the hardware together and verifying that everything works as it should.
+My experience putting the hardware together and verifying that everything works as it should.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -409,7 +415,7 @@ Save and exit, reboot the server to properly apply the changes.
 
 ## Secure Shell (SSH)
 
-This section is about basic SSH, such as local network access and some best practices. I will expand on this in an upcoming section where we will configure SSH outside of our home network.
+SSH is a protocol that allows remote login and command line execution, something that will be very convenient when we continue to set up the server.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -418,7 +424,7 @@ This section is about basic SSH, such as local network access and some best prac
 
 ### Prerequisite and local access
 
-SSH is a protocol that allows remote login and command line execution, something that will be very convenient when we continue to set up the server. We will be using [OpenSSH](https://www.openssh.com/) as our SSH deamon, it usually comes shipped by default on both server and desktop Linux distributions. If you lack the deamon you can install it using the following two commands:
+We will be using [OpenSSH](https://www.openssh.com/) as our SSH deamon, it usually comes shipped by default on both server and desktop Linux distributions. If you lack the deamon you can install it using the following two commands:
 
 For your client:
 
@@ -803,7 +809,7 @@ sudo ctop
 
 ## Automatic updates with Watchtower
 
-We will use [Watchtower](https://containrrr.dev/watchtower/) to automatically find and apply updates to our docker images. 
+[Watchtower](https://containrrr.dev/watchtower/) is a service that can automatically find and apply updates to docker images.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -1143,7 +1149,7 @@ cd /srv/watchtower && sudo docker compose up -d --build
 
 ## Nginx Proxy Manager
 
-[Nginx Proxy Manager](https://nginxproxymanager.com/) combines the true and tested reverse proxy [Nginx](https://www.nginx.com/) with an easy-to-use GUI and [Let's Encrypt](https://letsencrypt.org/) integration. 
+[Nginx Proxy Manager](https://nginxproxymanager.com/) combines the true and tested reverse proxy [Nginx](https://www.nginx.com/) with an easy-to-use GUI. It also makes SSL certificates easy with [Let's Encrypt](https://letsencrypt.org/) integration.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -1240,7 +1246,7 @@ HTTP/2 Support:         No
 HSTS Subdomains:        No
 ```
 
-Save and visit `nginx.domain.tld`, you should be greeted with a log-in page. Now Go to `NPM -> Settings -> Default site -> Edit` and change it from `Congratulations Page` to `404 page`.
+Save and visit `nginx.domain.tld`, you should be greeted with a log-in page. Now go to `NPM → Settings → Default site →  Edit` and change it from `Congratulations Page` to `404 page`.
 
 ### Protect with Fail2Ban
 
@@ -1352,7 +1358,7 @@ cd /srv/watchtower && sudo docker compose up -d --build
 
 ## Notifications with Gotify
 
-In this section I will implement [Gotify](https://gotify.net/), which is a self-hosted notification server.
+[Gotify](https://gotify.net/) is a self-hosted notification server, which will be used to alert us of important server events.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -1728,7 +1734,7 @@ cd /srv/watchtower && sudo docker compose up -d --build
 
 ## Multimedia streaming with Jellyfin
 
-[Jellyfin](https://jellyfin.org/) is a free, open source and self-hosted multimedia streaming server.
+[Jellyfin](https://jellyfin.org/) is a self-hosted multimedia streaming server.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -3051,7 +3057,7 @@ cd /srv/watchtower && sudo docker compose up -d --build
 
 ## Request media with Jellyseerr
 
-[Jellyseerr](https://hub.docker.com/r/fallenbagel/jellyseerr) is a request manager for Jellyfin. It allows us and our users to discover and request shows and movies.
+[Jellyseerr](https://hub.docker.com/r/fallenbagel/jellyseerr) is a request manager for Jellyfin, it allows us and other users to discover and request media.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -3409,6 +3415,127 @@ Add the container name like so:
 ```yml
     ...
     command: watchtower [other containers] lidarr
+```
+
+Save and exit. To apply the settings we need to rebuild the Watchtower image:
+
+```sh
+cd /srv/watchtower && sudo docker compose up -d --build
+```
+
+--------------------
+
+</p>
+</details>
+
+## PlanarAlly
+
+[PlanarAlly](https://www.planarally.io/) is a virtual tabletop tool for games like Dungeons & Dragons.
+
+>_NOTE: This section is under construction_
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+### Docker setup
+
+```sh
+sudo mkdir /srv/planarally/{assets,data}
+```
+
+Make a docker-compose.yml file:
+
+```sh
+sudo nano /srv/planarally/docker-compose.yml
+```
+
+Paste the following:
+
+```yml
+version: "3"
+services:
+  planarally:
+      container_name: planarally
+      image: kruptein/planarally:latest
+      ports:
+          - 8010:8000
+      environment:
+          - PUID=1000
+          - PGID=1000
+          - UMASK=002
+          - TZ=Europe/Stockholm
+      volumes:
+          - ./data:/planarally/data/
+          - ./assets:/planarally/static/assets/
+      restart: unless-stopped
+
+networks:
+  default:
+    name: boulder
+```
+
+Save and exit. Configure directory access:
+
+```sh
+cd /srv/planarally && sudo chown -R 9000 assets && sudo chown -R 9000 data
+```
+
+Build the image:
+
+```sh
+cd /srv/planarally && sudo docker compose up -d
+```
+
+Now visit PlanarAlly's web-ui at `[local ip]:8010` and make a user.
+
+### Add to Nginx proxy Manager
+
+Go to Nginx Proxy Manager and make a new Proxy Host Entry:
+
+```
+DETAILS
+Domain names:           planar.domain.tld
+Scheme:                 http
+Forward Hostname / IP:  planarally
+Forward Port:           8010
+Cache Assets:           Yes
+Block Common Expolits:  Yes
+Websocket Support:      No
+Access List:            Pubicly Accessible
+
+SSL
+SSL Certificate:        Request a New SSL Certificate
+Force SSL:              Yes
+HSTS Enabled:           Yes
+HTTP/2 Support:         No
+HSTS Subdomains:        No
+```
+
+Save and visit `planar.domain.tld` to make sure everything works as intended.
+
+### Protect with Fail2Ban
+
+Coming soon!
+
+### Integrate with Homarr
+
+Coming soon!
+
+### Integrate with Watchtower
+
+To automatically update the docker image we need to add it to Watchtower, run:
+
+```sh
+sudo nano /srv/watchtower/docker-compose.yml
+```
+
+Add the container name like so:
+
+```yml
+    ...
+    command: watchtower [other containers] planarally
 ```
 
 Save and exit. To apply the settings we need to rebuild the Watchtower image:
