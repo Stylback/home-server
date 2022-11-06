@@ -535,7 +535,7 @@ If everything worked correctly, the server should now be accessible only by your
 
 ### Remote SSH
 
-
+Please see the [Nginx](#nginx-proxy-manager) section.
 
 --------------------
 
@@ -600,6 +600,8 @@ fail2ban-regex [path to logfile] [path to filter] --print-all-matched
 ```
 
 ### Integration: Gotify
+
+> NOTE: Skip this until you have [Gotify](#notifications-with-gotify) up and running.
 
 We will have Gotify notify us whenever an IP was banned and give us some more information about their attempts prior to said ban. To start, visit Gotify and go to `APPS → CREATE APPLICATION`. Create a new application for Fail2Ban and take note of the token.
 
@@ -753,9 +755,9 @@ sudo ctop
 
 ### Aquire a domain
 
-Up until this point we have only been able to access our server while on the same local network, to access it remotely we will utilize a custom domain. This method will make it easy to manage multiple services as we can use subdomains (_blog.domain.tld, server.domain.tld etc._).
+Up until this point we have only been able to access our server while on the same local network, to access it remotely we will utilize a custom domain.
 
-To get a custom domain you will need to purchase it from a domain registrar. There are many domain registrars but I've gone with [Njalla](https://njal.la/) due to their great track record, privacy policy and [DMCA responses](https://njal.la/blog/dhlsucks/). Their pricing is somewhat higher than their competitors, so you might consider [namecheap](https://www.namecheap.com/) if you're looking for a more affordable option.
+To get a custom domain you will need to purchase it from a domain registrar. There are plenty of domain registrars but I've gone with [Njalla](https://njal.la/) due to their great track record and privacy policy. Their pricing is somewhat higher than their competitors, so you might consider [namecheap](https://www.namecheap.com/) if you're looking for an affordable alternative.
 
 ### Docker image
 
@@ -820,9 +822,7 @@ Password: changeme
 
 On your first log-in you will be prompted to change the username and password.
 
-Now let's make a remotely accessible log-in page for our Nginx Proxy Manager. First you need to enable port forwarding on your router for port 80 and 443 by following the manual provided with your router, it usually involves visiting `[router-IP]` in your browser and logging in with admin credentials.
-
-When you've configured port-forwarding you can go to the Proxy Hosts tab and add a new Proxy Host with something like this:
+Now let's make a remotely accessible log-in page for our Nginx Proxy Manager. First you need to enable port forwarding on your router for port `80` and `443` by following the manual provided with your router. When you've configured port-forwarding you can go to the Proxy Hosts tab and add a new Proxy Host with something like this:
 
 ```
 DETAILS
@@ -919,11 +919,15 @@ Save and exit. Restart the SSH service by running:
 sudo systemctl restart ssh
 ```
 
-The connection will now be kept alive for 600 seconds of inactivity, you can change this to your liking.
-
 ### Protect with Fail2Ban
 
-First make a `.local` file:
+First identify Nginx's proxy-host_access.log for Nginx Proxy Manager:
+
+```sh
+grep -rnw '/srv/nginx/data/logs' -e 'nginx.'
+```
+
+In my case it was `proxy-host-2_access.log`. Now make a `.local` file:
 
 ```sh
 sudo nano /etc/fail2ban/jail.d/npm.local
@@ -942,7 +946,7 @@ filter = nginx
 maxretry = 3
 bantime = -1
 findtime = 86400
-logpath = /srv/nginx/data/logs/proxy-host-1_access.log
+logpath = /srv/nginx/data/logs/proxy-host-2_access.log
 action = iptables-allports[name=nginx, chain=DOCKER-USER]
 	 gotify
 ```
@@ -969,7 +973,7 @@ sudo systemctl restart fail2ban
 You can test your filter by first using the wrong credentials and then match the log with your filter:
 
 ```
-fail2ban-regex /srv/nginx/data/logs/proxy-host-1_access.log /etc/fail2ban/filter.d/nginx.conf --print-all-matched
+fail2ban-regex /srv/nginx/data/logs/proxy-host-2_access.log /etc/fail2ban/filter.d/nginx.conf --print-all-matched
 ```
 
 You can also check the status of the jail with:
@@ -1182,7 +1186,66 @@ Save and visit `ddns.domain.tld` to make sure everything works as intended.
 
 ### Protect with Fail2Ban
 
-Coming soon!
+First identify Nginx's proxy-host_access.log for ddns-updater:
+
+```sh
+grep -rnw '/srv/nginx/data/logs' -e 'ddns-updater'
+```
+
+In my case it was `proxy-host-1_access.log`. Now make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/ddns.local
+```
+
+Paste:
+
+```
+[ddns]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = ddns
+maxretry = 3
+bantime = -1
+findtime = 86400
+logpath = /srv/nginx/data/logs/proxy-host-1_access.log
+action = iptables-allports[name=ddns, chain=DOCKER-USER]
+	 gotify
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/ddns.conf
+```
+
+Paste the following:
+
+```
+[Definition]
+failregex = .*- - 401 - GET https .*\[Client <ADDR>\]
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/nginx/data/logs/proxy-host-1_access.log /etc/fail2ban/filter.d/ddns.conf --print-all-matched
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status ddns
+```
 
 ### Integrate with other services
 
@@ -1601,7 +1664,66 @@ Save and visit `dashboard.domain.tld` to make sure everything works as intended.
 
 ### Protect with Fail2Ban
 
-Coming soon!
+First identify Nginx's proxy-host_access.log for Homarr:
+
+```sh
+grep -rnw '/srv/nginx/data/logs' -e 'homarr'
+```
+
+In my case it was `proxy-host-3_access.log`. Now make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/homarr.local
+```
+
+Paste:
+
+```
+[homarr]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = homarr
+maxretry = 3
+bantime = -1
+findtime = 86400
+logpath = /srv/nginx/data/logs/proxy-host-3_access.log
+action = iptables-allports[name=homarr, chain=DOCKER-USER]
+	 gotify
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/homarr.conf
+```
+
+Paste the following:
+
+```
+[Definition]
+failregex = .*- 401 401 - POST https .*\[Client <ADDR>\]
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/nginx/data/logs/proxy-host-3_access.log /etc/fail2ban/filter.d/homarr.conf --print-all-matched
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status homarr
+```
 
 ### Integrate with other services
 
