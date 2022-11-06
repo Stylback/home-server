@@ -67,12 +67,12 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
     - [Watchtower](#watchtower-1)
 - [Notifications with Gotify](#notifications-with-gotify)
   - [Docker image](#docker-image-2)
+  - [Customization](#customization)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-1)
   - [Protect with Fail2Ban](#protect-with-fail2ban-2)
   - [Integrate with other services](#integrate-with-other-services-2)
     - [Homarr](#homarr-2)
     - [Watchtower](#watchtower-2)
-  - [Finishing up](#finishing-up)
 - [Automate updates with Watchtower](#automate-updates-with-watchtower)
   - [Docker image](#docker-image-3)
   - [Integrate with other services](#integrate-with-other-services-3)
@@ -88,7 +88,7 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Docker image](#docker-image-5)
   - [Media transfer and streaming](#media-transfer-and-streaming)
   - [Hardware acceleration](#hardware-acceleration)
-  - [Customization](#customization)
+  - [Customization](#customization-1)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-3)
   - [Protect with Fail2Ban](#protect-with-fail2ban-4)
   - [Integrate with other services](#integrate-with-other-services-5)
@@ -151,7 +151,6 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [ddns-updater](#ddns-updater)
   - [Containerized Fail2Ban](#containerized-fail2ban)
 - [License and usage](#license-and-usage)
-- [To-Do](#to-do)
 
 --------------------
 
@@ -407,7 +406,7 @@ Canonical sometimes promote their [Ubuntu Pro](https://ubuntu.com/pro) service w
 sudo rm /var/lib/ubuntu-advantage/messages/*.tmpl
 ```
 
-Then go to the messages.py file:
+Then go to the `messages.py` file:
 
 ```sh
 sudo nano /usr/lib/python3/dist-packages/uaclient/messages.py
@@ -648,6 +647,8 @@ Finish up by restarting Fail2Ban:
 sudo systemctl restart fail2ban
 ```
 
+--------------------
+
 </p>
 </details>
 
@@ -752,6 +753,8 @@ sudo ctop
 
 <details><summary>Click to expand</summary>
 <p>
+
+--------------------
 
 ### Aquire a domain
 
@@ -872,10 +875,10 @@ Add the new port as such:
       - '[new port]:[new port]' # Remote SSH port
 ```
 
-Save and exit. Now lets restart the container to apply the settings, you can either do this directly through `ctop` or with:
+Save and exit. Rebuild the container with:
 
 ```sh
-cd /srv/npm && sudo docker compose restart npm-app
+cd /srv/nginx && sudo docker compose up -d --build
 ```
 
 Now we will create a new host entry in our SSH config file. On your client, run:
@@ -899,7 +902,7 @@ Save and exit. Now test that everything works by running:
 ssh alias-remote
 ```
 
-By deafult our remote connection will time out after a period of inactivity, to keep the connection alive we need to make an adjustment in our config file. On your server, run:
+By default our remote connection will time out after a period of inactivity, to keep the connection alive we need to make an adjustment in our config file. On your server, run:
 
 ```sh
 sudo nano /etc/ssh/sshd_config
@@ -1011,7 +1014,7 @@ Add the container name like so:
 
 ```yml
     ...
-    command: watchtower [other images] nginx
+    command: watchtower [other containers] nginx
 ```
 
 Save and exit. To apply the settings we need to rebuild the Watchtower image:
@@ -1019,6 +1022,8 @@ Save and exit. To apply the settings we need to rebuild the Watchtower image:
 ```sh
 cd /srv/watchtower && sudo docker compose up -d --build
 ```
+
+--------------------
 
 </p>
 </details>
@@ -1029,6 +1034,8 @@ We want our domain to point to our routers IP-address. This address, called a dy
 
 <details><summary>Click to expand</summary>
 <p>
+
+--------------------
 
 To get started, log into Njalla (_or your registrar of choice_) and add a new DNS record to your domain. This new record should be __DYNAMIC__ and be named __*__, this will create a dynamic __wildcard__ domain. Njalla will provide us with the key we need to update the IP-address of the DNS record, if you're using another registrar they might have other ways of conveying IP-changes.
 
@@ -1276,7 +1283,7 @@ Add the container name like so:
 
 ```yml
     ...
-    command: watchtower [other images] ddns-updater
+    command: watchtower [other containers] ddns-updater
 ```
 
 Save and exit. To apply the settings we need to rebuild the Watchtower image:
@@ -1286,9 +1293,6 @@ cd /srv/watchtower && sudo docker compose up -d --build
 ```
 
 --------------------
-
-</p>
-</details>
 
 </p>
 </details>
@@ -1351,6 +1355,12 @@ cd /srv/gotify && sudo docker compose up -d
 
 Go to Web UI at `[local ip]:1245` and log in with the default credentials `admin, admin`, then go to `USERS → CREATE USER` and make your actual user. Finish up by deleting the default one.
 
+### Customization
+
+By default all notifications will use Gotify's own icon. To add a little flair, upload your own icons by clicking on the little upload icon to the left of the `Name` field.
+
+![Gotify screenshot](https://github.com/Stylback/home-server/blob/main/media/gotify_screenshot.png?raw=true)
+
 ### Add to Nginx proxy Manager
 
 Go to Nginx Proxy Manager and make a new Proxy Host Entry:
@@ -1390,7 +1400,13 @@ services:
     ...
 ```
 
-Save, exit and restart the container. Gotify will now write logs to a `gotify.log` file in our `/data` folder. Next, make a `.local` file:
+Save and exit. Rebuild the container with:
+
+```sh
+cd /srv/gotify && sudo docker compose up -d --build
+```
+
+Gotify will now write logs to a `gotify.log` file in our `/data` folder. Next, make a `.local` file:
 
 ```sh
 sudo nano /etc/fail2ban/jail.d/gotify.local
@@ -1475,7 +1491,7 @@ Add the container name like so:
 
 ```yml
     ...
-    command: watchtower [other images] gotify
+    command: watchtower [other containers] gotify
 ```
 
 Save and exit. To apply the settings we need to rebuild the Watchtower image:
@@ -1483,17 +1499,6 @@ Save and exit. To apply the settings we need to rebuild the Watchtower image:
 ```sh
 cd /srv/watchtower && sudo docker compose up -d --build
 ```
-
-
-### Finishing up
-
-By default all notifications will use Gotify's own icon. To add a little flair, upload your own icons by clicking on the little upload icon to the left of the `Name` field.
-
-![Gotify screenshot](https://github.com/Stylback/home-server/blob/main/media/gotify_screenshot.png?raw=true)
-
-Gotify have an excellent android app which makes it significantly easier to keep track of notifications. You can find more information [here](https://github.com/gotify/android).
-
-Finally, don't forget to add Gotify to Homarr and protect it with a Fail2Ban filter.
 
 --------------------
 
@@ -1596,11 +1601,13 @@ cd /srv/watchtower && sudo docker compose up -d --build
 
 ### Docker image
 
-First, lets create a `docker-compose.yml` and a directory to house it:
+Make the directory structure:
 
 ```sh
 sudo mkdir /srv/homarr 
 ```
+
+Make a `docker-compose.yml` file:
 
 ```sh
 sudo nano /srv/homarr/docker-compose.yml 
@@ -1739,7 +1746,7 @@ Add the container name like so:
 
 ```yml
     ...
-    command: watchtower [other images] homarr
+    command: watchtower [other containers] homarr
 ```
 
 Save and exit. To apply the settings we need to rebuild the Watchtower image:
@@ -1886,7 +1893,7 @@ sudo umount /media/external
 
 ### Hardware acceleration
 
-Our J0540 have extensive hardware support for different encoders thanks to Intel QuickSync. This will enable us to stream large media files at a lower bitrate, saving bandwidth at the cost of processing power. This process can either be done with software (_high CPU usage_) or hardware (_low CPU usage_). To enable the full range of hardware accelerated transcoding we will first need to enable the `guc` and `huc` firmware, as they are disabled by default for Intel processors of 10th generation and earlier. Start by making a `modprobe` config file:
+Our J5040 have extensive hardware support for different encoders thanks to Intel QuickSync. This will enable us to stream large media files at a lower bitrate, saving bandwidth at the cost of processing power. This process can either be done with software (_high CPU usage_) or hardware (_low CPU usage_). To enable the full range of hardware accelerated transcoding we will first need to enable the `guc` and `huc` firmware, as they are disabled by default for Intel processors of 10th generation and earlier. Start by making a `modprobe` config file:
 
 ```sh
 sudo nano /etc/modprobe.d/i915.conf
@@ -1898,7 +1905,7 @@ To enable both `guc` and `huc`, paste the following:
 options i915 enable_guc=3
 ```
 
-Rebuild grub boot entry, this will only apply to the current kernel:
+Rebuild grub boot entry:
 
 ```sh
 sudo update-initramfs -u
@@ -1916,7 +1923,7 @@ cat /sys/kernel/debug/dri/0/i915_capabilities
 
 There should be an entry with `i915.enable_guc=3`.
 
-Reboot the server. Now go to Jellyfin `Settings → Dashboard → Playback → Transcoding`. The following encode settings are supported on the J5040:
+Reboot the server. Now go to Jellyfin `Settings → Dashboard → Playback → Transcoding`. The following encode settings are supported by the J5040:
 
 ![Jellyfin encoding settings for the J5040](https://github.com/Stylback/home-server/blob/main/media/jellyfin_encoding.png?raw=true)
 
@@ -2045,7 +2052,7 @@ Add the container name like so:
 
 ```yml
     ...
-    command: watchtower [other images] jellyfin
+    command: watchtower [other containers] jellyfin
 ```
 
 Save and exit. To apply the settings we need to rebuild the Watchtower image:
@@ -2319,7 +2326,7 @@ Add the container name like so:
 
 ```yml
     ...
-    command: watchtower [other images] qflood
+    command: watchtower [other containers] qflood
 ```
 
 Save and exit. To apply the settings we need to rebuild the Watchtower image:
@@ -2500,7 +2507,7 @@ Add the container name like so:
 
 ```yml
     ...
-    command: watchtower [other images] prowlarr
+    command: watchtower [other containers] prowlarr
 ```
 
 Save and exit. To apply the settings we need to rebuild the Watchtower image:
@@ -2682,7 +2689,7 @@ Add the container name like so:
 
 ```yml
     ...
-    command: watchtower [other images] radarr
+    command: watchtower [other containers] radarr
 ```
 
 Save and exit. To apply the settings we need to rebuild the Watchtower image:
@@ -2864,7 +2871,7 @@ Add the container name like so:
 
 ```yml
     ...
-    command: watchtower [other images] sonarr
+    command: watchtower [other containers] sonarr
 ```
 
 Save and exit. To apply the settings we need to rebuild the Watchtower image:
@@ -3068,7 +3075,7 @@ Add the container name like so:
 
 ```yml
     ...
-    command: watchtower [other images] bazarr
+    command: watchtower [other containers] bazarr
 ```
 
 Save and exit. To apply the settings we need to rebuild the Watchtower image:
@@ -3251,7 +3258,7 @@ Add the container name like so:
 
 ```yml
     ...
-    command: watchtower [other images] jellyseerr
+    command: watchtower [other containers] jellyseerr
 ```
 
 Save and exit. To apply the settings we need to rebuild the Watchtower image:
@@ -3439,7 +3446,7 @@ Add the container name like so:
 
 ```yml
     ...
-    command: watchtower [other images] lidarr
+    command: watchtower [other containers] lidarr
 ```
 
 Save and exit. To apply the settings we need to rebuild the Watchtower image:
@@ -3504,30 +3511,5 @@ I have now resorted to running it on the server itself and it's able to stop con
 - Any resource I link, cite or otherwise refer to are subject to their respective licenses.
 - Any image used is my own and are subject to All Rights Reserved.
 - Everything else in this project is licensed under the terms of the [MIT license](https://mit-license.org/).
-
-## To-Do
-
-This section contains my To-Do list.
-
-<details><summary>Click to expand</summary>
-<p>
-
---------------------
-
-| Item | Details | Status |
-| ------------- | ------------- | ------------- |
-| [Static Web Server](https://sws.joseluisq.net/) | A static webpage server, will also implement [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) and [Umami](https://github.com/umami-software/umami). | Working on html/css-website to serve. |
-| Data backup solution | Regular backups with [Restic](https://restic.net/) or [Borgmatic](https://torsion.org/borgmatic/). | Will try to snag an extra SSD during a sale to use as a dedicated backup drive. |
-| DoS/DDoS protection | Implement DoS/DDoS protection for Nginx | Researching. |
-| Security audit | Check HTTP Security headers, do some port knocking. | Not yet started. |
-| Implement qflood | qflood support was broken on a recent qBittorrent version, have yet to implement it. | Waiting on qBittorrent to push a fix. |
-| Implement [Password pusher](https://github.com/pglombardo/PasswordPusher) | Easy way to share passwords securily. | Not yet started. |
-| New hardware photos | Take new photos for the hardware section to include the fan upgrade. | Waiting on next hardware upgrade. |
-| [Planar ally](https://github.com/Kruptein/PlanarAlly) | Webtool for TTRPG:s, might be fun for game nights. | Not yet started, low priority. |
-
---------------------
-
-</p>
-</details>
 
 **[Back to top](#)**
