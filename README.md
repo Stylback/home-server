@@ -30,17 +30,17 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Final build costs](#final-build-costs)
 - [Assembly and initial setup](#assembly-and-initial-setup)
   - [Assembly](#assembly)
-  - [Testing RAM stability](#testing-ram-stability)
-  - [BIOS tweaks](#bios-tweaks)
-  - [Installing the OS](#installing-the-os)
+  - [RAM stability](#ram-stability)
+  - [Tweaking the BIOS](#tweaking-the-bios)
+  - [Installing Ubuntu](#installing-ubuntu)
   - [Benchmark](#benchmark)
   - [Timezone setup](#timezone-setup)
   - [Remove Ubuntu Pro messages](#remove-ubuntu-pro-messages)
 - [Secure Shell (SSH)](#secure-shell-ssh)
   - [Prerequisite and local access](#prerequisite-and-local-access)
-  - [Create a Hostname alias](#create-a-hostname-alias)
+  - [Hostname aliases](#hostname-aliases)
   - [Generate and use SSH-keys](#generate-and-use-ssh-keys)
-  - [Hardening](#hardening)
+  - [Security enhancements](#security-enhancements)
   - [Remote SSH access](#remote-ssh-access)
 - [Perimeter security with Fail2Ban](#perimeter-security-with-fail2ban)
   - [Inital setup](#inital-setup)
@@ -49,7 +49,7 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
 - [Application containers with Docker](#application-containers-with-docker)
   - [Initial setup](#initial-setup)
   - [Managing containers with ctop](#managing-containers-with-ctop)
-- [Automate updates with Watchtower](#automate-updates-with-watchtower)
+- [Automatic updates with Watchtower](#automatic-updates-with-watchtower)
   - [Docker setup](#docker-setup)
   - [Integrate with Gotify](#integrate-with-gotify-1)
 - [Dynamic DNS with ddns-updater](#dynamic-dns-with-ddns-updater)
@@ -106,7 +106,7 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Protect with Fail2Ban](#protect-with-fail2ban-7)
   - [Integrate with Homarr](#integrate-with-homarr-6)
   - [Integrate with Watchtower](#integrate-with-watchtower-7)
-- [Series with Sonarr](#series-with-sonarr)
+- [TV-shows with Sonarr](#tv-shows-with-sonarr)
   - [Docker setup](#docker-setup-9)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-6)
   - [Protect with Fail2Ban](#protect-with-fail2ban-8)
@@ -256,7 +256,7 @@ This section is about my experience putting the hardware together and verifying 
 | ![rear view](https://github.com/Stylback/home-server/blob/main/media/back.jpg?raw=true) | Rear-view and IO. Picture taken before switching the fan out for a NF-A12X25 ULN. |
 | ![assembled case](https://github.com/Stylback/home-server/blob/main/media/outside.jpg?raw=true) | Assembled system. |
 
-### Testing RAM stability
+### RAM stability
 
 Before installing the operating system I wanted to ensure that my RAM modules would not cause any system instability. MemTest86 is an industry staple in this regard, it has a multitude of tests designed to coax RAM instability under extreme conditions.
 
@@ -267,7 +267,7 @@ I made a bootable USB following their [instructions](https://www.memtest86.com/t
 | ![Ram modules detected by MemTest86](https://github.com/Stylback/home-server/blob/main/media/memtest86_ram.bmp?raw=true) | Both sticks of RAM was detected by MemTest86. |
 | ![Test completion screen](https://github.com/Stylback/home-server/blob/main/media/memtest86_pass.jpg?raw=true) | The sticks passed with 0 errors, completing the tests in 4 hours and 37 minutes. |
 
-### BIOS tweaks
+### Tweaking the BIOS
 
 The ASRock J5040-ITX comes with an extensive list of BIOS settings, so far I've made the following changes:
 
@@ -278,7 +278,7 @@ The ASRock J5040-ITX comes with an extensive list of BIOS settings, so far I've 
 | Deep S5 | Disable | Auto | Reduces power consumption while the system is turned off. |
 | Restore on AC/Power | Loss Power Off | Loss Power On | Restarts the system after a power failure. |
 
-### Installing the OS
+### Installing Ubuntu
 
 After confirming RAM stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to [extensive](https://ubuntu.com/server/docs) documentation.
 
@@ -286,13 +286,13 @@ I assigned the 250GB drive as boot drive, consuming about half of its available 
 
 ### Benchmark
 
-After creating a user and logging in for the first time, I updated the system with:
+After creating a user and logging in for the first time, update the system with:
 
 ```sh
 sudo apt update && sudo apt upgrade
 ```
 
-Afterwards I ran [YABS](https://github.com/masonr/yet-another-bench-script), which is a benchmarking script:
+Afterwards, run the benchmarking script [YABS](https://github.com/masonr/yet-another-bench-script):
 
 ```sh
 curl -sL yabs.sh | bash
@@ -346,8 +346,6 @@ Test            | Value
 Single Core     | 547                           
 Multi Core      | 1858
 ```
-
-Performance was as expected, the J5040 isn't going to play the latest AAA title but it will be plenty for my use case. 
 
 ### Timezone setup
 
@@ -444,7 +442,7 @@ ssh username@server-ip
 
 Replace `username` and `server-ip` as appropriate. The terminal will prompt for a password and connect.
 
-### Create a Hostname alias
+### Hostname aliases
 
 Remembering `username@server-ip` is a hassle, so instead we will create an alias which will allow us to access the server by just running `ssh alias`. To get started, run this on the client:
 
@@ -491,7 +489,7 @@ Verify that the key works by connecting to the server with `ssh alias`. If the k
 
 > __NOTE:__ Always keep your private key secure, __never__ share it with anyone! If you have reason to believe that your private key has been compromised, generate a new keypair and delete the old one from the servers `authorized_keys` file.
 
-### Hardening
+### Security enhancements
 
 Now that we can connect to the server using our SSH-key, we will make some security enhancement. On your client, connect to the server and run:
 
@@ -710,7 +708,7 @@ sudo systemctl restart fail2ban
 
 ## Application containers with Docker
 
-In this section we get started with [Docker](https://www.docker.com/) containers.
+[Docker](https://www.docker.com/) lets us set up containers to hold our services and applications, streamlining deployment.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -719,11 +717,11 @@ In this section we get started with [Docker](https://www.docker.com/) containers
 
 ### Initial setup
 
- Docker lets us set up containers to hold our services, making it easy to handle access and permissions. There are multiple ways to use Docker, we will be using the `compose` method which entails three steps:
+There are multiple ways to use Docker, we will be using the `compose` method which entails three steps:
 
 1. Create a `docker-compose.yml` file
-2. In the file, add any necessary parameters to make the service work (_these can often be pasted directly from the service's documentation_)
-3. Launch the service with `sudo docker compose up -d`
+2. In the file, add any necessary parameters to make the service work
+3. Build the Docker image with `sudo docker compose up -d`
 
 To install the necessary Docker components I followed their [official documentation](https://docs.docker.com/engine/install/) which can be summarized below as:
 
@@ -772,7 +770,7 @@ sudo systemctl enable docker
 
 ### Managing containers with ctop
 
-For easy overview and management of our docker containers we can install [ctop](https://github.com/bcicen/ctop). To do it, run the commands below:
+For easy overview and management of our Docker containers we can install [ctop](https://github.com/bcicen/ctop). To do it, run the commands below:
 
 ```sh
 sudo apt install ca-certificates curl gnupg lsb-release
@@ -803,7 +801,7 @@ sudo ctop
 </p>
 </details>
 
-## Automate updates with Watchtower
+## Automatic updates with Watchtower
 
 We will use [Watchtower](https://containrrr.dev/watchtower/) to automatically find and apply updates to our docker images. 
 
@@ -890,7 +888,7 @@ cd /srv/watchtower && sudo docker compose up -d --build
 
 ## Dynamic DNS with ddns-updater
 
-We want our domain to point to our routers IP-address. This address, called a dynamic IP-address, will change over time and can cause our registrar to point the wrong way were it not updated. To solve this we will utilize [ddns-updater](https://github.com/qdm12/ddns-updater), which is a dynamic DNS service that will regularly check our public IP-address and convey any changes to Njalla.
+[ddns-updater](https://github.com/qdm12/ddns-updater) is a dynamic DNS service that will regularly check our public IP-address and convey any changes to our registrar.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -2669,9 +2667,9 @@ cd /srv/watchtower && sudo docker compose up -d --build
 </p>
 </details>
 
-## Series with Sonarr
+## TV-shows with Sonarr
 
-[Sonarr](https://sonarr.tv/) is a a series collection manager. It allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library.
+[Sonarr](https://sonarr.tv/) is a a TV-shows and series collection manager. It allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library.
 
 <details><summary>Click to expand</summary>
 <p>
