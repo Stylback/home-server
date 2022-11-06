@@ -1061,7 +1061,7 @@ enabled = true
 port = 80,443
 protocol = tcp
 filter = ddns
-maxretry = 3
+maxretry = 4
 bantime = -1
 findtime = 86400
 logpath = /srv/nginx/data/logs/proxy-host-1_access.log
@@ -1255,7 +1255,7 @@ grep -rnw '/srv/nginx/data/logs' -e 'nginx.'
 In my case it was `proxy-host-2_access.log`. Now make a `.local` file:
 
 ```sh
-sudo nano /etc/fail2ban/jail.d/npm.local
+sudo nano /etc/fail2ban/jail.d/nginx.local
 ```
 
 Paste:
