@@ -846,7 +846,7 @@ HTTP/2 Support:         No
 HSTS Subdomains:        No
 ```
 
-Save and visit `nginx.domain.tld`, you should be greeted with a log-in page.
+Save and visit `nginx.domain.tld`, you should be greeted with a log-in page. Now Go to `NPM -> Settings -> Default site -> Edit` and change it from `Congratulations Page` to `404 page`.
 
 ### Stream port for remote SSH
 
@@ -2168,13 +2168,19 @@ cd /srv/qflood && sudo docker compose up -d
 
 --------------------
 
-It might be that there are no IPv6 tables on your server. To fix this we need to run:
+It might be that there are no IPv6 tables on your server. To fix this, run:
 
 ```sh
 sudo modprobe ip6table_filter
 ```
 
-Followed by a container restart. This will however only fix the issue until the next reboot, to make it persistent you need to run:
+Rebuild the container with:
+
+```sh
+cd /srv/qflood && sudo docker compose up -d --build
+```
+
+This will however only fix the issue until the next reboot, to make it persistent you need to run:
 
 ```sh
 echo "ip6table_filter" | sudo tee -a /etc/modules
@@ -3173,7 +3179,13 @@ Save and visit `request.domain.tld` to make sure everything works as intended.
 
 ### Protect with Fail2Ban
 
-First you need to enable proxy support in Jellyseerr. Navigate to `Settings → Enable Proxy Support`, enable it and restart Jellyseerr. Now make a `.local` file:
+First you need to enable proxy support in Jellyseerr. Navigate to `Settings → Enable Proxy Support`, enable it and rebuild the container:
+
+```sh
+cd /srv/jellyseerr && sudo docker compose up -d --build
+```
+
+Now make a `.local` file:
 
 ```sh
 sudo nano /etc/fail2ban/jail.d/jellyseerr.local
@@ -3462,7 +3474,7 @@ cd /srv/watchtower && sudo docker compose up -d --build
 
 ## Issues and solutions
 
-Sometimes things doesn't go as planned and you have to rethink an implementation, here are some of the lessons I've learned.
+Sometimes things doesn't go as planned, here are some of the lessons I've learned.
 
 <details><summary>Click to expand</summary>
 <p>
