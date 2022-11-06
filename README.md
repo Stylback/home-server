@@ -22,78 +22,104 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
 - [About](#about)
 - [Table of contents](#table-of-contents)
 - [Hardware choices](#hardware-choices)
-  - [Part 1: CPU / Motherboard](#part-1-cpu--motherboard)
-  - [Part 2: Power supply (PSU)](#part-2-power-supply-psu)
+  - [CPU / Motherboard](#cpu--motherboard)
+  - [Power supply (PSU)](#power-supply-psu)
     - [Approximating power consumption](#approximating-power-consumption)
-  - [Part 3: Case and fan](#part-3-case-and-fan)
-  - [Part 4: RAM](#part-4-ram)
-  - [Part 5: Storage](#part-5-storage)
-  - [Part 6: Final build costs](#part-6-final-build-costs)
+  - [Case and fan](#case-and-fan)
+  - [RAM](#ram)
+  - [Storage](#storage)
+  - [Final build costs](#final-build-costs)
 - [Assembly and initial setup](#assembly-and-initial-setup)
-  - [Part 1: Assembly](#part-1-assembly)
-  - [Part 2: Testing RAM stability](#part-2-testing-ram-stability)
-  - [Part 3: BIOS tweaks](#part-3-bios-tweaks)
-  - [Part 4: Installing the OS](#part-4-installing-the-os)
+  - [Assembly](#assembly)
+  - [Testing RAM stability](#testing-ram-stability)
+  - [BIOS tweaks](#bios-tweaks)
+  - [Installing the OS](#installing-the-os)
     - [Benchmarking](#benchmarking)
     - [Timezone setup](#timezone-setup)
     - [Removing Ubuntu Pro messages](#removing-ubuntu-pro-messages)
 - [SSH](#ssh)
-  - [Part 1: Prerequisite and local access](#part-1-prerequisite-and-local-access)
-  - [Part 2: Create a Hostname alias](#part-2-create-a-hostname-alias)
-  - [Part 3: Generate and use SSH-keys](#part-3-generate-and-use-ssh-keys)
-  - [Part 4: Hardening](#part-4-hardening)
-- [Docker](#docker)
-  - [Part 1: Installation](#part-1-installation)
-  - [Part 2: Management with ctop](#part-2-management-with-ctop)
-  - [Part 3: Automatic updates with Watchtower](#part-3-automatic-updates-with-watchtower)
-- [Remote access](#remote-access)
-  - [Part 1: Aquire a custom domain](#part-1-aquire-a-custom-domain)
-  - [Part 2: Configure Dynamic DNS](#part-2-configure-dynamic-dns)
-  - [Part 3: Configure NGINX Proxy manager](#part-3-configure-nginx-proxy-manager)
-  - [Part 4: Set up remote SSH](#part-4-set-up-remote-ssh)
-- [Dashboard with Homarr](#dashboard-with-homarr)
-- [Multimedia streaming with Jellyfin](#multimedia-streaming-with-jellyfin)
-  - [Part 1: Consistent directories](#part-1-consistent-directories)
-  - [Part 2: Install Jellyfin](#part-2-install-jellyfin)
-  - [Part 3: Media transfer and streaming](#part-3-media-transfer-and-streaming)
-  - [Part 4: Hardware acceleration](#part-4-hardware-acceleration)
-  - [Part 5: Customization](#part-5-customization)
-- [Torrenting with qflood](#torrenting-with-qflood)
-  - [Part 1: Configure Wireguard](#part-1-configure-wireguard)
-  - [Part 2: Install qflood](#part-2-install-qflood)
-  - [Part 3: qBittorrent settings](#part-3-qbittorrent-settings)
-  - [Part 4: Configure Flood](#part-4-configure-flood)
-- [Multimedia collection management with *arr](#multimedia-collection-management-with-arr)
-  - [Part 1: Indexers with Prowlarr](#part-1-indexers-with-prowlarr)
-  - [Part 2: Movies with Radarr](#part-2-movies-with-radarr)
-  - [Part 3: Series with Sonarr](#part-3-series-with-sonarr)
-  - [Part 4: Subtitles with Bazarr](#part-4-subtitles-with-bazarr)
-  - [Part 5: Request shows and movies with Jellyseerr](#part-5-request-shows-and-movies-with-jellyseerr)
-  - [Part 6: Music with Lidarr](#part-6-music-with-lidarr)
+  - [Prerequisite and local access](#prerequisite-and-local-access)
+  - [Create a Hostname alias](#create-a-hostname-alias)
+  - [Generate and use SSH-keys](#generate-and-use-ssh-keys)
+  - [Hardening](#hardening)
 - [Perimeter security with Fail2Ban](#perimeter-security-with-fail2ban)
-  - [Part 1: Overall idea and inital setup](#part-1-overall-idea-and-inital-setup)
-    - [Useful Fail2Ban commands](#useful-fail2ban-commands)
-  - [Part 2: NGINX Proxy manager](#part-2-nginx-proxy-manager)
-  - [Part 3: Jellyfin](#part-3-jellyfin)
-  - [Part 4: Jellyseerr](#part-4-jellyseerr)
-  - [Part 5: Sonarr](#part-5-sonarr)
-  - [Part 6: Radarr](#part-6-radarr)
-  - [Part 7: Lidarr](#part-7-lidarr)
-  - [Part 8: Prowlarr](#part-8-prowlarr)
-  - [Part 9: qBittorrent](#part-9-qbittorrent)
-  - [Part 10: Gotify](#part-10-gotify)
+  - [Inital setup](#inital-setup)
+  - [Useful Fail2Ban commands](#useful-fail2ban-commands)
+  - [Gotify](#gotify)
+- [Docker](#docker)
+  - [Initial setup](#initial-setup)
+  - [Managing containers with ctop](#managing-containers-with-ctop)
+- [NGINX Proxy Manager](#nginx-proxy-manager)
+  - [Aquire a domain](#aquire-a-domain)
+  - [Docker](#docker-1)
+  - [Stream port for remote SSH](#stream-port-for-remote-ssh)
+  - [Fail2Ban](#fail2ban)
+- [ddns-updater](#ddns-updater)
+  - [Docker](#docker-2)
+  - [NGINX proxy Manager](#nginx-proxy-manager-1)
 - [Notifications with Gotify](#notifications-with-gotify)
-  - [Part 1: Initial setup](#part-1-initial-setup)
-  - [Part 2: Jellyseer](#part-2-jellyseer)
-  - [Part 3: Watchtower](#part-3-watchtower)
-  - [Part 4: Fail2Ban](#part-4-fail2ban)
-  - [Part 5: Finishing up](#part-5-finishing-up)
+  - [Docker](#docker-3)
+  - [Fail2Ban](#fail2ban-1)
+  - [Homarr](#homarr)
+  - [Finishing up](#finishing-up)
+- [Automate updates with Watchtower](#automate-updates-with-watchtower)
+  - [Docker](#docker-4)
+  - [Gotify](#gotify-1)
+- [Dashboard with Homarr](#dashboard-with-homarr)
+  - [Docker](#docker-5)
+  - [NGINX proxy Manager](#nginx-proxy-manager-2)
+  - [Fail2Ban](#fail2ban-2)
+- [Multimedia streaming with Jellyfin](#multimedia-streaming-with-jellyfin)
+  - [Consistent directories](#consistent-directories)
+  - [Docker](#docker-6)
+  - [NGINX proxy manager](#nginx-proxy-manager-3)
+  - [Media transfer and streaming](#media-transfer-and-streaming)
+  - [Hardware acceleration](#hardware-acceleration)
+  - [Customization](#customization)
+  - [Fail2Ban](#fail2ban-3)
+  - [Homarr](#homarr-1)
+- [Torrenting with qflood](#torrenting-with-qflood)
+  - [Wireguard](#wireguard)
+  - [Docker](#docker-7)
+  - [qBittorrent settings](#qbittorrent-settings)
+  - [Flood settings](#flood-settings)
+  - [Fail2Ban](#fail2ban-4)
+  - [Homarr](#homarr-2)
+- [Indexers with Prowlarr](#indexers-with-prowlarr)
+  - [Docker](#docker-8)
+  - [NGINX Proxy Manager](#nginx-proxy-manager-4)
+  - [Fail2Ban](#fail2ban-5)
+  - [Homarr](#homarr-3)
+- [Movies with Radarr](#movies-with-radarr)
+  - [Docker](#docker-9)
+  - [NGINX proxy Manager](#nginx-proxy-manager-5)
+  - [Fail2Ban](#fail2ban-6)
+  - [Homarr](#homarr-4)
+- [Series with Sonarr](#series-with-sonarr)
+  - [Docker](#docker-10)
+  - [NGINX Proxy Manager](#nginx-proxy-manager-6)
+  - [Fail2ban](#fail2ban-7)
+  - [Homarr](#homarr-5)
+- [Subtitles with Bazarr](#subtitles-with-bazarr)
+  - [Docker](#docker-11)
+  - [NGINX proxy Manager](#nginx-proxy-manager-7)
+- [Request shows and movies with Jellyseerr](#request-shows-and-movies-with-jellyseerr)
+  - [Docker](#docker-12)
+  - [NGINX Proxy Manager](#nginx-proxy-manager-8)
+  - [Homarr](#homarr-6)
+  - [Gotify](#gotify-2)
+  - [Fail2Ban](#fail2ban-8)
+- [Music with Lidarr](#music-with-lidarr)
+  - [Docker](#docker-13)
+  - [NGINX proxy Manager](#nginx-proxy-manager-9)
+  - [Fail2Ban](#fail2ban-9)
+  - [Homarr](#homarr-7)
 - [Issues and solutions](#issues-and-solutions)
   - [Motherboard](#motherboard)
-  - [ddns-updater](#ddns-updater)
+  - [ddns-updater](#ddns-updater-1)
   - [Containerized Fail2Ban](#containerized-fail2ban)
 - [License and usage](#license-and-usage)
-- [TO-DO](#to-do)
+- [To-Do](#to-do)
 
 --------------------
 
@@ -109,7 +135,7 @@ This section is about the hardware I use, why I chose a particular piece of hard
 
 --------------------
 
-### Part 1: CPU / Motherboard
+### CPU / Motherboard
 
 I've settled for an [intel Pentium J5040](https://ark.intel.com/content/www/us/en/ark/products/197304/intel-pentium-silver-j5040-processor-4m-cache-up-to-3-20-ghz.html) as it has some particularly useful features for my use case:
 
@@ -120,7 +146,7 @@ I've settled for an [intel Pentium J5040](https://ark.intel.com/content/www/us/e
 
 However; J-series CPU:s are only available as "on-board" or "embedded" CPU:s, which is to say they are soldered directly onto a motherboard. I've opted for an [ASRock J5040-ITX](https://www.asrock.com/mb/Intel/J5040-ITX/index.asp) due to its rich feature-set, but you might consider the cheaper [Biostar J4105NHU](https://www.biostar-usa.com/app/en-us/mb/introduction.php?S_ID=1013) if you're OK with being limited to 8GB of RAM (_or risk bricking your motherboard, see_ [_here_](#issues-and-solutions) _for my experience_).
 
-### Part 2: Power supply (PSU)
+### Power supply (PSU)
 
 Ideally, the server will be running 24/7, 365 days a year. As such, high efficiency is important to keep power consumption down. A power supply is at its most efficient at __50% of maximum rated load__, that means a PSU rated at 500W max load will be at its most efficient when it provides 250W of power.
 
@@ -164,21 +190,21 @@ Or a yearly power consumption of: $0.286*365 \approx 104 \textrm{ kWh/Year}$
 </p>
 </details>
 
-### Part 3: Case and fan
+### Case and fan
 
 The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes; discreet and affordable with some room for expandability. I wasn't fully satisfied with the noise level of the included rear-mounted 120mm fan, as such I replaced it with a [Noctua NF-A12X25 ULN](https://noctua.at/en/products/fan/nf-a12x25-uln).
 
-### Part 4: RAM
+### RAM
 
 The J5040 __officially__ supports up to 8GB of RAM as stated on intel's and ASRock's websites. Despite this [some](https://libreddit.dcs0.hu/r/ASRock/comments/k8hpww/how_can_a_motherboard_support_more_ram_than_the/) reddit users report being able to use 16 or even 32GB with varying results. With this in mind I decided on a [G.SKILL Ripjaws SO-DIMM 16GB](https://www.gskill.com/product/2/197/1540865326/F4-2400C16D-16GRS) kit.
 
-### Part 5: Storage
+### Storage
 
 Spinning hard-disk drives (HDD) are popular in home servers and NAS due to their high storage capacity and low price. However, they have reduced speeds and increased power draw compared to solid-state drives (SSD). Their moving parts also add noise and a significant [point of failure](https://en.wikipedia.org/wiki/Head_crash).
 
 I opted for two [Crucial MX500 SSD's](https://www.crucial.com/products/ssd/crucial-mx500-ssd) (_250GB bootdrive + 2TB storage drive_) as they provide a good balance between price and performance, in addition they support _Integrated Power Loss Immunity_ which aims to prevent data loss in the case of a power outage.
 
-### Part 6: Final build costs
+### Final build costs
 
 | Component type | Model name | Price ([SEK](https://www.xe.com/currencyconverter/convert/?Amount=1000&From=SEK&To=USD)) |
 | :--- | :--- | ---: |
@@ -207,7 +233,7 @@ This section is about my experience putting the hardware together and verifying 
 
 --------------------
 
-### Part 1: Assembly
+### Assembly
 
 | Image | Note |
 |:---|:---|
@@ -216,7 +242,7 @@ This section is about my experience putting the hardware together and verifying 
 | ![rear view](https://github.com/Stylback/home-server/blob/main/media/back.jpg?raw=true) | Rear-view and IO. Picture taken before switching the fan out for a NF-A12X25 ULN. |
 | ![assembled case](https://github.com/Stylback/home-server/blob/main/media/outside.jpg?raw=true) | Assembled system. |
 
-### Part 2: Testing RAM stability
+### Testing RAM stability
 
 Before installing the operating system I wanted to ensure that my RAM modules would not cause any system instability. MemTest86 is an industry staple in this regard, it has a multitude of tests designed to coax RAM instability under extreme conditions.
 
@@ -227,7 +253,7 @@ I made a bootable USB following their [instructions](https://www.memtest86.com/t
 | ![Ram modules detected by MemTest86](https://github.com/Stylback/home-server/blob/main/media/memtest86_ram.bmp?raw=true) | Both sticks of RAM was detected by MemTest86. |
 | ![Test completion screen](https://github.com/Stylback/home-server/blob/main/media/memtest86_pass.jpg?raw=true) | The sticks passed with 0 errors, completing the tests in 4 hours and 37 minutes. |
 
-### Part 3: BIOS tweaks
+### BIOS tweaks
 
 The ASRock J5040-ITX comes with an extensive list of BIOS settings, so far I've made the following changes:
 
@@ -238,7 +264,7 @@ The ASRock J5040-ITX comes with an extensive list of BIOS settings, so far I've 
 | Deep S5 | Disable | Auto | Reduces power consumption while the system is turned off. |
 | Restore on AC/Power | Loss Power Off | Loss Power On | Restarts the system after a power failure. |
 
-### Part 4: Installing the OS
+### Installing the OS
 
 After confirming RAM stability I installed [Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server) using a bootable USB-drive created beforehand. It was a pain-free process thanks to [extensive](https://ubuntu.com/server/docs) documentation.
 
@@ -378,7 +404,7 @@ This section is about basic SSH, such as local network access and some best prac
 
 --------------------
 
-### Part 1: Prerequisite and local access
+### Prerequisite and local access
 
 SSH is a protocol that allows remote login and command line execution, something that will be very convenient when we continue to set up the server. We will be using [OpenSSH](https://www.openssh.com/) as our SSH deamon, it usually comes shipped by default on both server and desktop Linux distributions. If you lack the deamon you can install it using the following two commands:
 
@@ -404,7 +430,7 @@ ssh username@server-ip
 
 Replace `username` and `server-ip` as appropriate. The terminal will prompt for a password and connect.
 
-### Part 2: Create a Hostname alias
+### Create a Hostname alias
 
 Remembering `username@server-ip` is a hassle, so instead we will create an alias which will allow us to access the server by just running `ssh alias`. To get started, run this on the client:
 
@@ -425,7 +451,7 @@ __NOTE__: The whitespace before `Hostname`, `Port` and `User` are __required__!
 
 Save and exit, you should now be able to connect to your server by running `ssh alias`.
 
-### Part 3: Generate and use SSH-keys
+### Generate and use SSH-keys
 
 On the client, run the following, replacing `comment` with some information to help you remember what the key is for:
 
@@ -451,7 +477,7 @@ Verify that the key works by connecting to the server with `ssh alias`. If the k
 
 > __NOTE:__ Always keep your private key secure, __never__ share it with anyone! If you have reason to believe that your private key has been compromised, generate a new keypair and delete the old one from the servers `authorized_keys` file.
 
-### Part 4: Hardening
+### Hardening
 
 Now that we can connect to the server using our SSH-key, we will make some security enhancement. On your client, connect to the server and run:
 
@@ -480,6 +506,113 @@ If everything worked correctly, the server should now be accessible only by your
 </p>
 </details>
 
+## Perimeter security with Fail2Ban
+
+[Fail2Ban](https://github.com/fail2ban/fail2ban) is a service that can watch log files and take action, such as banning IP-addresses that have multiple failed log-in attempts.
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+### Inital setup
+
+We want to detect and ban malicious behaviour towards our internet-exposed services, such as attempts to brute-force a password or DoS/DDoS attacks. For each service we will define a jail and filter, we will then have Fail2Ban watch the logs of that service and ban IPs that match said filter.
+
+In contrast to our other services we will not be using Fail2Ban in a Docker container (_curious why? see_ [_here_](#issues-and-solutions) _for my experience_), we will instead install it directly on the OS. To get started, run:
+
+```sh
+sudo apt update && sudo apt install fail2ban
+```
+
+Start Fail2Ban with:
+
+```sh
+sudo fail2ban-client start
+```
+
+Make Fail2Ban run on start with:
+
+```sh
+sudo systemctl enable fail2ban
+```
+
+### Useful Fail2Ban commands
+
+Unban yourself with:
+
+```sh
+sudo fail2ban-client unban [your ip]
+```
+
+Unban _everyone_ with:
+
+```sh
+sudo fail2ban-client unban --all
+```
+
+Check jail status:
+
+```sh
+sudo fail2ban-client status [jail name]
+```
+
+See if a filter will catch something in a logfile (_great for testing/debugging_):
+
+```
+fail2ban-regex [path to logfile] [path to filter] --print-all-matched
+```
+
+### Gotify
+
+We will have Gotify notify us whenever an IP was banned and give us some more information about their attempts prior to said ban. To start, visit Gotify and go to `APPS → CREATE APPLICATION`. Create a new application for Fail2Ban and take note of the token.
+
+Next we will create the `action.d` file that will trigger the message, run:
+
+```sh
+sudo nano /etc/fail2ban/action.d/gotify.conf
+```
+
+Paste the following, using your own URL and token:
+
+```
+[Definition]
+actionban = curl "https://gotify.domain.tld/message?token=your_token_here" -F title="[Fail2Ban] <name>" -F message="Banned IP: <ip> Details: `grep '<ip>' <logpath>`" -F "priority=5"
+```
+
+Save and exit. Now add the `gotify` action to your jails like so:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/sonarr.local
+```
+
+```
+[sonarr]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = sonarr
+maxretry = 3
+bantime = -1
+findtime = 86400
+logpath = /srv/sonarr/config/logs/sonarr.txt
+action = iptables-allports[name=sonarr, chain=DOCKER-USER]
+	 gotify
+```
+
+>NOTE: The indentation for actions are important, they should both share the same indentation depth.
+
+Finish up by restarting Fail2Ban:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+</p>
+</details>
+
 ## Docker
 
 In this section we get started with [Docker](https://www.docker.com/) containers.
@@ -489,7 +622,7 @@ In this section we get started with [Docker](https://www.docker.com/) containers
 
 --------------------
 
-### Part 1: Installation
+### Initial setup
 
  Docker lets us set up containers to hold our services, making it easy to handle access and permissions. There are multiple ways to use Docker, we will be using the `compose` method which entails three steps:
 
@@ -542,7 +675,7 @@ Finally, run the following to enable Docker to run on boot:
 sudo systemctl enable docker
 ```
 
-### Part 2: Management with ctop
+### Managing containers with ctop
 
 For easy overview and management of our docker containers we can install [ctop](https://github.com/bcicen/ctop). To do it, run the commands below:
 
@@ -570,244 +703,77 @@ Launch it with:
 sudo ctop
 ```
 
-### Part 3: Automatic updates with Watchtower
-
-We will use [Watchtower](https://containrrr.dev/watchtower/) to automatically find and apply updates to our docker images. To get started, make a directory:
-
-```sh
-sudo mkdir /srv/watchtower
-```
-
-Now make a `docker-compose.yml` file:
-
-```sh
-sudo nano /srv/watchtower/docker-compose.yml
-```
-
-Paste the following:
-
-```yml
-version: "3"
-services:
-  watchtower:
-    container_name: watchtower
-    image: containrrr/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - TZ=Europe/Stockholm
-      - WATCHTOWER_INCLUDE_RESTARTING=true
-      - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_SCHEDULE=0 0 2 * * * # run daily at 02:00
-    command: [container names]
-    restart: always
-```
-
-Save and exit, now start Watchtower with:
-
-```sh
-cd /srv/watchtower && sudo docker compose up -d
-```
-
-If everything works as expected, Watchtower will check for new docker images every night at 02:00. If it finds any, it will download the image, stop the service, apply the new image, start tthe service and finally remove the old image.
-
 --------------------
 
 </p>
 </details>
 
-## Remote access
+## NGINX Proxy Manager
 
-This section is about secure, remote access. We will talk about custom domains, Dynamic DNS, NGINX Proxy Manager and remote SSH.
+[NGINX Proxy Manager](https://nginxproxymanager.com/) combines the true and tested reverse proxy [NGINX](https://www.nginx.com/) with an easy-to-use GUI and [Let's Encrypt](https://letsencrypt.org/) integration. 
 
 <details><summary>Click to expand</summary>
 <p>
 
---------------------
-
-### Part 1: Aquire a custom domain
+### Aquire a domain
 
 Up until this point we have only been able to access our server while on the same local network, to access it remotely we will utilize a custom domain. This method will make it easy to manage multiple services as we can use subdomains (_blog.domain.tld, server.domain.tld etc._).
 
 To get a custom domain you will need to purchase it from a domain registrar. There are many domain registrars but I've gone with [Njalla](https://njal.la/) due to their great track record, privacy policy and [DMCA responses](https://njal.la/blog/dhlsucks/). Their pricing is somewhat higher than their competitors, so you might consider [namecheap](https://www.namecheap.com/) if you're looking for a more affordable option.
 
-### Part 2: Configure Dynamic DNS
+### Docker
 
-We want our domain to point to our routers IP-address. This address, called a dynamic IP-address, will change over time and can cause our registrar to point the wrong way were it not updated. To solve this we will utilize [ddns-updater](https://github.com/qdm12/ddns-updater), which is a dynamic DNS service that will regularly check our public IP-address and convey any changes to Njalla.
-
-To get started, log into Njalla (_or your registrar of choice_) and add a new DNS record to your domain. This new record should be __DYNAMIC__ and be named __*__, this will create a dynamic __wildcard__ domain. Njalla will provide us with the key we need to update the IP-address of the DNS record, if you're using another registrar they might have other ways of conveying IP-changes.
-
-To get started with ddns-updater we will create a directory in `/srv`:
+To get started, lets create a Docker network. I named mine `boulder` but you can choose whatever name you like:
 
 ```sh
-sudo mkdir -p /srv/ddns-updater/data
+sudo docker network create boulder
 ```
 
-We will then create a configuration file:
+Then, create a directory:
 
 ```sh
-sudo nano /srv/ddns-updater/data/config.json
+sudo mkdir /srv/nginx
 ```
 
-Now configure it according to the official ddns-updater [documentation](https://github.com/qdm12/ddns-updater/blob/master/docs/njalla.md), replacing domain, host and key with your own:
-
-```json
-{
-  "settings": [
-    {
-      "provider": "njalla",
-      "domain": "domain.tld",
-      "host": "*",
-      "key": "key",
-      "ip_version": "ipv4",
-      "provider_ip": true
-    }
-  ]
-}
-```
-
-Save and exit. Now lets create a `docker-compose.yml` file:
+Now create a `docker-compose.yml` file:
 
 ```sh
-sudo nano /srv/ddns-updater/docker-compose.yml
+sudo nano /srv/nginx/docker-compose.yml
 ```
 
 Paste the following:
 
 ```yml
-version: "3.7"
-services:
-  ddns-updater:
-    image: qmcgaw/ddns-updater
-    container_name: ddns-updater
-    network_mode: bridge
-    ports:
-      - 8000:8000/tcp
-    volumes:
-      - ./data:/updater/data
-    environment:
-      - TZ=Europe/Stockholm
-      - CONFIG=
-      - PERIOD=5m
-      - UPDATE_COOLDOWN_PERIOD=5m
-      - PUBLICIP_FETCHERS=all
-      - PUBLICIP_HTTP_PROVIDERS=all
-      - PUBLICIPV4_HTTP_PROVIDERS=all
-      - PUBLICIPV6_HTTP_PROVIDERS=all
-      - PUBLICIP_DNS_PROVIDERS=all
-      - PUBLICIP_DNS_TIMEOUT=3s
-      - HTTP_TIMEOUT=10s
-
-      # Web UI
-      - LISTENING_PORT=8000
-      - ROOT_URL=/
-
-      # Backup
-      - BACKUP_PERIOD=720h # monthly
-      - BACKUP_DIRECTORY=/updater/data
-
-      # Other
-      - LOG_LEVEL=info
-      - LOG_CALLER=hidden
-    restart: always
-```
-
-Save and exit. Now it's time to configure permissions:
-
-```sh
-cd /srv/ddns-updater
-```
-
-```sh
-sudo chown -R 1000 data && sudo chmod 700 data && sudo chmod 400 data/config.json
-```
-
-You should now be able to start ddns-updater by running:
-
-```sh
-sudo docker compose up -d
-```
-
-Check that everything is working by visting `[local-IP]:8000` in your browser, you should see a `Success` message under `Update status`.
-
-<details><summary>Didn't work?</summary>
-<p>
-
---------------------
-
-First, ensure that you are in `/srv/ddns-updater` and try again.
-
-If that didn't fix it you might be looking at a permission error, double-check the directory/file permissions with `ls -la`.
-
-If the problem still persist your best bet is to look at the logs. Run `sudo ctop` and take a look at the `ddns-updater` container.
-
---------------------
-
-</p>
-</details>
-
-### Part 3: Configure NGINX Proxy manager
-
-[NGINX Proxy Manager](https://nginxproxymanager.com/) combines the true and tested reverse proxy [NGINX](https://www.nginx.com/) with an easy-to-use GUI and [Let's Encrypt](https://letsencrypt.org/) integration. 
-
-> Please note; moving forward I might refer to NGINX Proxy Manager as _NPM_ or _npm_ for brevity, take care not to confuse this with the popular JavaScript packet manager [npm](https://www.npmjs.com/).
-
-Now to get started with NPM, create a directory:
-
-```sh
-sudo mkdir /srv/npm
-```
-
-Now create a docker compose file:
-
-```sh
-sudo nano /srv/npm/docker-compose.yml
-```
-
-Lets configure it according to the [official](https://nginxproxymanager.com/setup/) documentation, paste the following:
-
-```yml
 version: "3"
 services:
-  app:
-    image: 'jc21/nginx-proxy-manager:latest'
-    container_name: npm-app
+  nginx:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx
     ports:
-      - '80:80' # Public HTTP Port
-      - '443:443' # Public HTTPS Port
-      - '81:81' # Admin Web Port
+      #<host-port>:<container-port>
+      - 80:80 # Public HTTP Port
+      - 443:443 # Public HTTPS Port
+      - 81:81 # Admin Web Port
+      - 8022:8022 # Custom SSH streaming port
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm     
     volumes:
       - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt    
-    environment:
-      TZ: "Europe/Stockholm"
-      DB_MYSQL_HOST: "db"
-      DB_MYSQL_PORT: 3306
-      DB_MYSQL_USER: "npm"
-      DB_MYSQL_PASSWORD: "npm"
-      DB_MYSQL_NAME: "npm"
-    depends_on:
-      - db
+      - ./letsencrypt:/etc/letsencrypt
     restart: always
 
-  db:
-    image: 'jc21/mariadb-aria:latest'
-    container_name: npm-db
-    volumes:
-      - ./data/mysql:/var/lib/mysql    
-    environment:
-      TZ: "Europe/Stockholm"
-      MYSQL_ROOT_PASSWORD: 'npm'
-      MYSQL_DATABASE: 'npm'
-      MYSQL_USER: 'npm'
-      MYSQL_PASSWORD: 'npm'
-    restart: always
+networks:
+  default:
+    name: boulder
 ```
 
 Save and exit. You should now be able to start NGINX proxy manager by running:
 
 ```sh
-sudo docker compose up -d
+cd /srv/nginx && sudo docker compose up -d
 ```
 
 It will take couple of seconds to set up. It might not return terminal control to you afterwards, in that case exit the process with `ctrl-z`. Check that everything is working by typing `[local-IP]:81` in your browser. Log in with the default email and password:
@@ -844,7 +810,7 @@ For added security you can make an access list entry. Navigate to `Access Lists`
 
 When you've made an access list entry, navigate to a proxy host and change access from `Publicly Accessible` to `[access list entry]`.
 
-### Part 4: Set up remote SSH
+### Stream port for remote SSH
 
 First we need to decide on a port we will expose, look through the [list](https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers) and add a port-forwarding rule for that port in your router. Next, go to NPM and navigate to `Streams`, add a new stream with the following settings:
 
@@ -920,6 +886,414 @@ sudo systemctl restart ssh
 
 The connection will now be kept alive for 600 seconds of inactivity, you can change this to your liking.
 
+### Fail2Ban
+
+First make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/npm.local
+```
+
+Paste:
+
+```
+[nginx]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = nginx
+maxretry = 3
+bantime = -1
+findtime = 86400
+logpath = /srv/nginx/data/logs/proxy-host-1_access.log
+action = iptables-allports[name=nginx, chain=DOCKER-USER]
+	 gotify
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/nginx.conf
+```
+
+Paste the following:
+
+```
+[Definition]
+failregex = .*401 401 - POST.*\[Client <ADDR>\]
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/nginx/data/logs/proxy-host-1_access.log /etc/fail2ban/filter.d/nginx.conf --print-all-matched
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status nginx
+```
+
+</p>
+</details>
+
+## ddns-updater
+
+We want our domain to point to our routers IP-address. This address, called a dynamic IP-address, will change over time and can cause our registrar to point the wrong way were it not updated. To solve this we will utilize [ddns-updater](https://github.com/qdm12/ddns-updater), which is a dynamic DNS service that will regularly check our public IP-address and convey any changes to Njalla.
+
+<details><summary>Click to expand</summary>
+<p>
+
+To get started, log into Njalla (_or your registrar of choice_) and add a new DNS record to your domain. This new record should be __DYNAMIC__ and be named __*__, this will create a dynamic __wildcard__ domain. Njalla will provide us with the key we need to update the IP-address of the DNS record, if you're using another registrar they might have other ways of conveying IP-changes.
+
+### Docker
+
+We will create a directory in `/srv`:
+
+```sh
+sudo mkdir -p /srv/ddns-updater/data
+```
+
+We will then create a configuration file:
+
+```sh
+sudo nano /srv/ddns-updater/data/config.json
+```
+
+Now configure it according to the official ddns-updater [documentation](https://github.com/qdm12/ddns-updater/blob/master/docs/njalla.md), replacing domain, host and key with your own:
+
+```json
+{
+  "settings": [
+    {
+      "provider": "njalla",
+      "domain": "domain.tld",
+      "host": "*",
+      "key": "key",
+      "ip_version": "ipv4",
+      "provider_ip": true
+    }
+  ]
+}
+```
+
+Save and exit. Now lets create a `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/ddns-updater/docker-compose.yml
+```
+
+Paste the following:
+
+```yml
+version: "3.7"
+services:
+  ddns-updater:
+    image: qmcgaw/ddns-updater
+    container_name: ddns-updater
+    ports:
+      - 8000:8000
+    volumes:
+      - ./data:/updater/data
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+      - PERIOD=5m
+      - UPDATE_COOLDOWN_PERIOD=5m
+      - PUBLICIP_FETCHERS=all
+      - PUBLICIP_HTTP_PROVIDERS=all
+      - PUBLICIPV4_HTTP_PROVIDERS=all
+      - PUBLICIPV6_HTTP_PROVIDERS=all
+      - PUBLICIP_DNS_PROVIDERS=all
+      - PUBLICIP_DNS_TIMEOUT=3s
+      - HTTP_TIMEOUT=10s
+      - LISTENING_PORT=8000
+      - ROOT_URL=/
+      - BACKUP_PERIOD=720h
+      - BACKUP_DIRECTORY=/updater/data
+      - LOG_LEVEL=info
+      - LOG_CALLER=hidden
+    restart: always
+
+networks:
+  default:
+    name: boulder
+```
+
+Save and exit. Now it's time to configure permissions:
+
+```sh
+cd /srv/ddns-updater
+```
+
+```sh
+sudo chown -R 1000 data && sudo chmod 700 data && sudo chmod 400 data/config.json
+```
+
+You should now be able to start ddns-updater by running:
+
+```sh
+cd /srv/ddns-updater && sudo docker compose up -d
+```
+
+### NGINX proxy Manager
+
+Check that everything is working by visting `[local-IP]:8000` in your browser, you should see a `Success` message under `Update status`.
+
+<details><summary>Didn't work?</summary>
+<p>
+
+--------------------
+
+First, ensure that you are in `/srv/ddns-updater` and try again.
+
+If that didn't fix it you might be looking at a permission error, double-check the directory/file permissions with `ls -la`.
+
+If the problem still persist your best bet is to look at the logs. Run `sudo ctop` and take a look at the `ddns-updater` container.
+
+--------------------
+
+</p>
+</details>
+
+--------------------
+
+</p>
+</details>
+
+</p>
+</details>
+
+## Notifications with Gotify
+
+In this section I will implement [Gotify](https://gotify.net/), which is a self-hosted notification server.
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+### Docker
+
+Start by making the directory structure:
+
+```sh
+sudo mkdir -p /srv/gotify/data
+```
+
+Then create a `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/gotify/docker-compose.yml
+```
+
+Paste the following:
+
+```yml
+version: "3"
+services:
+  gotify:
+    container_name: gotify
+    image: gotify/server
+    ports:
+      - 1245:80
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+      - GOTIFY_DEFAULTUSER_NAME=admin
+      - GOTIFY_DEFAULTUSER_PASS=admin
+    volumes:
+      - ./data:/app/data
+    entrypoint: sh -c "/app/gotify-app 2>&1 | tee /app/data/gotify.log"
+    restart: unless-stopped
+
+networks:
+  default:
+    name: boulder
+```
+
+Save and exit. Now run:
+
+```sh
+cd /srv/gotify && sudo docker compose up -d
+```
+
+Go to Web UI at `[local ip]:1245` and log in with the default credentials `admin, admin`, then go to `USERS → CREATE USER` and make your actual user. Finish up by deleting the default one.
+
+Now go to NGINX Proxy Manager and make a Proxy Host Entry with SSL and websocket support, make sure that you can access Gotify on this adress before continuing.
+
+### Fail2Ban
+
+By default Gotify lets Docker handle its logs, to make it write to a file we need to add an entrypoint to the `docker-compose.yml` file like so:
+
+```yml
+version: "3"
+services:
+  gotify:
+    container_name: gotify
+    image: gotify/server
+    entrypoint: sh -c "/app/gotify-app 2>&1 | tee /app/data/gotify.log"
+    ...
+```
+
+Save, exit and restart the container. Gotify will now write logs to a `gotify.log` file in our `/data` folder. Next, make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/gotify.local
+```
+
+Paste:
+
+```
+[gotify]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = gotify
+maxretry = 3
+bantime = -1
+findtime = 86400
+logpath = /srv/gotify/data/gotify.log
+action = iptables-allports[name=gotify, chain=DOCKER-USER]
+	 gotify
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/gotify.conf
+```
+
+Paste the following:
+
+```
+[Definition]
+failregex = ^.*\| 401 \|.*\| <ADDR> \|
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/gotify/data/gotify.log /etc/fail2ban/filter.d/gotify.conf --print-all-matched
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status gotify
+```
+
+### Homarr
+
+
+### Finishing up
+
+By default all notifications will use Gotify's own icon. To add a little flair, upload your own icons by clicking on the little upload icon to the left of the `Name` field.
+
+![Gotify screenshot](https://github.com/Stylback/home-server/blob/main/media/gotify_screenshot.png?raw=true)
+
+Gotify have an excellent android app which makes it significantly easier to keep track of notifications. You can find more information [here](https://github.com/gotify/android).
+
+Finally, don't forget to add Gotify to Homarr and protect it with a Fail2Ban filter.
+
+--------------------
+
+</p>
+</details>
+
+## Automate updates with Watchtower
+
+We will use [Watchtower](https://containrrr.dev/watchtower/) to automatically find and apply updates to our docker images. 
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+### Docker
+
+To get started, make a directory:
+
+```sh
+sudo mkdir /srv/watchtower
+```
+
+Now make a `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/watchtower/docker-compose.yml
+```
+
+Paste the following:
+
+```yml
+version: "3"
+services:
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    environment:
+      - TZ=Europe/Stockholm
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_SCHEDULE=0 0 2 * * * # run daily at 2 am
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    command: [container names]
+```
+
+Save and exit, now start Watchtower with:
+
+```sh
+cd /srv/watchtower && sudo docker compose up -d
+```
+
+If everything works as expected, Watchtower will check for new docker images every night at 02:00. If it finds any, it will download the image, stop the service, apply the new image, start tthe service and finally remove the old image.
+
+### Gotify
+
+We will have Gotify notify us whenever Watchtower updated a Docker image. Just like with Jellyseer it has native integration, as such we can just follow the [official](https://containrrr.dev/watchtower/notifications/) documentation.
+
+To start, visit Gotify and go to `APPS → CREATE APPLICATION`. Create a new application for Watchtower and take note of the token. Next, let us edit Watchtowers `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/watchtower/docker-compose.yml
+```
+
+Add the following lines to the `environment` list:
+
+```yml
+- WATCHTOWER_NOTIFICATIONS=gotify
+- WATCHTOWER_NOTIFICATION_GOTIFY_URL=[your Gotify URL]
+- WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN=[your token]
+- WATCHTOWER_NOTIFICATIONS_LEVEL=info
+- WATCHTOWER_NO_STARTUP_MESSAGE=true
+```
+
+While you're at it, add Gotify to the `command` list. Save, exit and restart the container to apply the new settings.
+
 --------------------
 
 </p>
@@ -934,6 +1308,8 @@ The connection will now be kept alive for 600 seconds of inactivity, you can cha
 
 --------------------
 
+### Docker
+
 First, lets create a `docker-compose.yml` and a directory to house it:
 
 ```sh
@@ -947,23 +1323,26 @@ sudo nano /srv/homarr/docker-compose.yml
 Paste the following:
 
 ```yml
-version: '3'
+version: "3"
 services:
   homarr:
     container_name: homarr
     image: ghcr.io/ajnart/homarr:latest
     ports:
-      - '7575:7575'
+      - 7575:7575
     environment:
       - PUID=1000
       - PGID=1000
       - UMASK=002
       - TZ=Europe/Stockholm
-      - PASSWORD= # Enter a log-in password
     volumes:
       - ./configs:/app/data/configs
       - ./icons:/app/public/icons
     restart: unless-stopped
+
+networks:
+  default:
+    name: boulder
 ```
 
 Save and exit. You can now start it by running:
@@ -971,6 +1350,8 @@ Save and exit. You can now start it by running:
 ```sh
 cd /srv/homarr && sudo docker compose up -d 
 ```
+
+### NGINX proxy Manager
 
 Now go to your NGINX Proxy Manager and add another Proxy Host with something like this:
 
@@ -987,6 +1368,11 @@ Access List:            Publicly Accessible
 
 Save and check that Homarr is accessible at `homarr.domain.tld`, add a SSL-certificate for increased security.
 
+
+### Fail2Ban
+
+
+
 --------------------
 
 </p>
@@ -1001,7 +1387,7 @@ Save and check that Homarr is accessible at `homarr.domain.tld`, add a SSL-certi
 
 --------------------
 
-### Part 1: Consistent directories
+### Consistent directories
 
 Before we set up Jellyfin we will make a clear and consistent directory-structure following TRaSH Guides [Hardlinks and Instant Moves](https://trash-guides.info/Hardlinks/Hardlinks-and-Instant-Moves/). We can create the whole structure with this one command:
 
@@ -1015,7 +1401,7 @@ Now configure directory permissions with:
 sudo chown -R $USER:$USER /srv/data && sudo chmod -R a=,a+rX,u+w,g+w /srv/data
 ```
 
-### Part 2: Install Jellyfin
+### Docker
 
 We will be using [Hotios Jellyfin image](https://hotio.dev/containers/jellyfin/). Start by creating a directory:
 
@@ -1033,26 +1419,28 @@ Paste the following:
 
 ```yml
 version: "3.7"
-
 services:
   jellyfin:
     container_name: jellyfin
     image: cr.hotio.dev/hotio/jellyfin
     ports:
-      - "8096:8096"
+      - 8096:8096
     environment:
       - PUID=1000
       - PGID=1000
       - UMASK=002
       - TZ=Europe/Stockholm
     volumes:
-      - /srv/jellyfin/config:/config
-      - /srv/jellyfin/cache:/cache
+      - ./config:/config
+      - ./cache:/cache
       - /srv/data/media:/media
     devices:
-      - /dev/dri/renderD128:/dev/dri/renderD128
-      - /dev/dri/card0:/dev/dri/card0
+      - /dev/dri:/dev/dri
     restart: unless-stopped
+    
+networks:
+  default:
+    name: boulder
 ```
 
 Save and exit. You can now start it with:
@@ -1061,7 +1449,11 @@ Save and exit. You can now start it with:
 cd /srv/jellyfin && sudo docker compose up -d
 ```
 
-Wait a bit while everything is being prepared. When done, go to `[local IP]:8096` and follow the start-up guide. When you've confirmed it's accessible it's time to create a NGINX proxy host:
+Wait a bit while everything is being prepared. When done, go to `[local IP]:8096` and follow the start-up guide. 
+
+### NGINX proxy manager
+
+When you've confirmed it's accessible it's time to create a NGINX proxy host:
 
 ```
 Domain names:           jellyfin.domain.tld
@@ -1076,7 +1468,7 @@ Access List:            Publicly Accessible
 
 While you're at it, don't forget to request a SSL-certificate for `jellyfin.domain.tld`. Finally, visit it and make sure you can connect.
 
-### Part 3: Media transfer and streaming
+### Media transfer and streaming
 
 Jellyfin is up and running but we still need to test media streaming. Load up a USB with some media-files and stick it into your server, check its label with:
 
@@ -1134,7 +1526,7 @@ Once your media-files are copied they will be automatically added to your Jellyf
 sudo umount /media/external
 ```
 
-### Part 4: Hardware acceleration
+### Hardware acceleration
 
 Our J0540 have extensive hardware support for different encoders thanks to Intel QuickSync. This will enable us to stream large media files at a lower bitrate, saving bandwidth at the cost of processing power. This process can either be done with software (_high CPU usage_) or hardware (_low CPU usage_). To enable the full range of hardware accelerated transcoding we will first need to enable the `guc` and `huc` firmware, as they are disabled by default for Intel processors of 10th generation and earlier. Start by making a `modprobe` config file:
 
@@ -1172,7 +1564,7 @@ Reboot the server. Now go to Jellyfin `Settings → Dashboard → Playback → T
 
 Finally, enable `Throttle Transcodes` at the bottom of the page and save.
 
-### Part 5: Customization
+### Customization
 
 Jellyfin supports [custom CSS](https://jellyfin.org/docs/general/clients/css-customization.html), you can either create your own or import one from the community. I will be using the _Kaleidochromic_ preset from the [Ultrachromic](https://github.com/CTalvio/Ultrachromic) project combined with a tweak to hide `More Like This`:
 
@@ -1185,569 +1577,7 @@ Jellyfin supports [custom CSS](https://jellyfin.org/docs/general/clients/css-cus
 
 The Custom CSS setting can be found at `Dashboard → General → Custom CSS`. I had to restart the Jellyfin container for the settings to take effect.
 
---------------------
-
-</p>
-</details>
-
-## Torrenting with qflood
-
-[qflood](https://hotio.dev/containers/qflood/) is a Docker image from Hotio that combines [qBittorrent](https://github.com/qbittorrent/qbittorrent) and [Flood](https://github.com/jesec/flood) with easy Wireguard VPN integration.
-
-<details><summary>Click to expand</summary>
-<p>
-
---------------------
-
-> NOTE: The BitTorrent protocol is a communcation protocol for peer-to-peer file sharing, it's an easy and accessible way for people to share their own or licensed works online. Before you contemplate downloading or sharing copyrighted content via the BitTorrent protocol, please check that those actions are not considered criminal by your local laws and regulations. I am not liabel in any way for your inability to use the BitTorrent protocol in accordance with said law.
-
-### Part 1: Configure Wireguard
-
-You will need a VPN provider for this section, I will be using [Mullvad](https://mullvad.net/en/) but there are [other](https://www.privacyguides.org/vpn/) options you might consider. Before setting up qflood we will install and configure Wireguard:
-
-```sh
-sudo apt update && sudo apt install openresolv wireguard
-```
-
-Go to your VPN-provider's website and get their Wireguard configuration. Now run:
-
-```sh
-sudo nano /etc/wireguard/wg0.conf
-```
-
-Paste the contents of your provider's Wireguard configuration and check that it's working by running:
-
-```sh
-wg-quick up wg0 && sudo wg show
-```
-
-Confirm that you have a connection, then disconnect with:
-
-```sh
-wg-quick down wg0
-```
-
-### Part 2: Install qflood
-
-Now we can install qflood, start by creating a directory:
-
-```sh
-sudo mkdir /srv/qflood
-```
-
-Then create a `docker-compose.yml` file:
-
-```sh
-sudo nano /srv/qflood/docker-compose.yml
-```
-
-Paste the following:
-
-```yml
-version: "3.7"
-services:
-  qflood:
-    container_name: qflood
-    image: cr.hotio.dev/hotio/qflood
-    ports:
-      - "8080:8080" #qbittorrent
-      - "3000:3000" #flood
-      - "8118:8118"
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - UMASK=002
-      - TZ=Europe/Stockholm
-      - VPN_ENABLED=true
-      - VPN_LAN_NETWORK=[local IP]/24
-      - VPN_CONF=wg0
-      - VPN_ADDITIONAL_PORTS
-      - VPN_IP_CHECK_DELAY=5
-      - PRIVOXY_ENABLED=false
-      - FLOOD_AUTH=false
-    volumes:
-      - /etc/wireguard:/config/wireguard
-      - /srv/qflood/config:/config
-      - /srv/data/torrents:/data/torrents
-    cap_add:
-      - NET_ADMIN
-    sysctls:
-      - net.ipv4.conf.all.src_valid_mark=1
-      - net.ipv6.conf.all.disable_ipv6=0
-    restart: unless-stopped
-```
-
-Save and exit. Now run:
-
-```sh
-cd /srv/qflood && sudo docker compose up -d
-```
-
-<details><summary>Did you get an IPv6_table error?</summary>
-<p>
-
---------------------
-
-It might be that there are no IPv6 tables on your server. To fix this we need to run:
-
-```sh
-sudo modprobe ip6table_filter
-```
-
-Followed by a container restart. This will however only fix the issue until the next reboot, to make it persistent you need to run:
-
-```sh
-echo "ip6table_filter" | sudo tee -a /etc/modules
-```
-
-Save and reboot, check the container status with `ctop` to see if it's working.
-
---------------------
-
-</p>
-</details>
-
-Now visit qBittorrent's web UI at `[local IP]:8080` and log in with the default credentials:
-
-```
-Username: admin
-Password: adminadmin
-```
-
-### Part 3: qBittorrent settings
-
-Next up is port forwarding. In Mullvad, go to your account and "Port Forwarding". Identify your server and add a port for it. In qBittorrent's Web UI, go to `Tools → Options → Connection → Listening Port` and change the default port to your forwarded port. Then launch `ctop`, select `qflood` and choose `exec shell`. Run the following two commands:
-
-```sh
-iptables -I INPUT -p tcp --dport [forwarded port] -j ACCEPT
-```
-
-```sh
-curl https://ipv4.am.i.mullvad.net/port/[forwarded port]
-```
-
-It should return:
-
-```sh
-{"ip":"[Mullvad's IP]","port":[forwarded port],"reachable":true}/
-```
-
-Now that we know that port forwarding is working, let's do some `Options` tinkering in qBittorrent. These are some of the changes I made:
-
-| Setting | Default | Set to | Reason |
-| ------------- | ------------- |------------- |------------- |
-| Default Torrent Management Mode | Manual | Automatic | Torrents are automatically transfered to the right directory depending on their category. |
-| Peer connection protocol |  TCP and µTP | TCP | µTP is good for data congestion control but can throttle speeds. |
-| Enable anonymous mode | Disable | Enable | Aims to prevent real IP-leakage while using a proxy or VPN. |
-| Enable Local Peer Discovery | Enable | Disable | We have no other client on our LAN. |
-| Seeding limits | Disable | When ratio reaches 1 or when time reaches 1440 minutes, Pause torrent | Introducing a limit means we can easily configure what happens after we are done with a torrent. A one-to-one ratio means we distribute as much as we downloaded. A lack of peers might however mean that we never reach our ratio, therefore we also have a 24 hour limit. |
-| Global rate limits | Disable | 10000 KiB/s | About 80 Mbit/s. |
-| Alternative Rate Limits | Disable | 1500 KiB/s | About 12 Mbit/s, a good limit to prevent daytime broadband shortage. |
-| Schedule the use of alternative rate limits | Disable | 07:00 to 01:00, Every day | Will give us a our limited rate between 07:00 - 01:00 and our global rate between 01:00 - 07:00. |
-| Username/Password | admin / adminadmin |  | Default credentials are a security hazard. |
-
-Finally, let us change the default web UI to something darker. I prefer [Dracula](https://draculatheme.com/qbittorrent):
-
-```sh
-cd /srv/qflood/config && git clone https://github.com/dracula/qbittorrent.git
-```
-
-Now go to `Tools → Options → Web UI → Use alternative Web UI`, enable it and paste `/config/qbittorrent/webui`. Save, the new UI should load by itself.
-
-### Part 4: Configure Flood
-
-A recent version of qBittorrent broke Flood support, I will revisit this section when the issue has been resolved.
-
---------------------
-
-</p>
-</details>
-
-## Multimedia collection management with *arr
-
-In this section we will be implementing a full suite of *arr-apps, adding a high degree of automation to our media collection. We will be looking at Prowlarr, Radarr, Sonarr, Bazarr, Jellyseerr and finally Lidarr.
-
-<details><summary>Click to expand</summary>
-<p>
-
---------------------
-
-### Part 1: Indexers with Prowlarr
-
-[Prowlarr](https://github.com/Prowlarr/Prowlarr/) is an indexer manager that integrates with other *arr-apps. We will be using [hotio's](https://hotio.dev/containers/prowlarr/) Docker image, get started by making the directory structure:
-
-```sh
-sudo mkdir -p /srv/prowlarr/config
-```
-
-Make a `docker-compose.yml` file:
-
-```sh
-sudo nano /srv/prowlarr/docker-compose.yml
-```
-
-Paste the following:
-
-```yml                              
-version: "3.7"
-services:
-  prowlarr:
-    container_name: prowlarr
-    image: cr.hotio.dev/hotio/prowlarr
-    ports:
-      - "9696:9696"
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - UMASK=002
-      - TZ=Europe/Stockholm
-    volumes:
-      - /srv/prowlarr/config:/config
-    restart: unless-stopped
-```
-
-Save and exit, start it with:
-
-```sh
-cd /srv/prowlarr && sudo docker compose up -d
-```
-
-Visit Prowlarr's web ui at `[local ip]:9696` and configure it. Add indexers, there are a [huge](https://wiki.servarr.com/prowlarr/supported-indexers) list to choose from. Finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr.
-
-### Part 2: Movies with Radarr
-
-[Radarr](https://radarr.video/) is a a movie collection manager. It allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using [hotio's](https://hotio.dev/containers/radarr/) Docker image, start by making the directory structure:
-
-```sh
-sudo mkdir -p /srv/radarr/config
-```
-
-Make a `docker-compose.yml` file:
-
-```sh
-sudo nano /srv/radarr/docker-compose.yml
-```
-
-Paste the following:
-
-```yml
-version: "3.7"
-services:
-  radarr:
-    container_name: radarr
-    image: cr.hotio.dev/hotio/radarr
-    ports:
-      - "7878:7878"
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - UMASK=002
-      - TZ=Europe/Stockholm
-    volumes:
-      - /srv/radarr/config:/config
-      - /srv/data:/data
-    restart: unless-stopped
-```
-
-Save and exit, start it with:
-
-```sh
-cd /srv/radarr && sudo docker compose up -d
-```
-
-Now visit Radarr's web-ui at `[local ip]:7878` and configure it to your liking. Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in Prowlarr.
-
-### Part 3: Series with Sonarr
-
-[Sonarr](https://sonarr.tv/) is a a series collection manager. It allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using [hotio's](https://hotio.dev/containers/sonarr/) Docker image, start by making the directory structure:
-
-```sh
-sudo mkdir -p /srv/sonarr/config
-```
-
-Make a `docker-compose.yml` file:
-
-```sh
-sudo nano /srv/sonarr/docker-compose.yml
-```
-
-Paste the following:
-
-```yml
-version: "3.7"
-services:
-  sonarr:
-    container_name: sonarr
-    image: cr.hotio.dev/hotio/sonarr
-    ports:
-      - "8989:8989"
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - UMASK=002
-      - TZ=Europe/Stockholm
-    volumes:
-      - /srv/sonarr/config:/config
-      - /srv/data:/data
-    restart: unless-stopped
-```
-
-Save and exit, start it with:
-
-```sh
-cd /srv/sonarr && sudo docker compose up -d
-```
-
-Now visit Sonarr's web-ui at `[local ip]:8989` and configure it. Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in Prowlarr.
-
-### Part 4: Subtitles with Bazarr
-
-[Bazarr](https://www.bazarr.media/) is a subtitle downloader and manager. It integrates natively with Radarr and Sonnar. We will be using [hotio's](https://hotio.dev/containers/bazarr/) Docker image, get started by making the directory structure:
-
-```sh
-sudo mkdir -p /srv/bazarr/config
-```
-
-Now make a `docker-compose.yml` file:
-
-```sh
-sudo nano /srv/bazarr/docker-compose.yml
-```
-
-Paste the following:
-
-```yml                              
-version: "3.7"
-services:
-  bazarr:
-    container_name: bazarr
-    image: cr.hotio.dev/hotio/bazarr
-    ports:
-      - "6767:6767"
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - UMASK=002
-      - TZ=Europe/Stockholm
-    volumes:
-      - /srv/bazarr/config:/config
-      - /srv/data:/data
-    restart: unless-stopped
-```
-
-Save and exit, start it with:
-
-```sh
-cd /srv/bazarr && sudo docker compose up -d
-```
-
-Now visit Bazarr's web-ui at `[local ip]:6767`. Start by making a language profile and add subtitle providers, then connect to Radarr and Sonarr. When you know everything works as intended, finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr. For security, remember to add an authentication method.
-
-### Part 5: Request shows and movies with Jellyseerr
-
-[Jellyseerr](https://hub.docker.com/r/fallenbagel/jellyseerr) is a request manager for Jellyfin. It allows us and our users to discover and request shows and movies. Start by making the directory structure:
-
-```sh
-sudo mkdir -p /srv/jellyseerr/config
-```
-
-Make a `docker-compose.yml` file:
-
-```sh
-sudo nano /srv/jellyseerr/docker-compose.yml
-```
-
-Paste the following:
-
-```yml                              
-version: '3'
-services:
-    jellyseerr:
-       container_name: jellyseerr
-       image: fallenbagel/jellyseerr:latest
-       ports:
-            - 5055:5055
-       environment:
-            - PUID=1000
-            - PGID=1000
-            - UMASK=002
-            - TZ=Europe/Stockholm
-       volumes:
-            - /srv/jellyseerr/config:/app/config
-            - /srv/data:/data
-       restart: unless-stopped
-```
-
-Save and exit, start it with:
-
-```sh
-cd /srv/jellyseerr && sudo docker compose up -d
-```
-
-Now visit Jellyseerr's web-ui at `[local ip]:5055`. Log in using your Jellyfin account and follow the start-up guide. Finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr.
-
-### Part 6: Music with Lidarr
-
-[Lidarr](https://lidarr.audio/) is a music collection manager. It allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library. We will be using [hotio's](https://hotio.dev/containers/lidarr/) docker image, start by making the directory structure:
-
-```sh
-sudo mkdir -p /srv/lidarr/config
-```
-
-Make a docker-compose.yml file:
-
-```sh
-sudo nano /srv/lidarr/docker-compose.yml
-```
-
-Paste the following:
-
-```yml
-version: "3.7"
-services:
-  sonarr:
-    container_name: sonarr
-    image: cr.hotio.dev/hotio/lidarr
-    ports:
-      - "8686:8686"
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - UMASK=002
-      - TZ=Europe/Stockholm
-    volumes:
-      - /srv/lidarr/config:/config
-      - /srv/data:/data
-    restart: unless-stopped
-```
-
-Save and exit, start it with:
-
-```sh
-cd /srv/lidarr && sudo docker compose up -d
-```
-
-Now visit lidarr's web-ui at `[local ip]:8686` and configure it. Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in prowlarr.
-
---------------------
-
-</p>
-</details>
-
-## Perimeter security with Fail2Ban
-
-[Fail2Ban](https://github.com/fail2ban/fail2ban) is a service that can watch log files and take action, such as banning IP-addresses that have multiple failed log-in attempts.
-
-<details><summary>Click to expand</summary>
-<p>
-
---------------------
-
-### Part 1: Overall idea and inital setup
-
-We want to detect and ban malicious behaviour towards our internet-exposed services, such as attempts to brute-force a password or DoS/DDoS attacks. For each service we will define a jail and filter, we will then have Fail2Ban watch the logs of that service and ban IPs that match said filter.
-
-In contrast to our other services we will not be using Fail2Ban in a Docker container (_curious why? see_ [_here_](#issues-and-solutions) _for my experience_), we will instead install it directly on the OS. To get started, run:
-
-```sh
-sudo apt update && sudo apt install fail2ban
-```
-
-Start Fail2Ban with:
-
-```sh
-sudo fail2ban-client start
-```
-
-Make Fail2Ban run on start with:
-
-```sh
-sudo systemctl enable fail2ban
-```
-
-#### Useful Fail2Ban commands
-
-Unban yourself with:
-
-```sh
-sudo fail2ban-client unban [your ip]
-```
-
-Unban _everyone_ with:
-
-```sh
-sudo fail2ban-client unban --all
-```
-
-Check jail status:
-
-```sh
-sudo fail2ban-client status [jail name]
-```
-
-See if a filter will catch something in a logfile (_great for testing/debugging_):
-
-```
-fail2ban-regex [path to logfile] [path to filter] --print-all-matched
-```
-
-### Part 2: NGINX Proxy manager
-
-First make a `.local` file:
-
-```sh
-sudo nano /etc/fail2ban/jail.d/npm.local
-```
-
-Paste:
-
-```
-[npm]
-
-backend = auto
-enabled = true
-port = 80,443
-protocol = tcp
-filter = npm
-maxretry = 3
-bantime = -1
-findtime = 86400
-logpath = /srv/npm/data/logs/proxy-host-1_access.log
-action = iptables-allports[name=npm, chain=DOCKER-USER]
-```
-
-Save and exit. Now make a `.conf` file:
-
-```sh
-sudo nano /etc/fail2ban/filter.d/npm.conf
-```
-
-Paste the following:
-
-```
-[Definition]
-failregex = .*401 401 - POST.*\[Client <ADDR>\]
-```
-
-Restart Fail2Ban to apply the new settings:
-
-```sh
-sudo systemctl restart fail2ban
-```
-
-You can test your filter by first using the wrong credentials and then match the log with your filter:
-
-```
-fail2ban-regex /srv/npm/data/logs/proxy-host-1_access.log /etc/fail2ban/filter.d/npm.conf --print-all-matched
-```
-
-You can also check the status of the jail with:
-
-```sh
-sudo fail2ban-client status npm
-```
-
-### Part 3: Jellyfin
+### Fail2Ban
 
 There is an excellent but slightly outdated guide in Jellyfin's own [documentation](https://jellyfin.org/docs/general/networking/fail2ban.html). Below is a modified version that works:
 
@@ -1805,287 +1635,188 @@ You can also check the status of the jail with:
 sudo fail2ban-client status jellyfin
 ```
 
-### Part 4: Jellyseerr
+### Homarr
 
-First you need to enable proxy support in Jellyseerr. Navigate to `Settings → Enable Proxy Support`, enable it and restart Jellyseerr. Now make a `.local` file:
 
-```sh
-sudo nano /etc/fail2ban/jail.d/jellyseerr.local
-```
 
-Paste:
+--------------------
 
-```
-[jellyseerr]
+</p>
+</details>
 
-backend = auto
-enabled = true
-port = 80,443
-protocol = tcp
-filter = jellyseerr
-maxretry = 3
-bantime = -1
-findtime = 86400
-logpath = /srv/jellyseerr/config/logs/overseerr.log
-action = iptables-allports[name=jellyseerr, chain=DOCKER-USER]
-```
+## Torrenting with qflood
 
-Save and exit. Now make a `.conf` file:
+[qflood](https://hotio.dev/containers/qflood/) is a Docker image from Hotio that combines [qBittorrent](https://github.com/qbittorrent/qbittorrent) and [Flood](https://github.com/jesec/flood) with easy Wireguard VPN integration.
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+> NOTE: The BitTorrent protocol is a communcation protocol for peer-to-peer file sharing, it's an easy and accessible way for people to share their own or licensed works online. Before you contemplate downloading or sharing copyrighted content via the BitTorrent protocol, please check that those actions are not considered criminal by your local laws and regulations. I am not liabel in any way for your inability to use the BitTorrent protocol in accordance with said law.
+
+### Wireguard
+
+You will need a VPN provider for this section, I will be using [Mullvad](https://mullvad.net/en/) but there are [other](https://www.privacyguides.org/vpn/) options you might consider. Before setting up qflood we will install and configure Wireguard:
 
 ```sh
-sudo nano /etc/fail2ban/filter.d/jellyseerr.conf
+sudo apt update && sudo apt install openresolv wireguard
 ```
 
-We will use a modified version of the official [Overseerr](https://docs.overseerr.dev/extending-overseerr/fail2ban) Fail2Ban-filter, paste the following:
-
-```
-[Definition]
-failregex = .*\[info\]\[Auth\]\: Failed login attempt.*"ip":"<ADDR>"
-```
-
-Restart Fail2Ban to apply the new settings:
+Go to your VPN-provider's website and get their Wireguard configuration. Now run:
 
 ```sh
-sudo systemctl restart fail2ban
+sudo nano /etc/wireguard/wg0.conf
 ```
 
-You can test your filter by first using the wrong credentials and then match the log with your filter:
-
-```
-fail2ban-regex /srv/jellyseerr/config/logs/overseerr.log /etc/fail2ban/filter.d/jellyseerr.conf --print-all-matched
-```
-
-You can also check the status of the jail with:
+Paste the contents of your provider's Wireguard configuration and check that it's working by running:
 
 ```sh
-sudo fail2ban-client status jellyseerr
+wg-quick up wg0 && sudo wg show
 ```
 
-### Part 5: Sonarr
-
-First make a `.local` file:
+Confirm that you have a connection, then disconnect with:
 
 ```sh
-sudo nano /etc/fail2ban/jail.d/sonarr.local
+wg-quick down wg0
 ```
 
-Paste:
+### Docker
 
-```
-[sonarr]
-
-backend = auto
-enabled = true
-port = 80,443
-protocol = tcp
-filter = sonarr
-maxretry = 3
-bantime = -1
-findtime = 86400
-logpath = /srv/sonarr/config/logs/sonarr.txt
-action = iptables-allports[name=sonarr, chain=DOCKER-USER]
-```
-
-Save and exit. Now make a `.conf` file:
+Now we can install qflood, start by creating a directory:
 
 ```sh
-sudo nano /etc/fail2ban/filter.d/sonarr.conf
+sudo mkdir /srv/qflood
+```
+
+Then create a `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/qflood/docker-compose.yml
 ```
 
 Paste the following:
 
-```
-[Definition]
-failregex = .*\|Warn\|Auth\|Auth-Failure ip <ADDR>
+```yml
+version: "3.7"
+services:
+  qflood:
+    container_name: qflood
+    image: cr.hotio.dev/hotio/qflood
+    ports:
+      - 8080:8080 #qbittorrent
+      - 3000:3000 #flood
+      - 8118:8118
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+      - VPN_ENABLED=true
+      - VPN_LAN_NETWORK=[local IP]/24
+      - VPN_CONF=wg0
+      - VPN_ADDITIONAL_PORTS
+      - VPN_IP_CHECK_DELAY=5
+      - PRIVOXY_ENABLED=false
+      - FLOOD_AUTH=false
+    volumes:
+      - /etc/wireguard:/config/wireguard
+      - ./config:/config
+      - /srv/data/torrents:/data/torrents
+    cap_add:
+      - NET_ADMIN
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv6.conf.all.disable_ipv6=0
+    restart: unless-stopped
+
+networks:
+  default:
+    name: boulder
 ```
 
-Restart Fail2Ban to apply the new settings:
+Save and exit. Now run:
 
 ```sh
-sudo systemctl restart fail2ban
+cd /srv/qflood && sudo docker compose up -d
 ```
 
-You can test your filter by first using the wrong credentials and then match the log with your filter:
+<details><summary>Did you get an IPv6_table error?</summary>
+<p>
 
-```
-fail2ban-regex /srv/sonarr/config/logs/sonarr.txt /etc/fail2ban/filter.d/sonarr.conf --print-all-matched
-```
+--------------------
 
-You can also check the status of the jail with:
+It might be that there are no IPv6 tables on your server. To fix this we need to run:
 
 ```sh
-sudo fail2ban-client status sonarr
+sudo modprobe ip6table_filter
 ```
 
-### Part 6: Radarr
-
-First make a `.local` file:
+Followed by a container restart. This will however only fix the issue until the next reboot, to make it persistent you need to run:
 
 ```sh
-sudo nano /etc/fail2ban/jail.d/radarr.local
+echo "ip6table_filter" | sudo tee -a /etc/modules
 ```
 
-Paste:
+Save and reboot, check the container status with `ctop` to see if it's working.
+
+--------------------
+
+</p>
+</details>
+
+Now visit qBittorrent's web UI at `[local IP]:8080` and log in with the default credentials:
 
 ```
-[radarr]
-
-backend = auto
-enabled = true
-port = 80,443
-protocol = tcp
-filter = radarr
-maxretry = 3
-bantime = -1
-findtime = 86400
-logpath = /srv/radarr/config/logs/radarr.txt
-action = iptables-allports[name=radarr, chain=DOCKER-USER]
+Username: admin
+Password: adminadmin
 ```
 
-Save and exit. Now make a `.conf` file:
+### qBittorrent settings
+
+Next up is port forwarding. In Mullvad, go to your account and "Port Forwarding". Identify your server and add a port for it. In qBittorrent's Web UI, go to `Tools → Options → Connection → Listening Port` and change the default port to your forwarded port. Then launch `ctop`, select `qflood` and choose `exec shell`. Run the following two commands:
 
 ```sh
-sudo nano /etc/fail2ban/filter.d/radarr.conf
+iptables -I INPUT -p tcp --dport [forwarded port] -j ACCEPT
 ```
-
-Paste the following:
-
-```
-[Definition]
-failregex = .*\|Warn\|Auth\|Auth-Failure ip <ADDR>
-```
-
-Restart Fail2Ban to apply the new settings:
 
 ```sh
-sudo systemctl restart fail2ban
+curl https://ipv4.am.i.mullvad.net/port/[forwarded port]
 ```
 
-You can test your filter by first using the wrong credentials and then match the log with your filter:
-
-```
-fail2ban-regex /srv/radarr/config/logs/radarr.txt /etc/fail2ban/filter.d/radarr.conf --print-all-matched
-```
-
-You can also check the status of the jail with:
+It should return:
 
 ```sh
-sudo fail2ban-client status radarr
+{"ip":"[Mullvad's IP]","port":[forwarded port],"reachable":true}/
 ```
 
-### Part 7: Lidarr
+Now that we know that port forwarding is working, let's do some `Options` tinkering in qBittorrent. These are some of the changes I made:
 
-First make a `.local` file:
+| Setting | Default | Set to | Reason |
+| ------------- | ------------- |------------- |------------- |
+| Default Torrent Management Mode | Manual | Automatic | Torrents are automatically transfered to the right directory depending on their category. |
+| Peer connection protocol |  TCP and µTP | TCP | µTP is good for data congestion control but can throttle speeds. |
+| Enable anonymous mode | Disable | Enable | Aims to prevent real IP-leakage while using a proxy or VPN. |
+| Enable Local Peer Discovery | Enable | Disable | We have no other client on our LAN. |
+| Seeding limits | Disable | When ratio reaches 1 or when time reaches 1440 minutes, Pause torrent | Introducing a limit means we can easily configure what happens after we are done with a torrent. A one-to-one ratio means we distribute as much as we downloaded. A lack of peers might however mean that we never reach our ratio, therefore we also have a 24 hour limit. |
+| Global rate limits | Disable | 10000 KiB/s | About 80 Mbit/s. |
+| Alternative Rate Limits | Disable | 1500 KiB/s | About 12 Mbit/s, a good limit to prevent daytime broadband shortage. |
+| Schedule the use of alternative rate limits | Disable | 07:00 to 01:00, Every day | Will give us a our limited rate between 07:00 - 01:00 and our global rate between 01:00 - 07:00. |
+| Username/Password | admin / adminadmin |  | Default credentials are a security hazard. |
+
+Finally, let us change the default web UI to something darker. I prefer [Dracula](https://draculatheme.com/qbittorrent):
 
 ```sh
-sudo nano /etc/fail2ban/jail.d/lidarr.local
+cd /srv/qflood/config && git clone https://github.com/dracula/qbittorrent.git
 ```
 
-Paste:
+Now go to `Tools → Options → Web UI → Use alternative Web UI`, enable it and paste `/config/qbittorrent/webui`. Save, the new UI should load by itself.
 
-```
-[lidarr]
+### Flood settings
 
-backend = auto
-enabled = true
-port = 80,443
-protocol = tcp
-filter = lidarr
-maxretry = 3
-bantime = -1
-findtime = 86400
-logpath = /srv/lidarr/config/logs/Lidarr.txt
-action = iptables-allports[name=lidarr, chain=DOCKER-USER]
-```
+A recent version of qBittorrent broke Flood support, I will revisit this section when the issue has been resolved.
 
-Save and exit. Now make a `.conf` file:
-
-```sh
-sudo nano /etc/fail2ban/filter.d/lidarr.conf
-```
-
-Paste the following:
-
-```
-[Definition]
-failregex = .*\|Warn\|Auth\|Auth-Failure ip <ADDR>
-```
-
-Restart Fail2Ban to apply the new settings:
-
-```sh
-sudo systemctl restart fail2ban
-```
-
-You can test your filter by first using the wrong credentials and then match the log with your filter:
-
-```
-fail2ban-regex /srv/lidarr/config/logs/Lidarr.txt /etc/fail2ban/filter.d/lidarr.conf --print-all-matched
-```
-
-You can also check the status of the jail with:
-
-```sh
-sudo fail2ban-client status lidarr
-```
-
-### Part 8: Prowlarr
-
-First make a `.local` file:
-
-```sh
-sudo nano /etc/fail2ban/jail.d/prowlarr.local
-```
-
-Paste:
-
-```
-[prowlarr]
-
-backend = auto
-enabled = true
-port = 80,443
-protocol = tcp
-filter = prowlarr
-maxretry = 3
-bantime = -1
-findtime = 86400
-logpath = /srv/prowlarr/config/logs/prowlarr.txt
-action = iptables-allports[name=prowlarr, chain=DOCKER-USER]
-```
-
-Save and exit. Now make a `.conf` file:
-
-```sh
-sudo nano /etc/fail2ban/filter.d/prowlarr.conf
-```
-
-Paste the following:
-
-```
-[Definition]
-failregex = .*\|Warn\|Auth\|Auth-Failure ip <ADDR>
-```
-
-Restart Fail2Ban to apply the new settings:
-
-```sh
-sudo systemctl restart fail2ban
-```
-
-You can test your filter by first using the wrong credentials and then match the log with your filter:
-
-```
-fail2ban-regex /srv/prowlarr/config/logs/prowlarr.txt /etc/fail2ban/filter.d/prowlarr.conf --print-all-matched
-```
-
-You can also check the status of the jail with:
-
-```sh
-sudo fail2ban-client status prowlarr
-```
-
-### Part 9: qBittorrent
+### Fail2Ban
 
 First disable qbittorrents own ban-action by going to `Options → Web UI → Ban client after consecutive failures` and set it to `0`. Next, make a `.local` file:
 
@@ -2108,6 +1839,7 @@ bantime = -1
 findtime = 86400
 logpath = /srv/qflood/config/data/logs/qbittorrent.log
 action = iptables-allports[name=qbittorrent, chain=DOCKER-USER]
+	 gotify
 ```
 
 Save and exit. Now make a `.conf` file:
@@ -2141,54 +1873,109 @@ You can also check the status of the jail with:
 sudo fail2ban-client status qbittorrent
 ```
 
-### Part 10: Gotify
+### Homarr
 
-By default Gotify lets Docker handle its logs, to make it write to a file we need to add an entrypoint to the `docker-compose.yml` file like so:
+--------------------
 
-```yml
-version: "3"
-services:
-  gotify:
-    container_name: gotify
-    image: gotify/server
-    entrypoint: sh -c "/app/gotify-app 2>&1 | tee /app/data/gotify.log"
-    ...
-```
+</p>
+</details>
 
-Save, exit and restart the container. Gotify will now write logs to a `gotify.log` file in our `/data` folder. Next, make a `.local` file:
+## Indexers with Prowlarr
+
+[Prowlarr](https://github.com/Prowlarr/Prowlarr/) is an indexer manager that integrates with other *arr-apps. 
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+### Docker
+
+We will be using [hotio's](https://hotio.dev/containers/prowlarr/) Docker image, get started by making the directory structure:
 
 ```sh
-sudo nano /etc/fail2ban/jail.d/gotify.local
+sudo mkdir -p /srv/prowlarr/config
+```
+
+Make a `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/prowlarr/docker-compose.yml
+```
+
+Paste the following:
+
+```yml                              
+version: "3.7"
+services:
+  prowlarr:
+    container_name: prowlarr
+    image: cr.hotio.dev/hotio/prowlarr
+    ports:
+      - 9696:9696
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - ./config:/config
+    restart: unless-stopped
+
+networks:
+  default:
+    name: boulder
+```
+
+Save and exit, start it with:
+
+```sh
+cd /srv/prowlarr && sudo docker compose up -d
+```
+
+Visit Prowlarr's web ui at `[local ip]:9696` and configure it. Add indexers, there are a [huge](https://wiki.servarr.com/prowlarr/supported-indexers) list to choose from. 
+
+### NGINX Proxy Manager
+
+Finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr.
+
+### Fail2Ban
+
+First make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/prowlarr.local
 ```
 
 Paste:
 
 ```
-[gotify]
+[prowlarr]
 
 backend = auto
 enabled = true
 port = 80,443
 protocol = tcp
-filter = gotify
+filter = prowlarr
 maxretry = 3
 bantime = -1
 findtime = 86400
-logpath = /srv/gotify/data/gotify.log
-action = iptables-allports[name=gotify, chain=DOCKER-USER]
+logpath = /srv/prowlarr/config/logs/prowlarr.txt
+action = iptables-allports[name=prowlarr, chain=DOCKER-USER]
+	 gotify
 ```
 
 Save and exit. Now make a `.conf` file:
 
 ```sh
-sudo nano /etc/fail2ban/filter.d/gotify.conf
+sudo nano /etc/fail2ban/filter.d/prowlarr.conf
 ```
 
 Paste the following:
 
 ```
 [Definition]
-failregex = ^.*\| 401 \|.*\| <ADDR> \|
+failregex = .*\|Warn\|Auth\|Auth-Failure ip <ADDR>
 ```
 
 Restart Fail2Ban to apply the new settings:
@@ -2200,125 +1987,215 @@ sudo systemctl restart fail2ban
 You can test your filter by first using the wrong credentials and then match the log with your filter:
 
 ```
-fail2ban-regex /srv/gotify/data/gotify.log /etc/fail2ban/filter.d/gotify.conf --print-all-matched
+fail2ban-regex /srv/prowlarr/config/logs/prowlarr.txt /etc/fail2ban/filter.d/prowlarr.conf --print-all-matched
 ```
 
 You can also check the status of the jail with:
 
 ```sh
-sudo fail2ban-client status gotify
+sudo fail2ban-client status prowlarr
 ```
+
+### Homarr
 
 --------------------
 
 </p>
 </details>
 
-## Notifications with Gotify
+## Movies with Radarr
 
-In this section I will implement [Gotify](https://gotify.net/), which is a self-hosted notification server.
+[Radarr](https://radarr.video/) is a a movie collection manager. It allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library.
 
 <details><summary>Click to expand</summary>
 <p>
 
 --------------------
 
-### Part 1: Initial setup
+### Docker
 
-Start by making the directory structure:
+We will be using [hotio's](https://hotio.dev/containers/radarr/) Docker image, start by making the directory structure:
 
 ```sh
-sudo mkdir -p /srv/gotify/data
+sudo mkdir -p /srv/radarr/config
 ```
 
-Then create a `docker-compose.yml` file:
+Make a `docker-compose.yml` file:
 
 ```sh
-sudo nano /srv/gotify/docker-compose.yml
+sudo nano /srv/radarr/docker-compose.yml
 ```
 
 Paste the following:
 
 ```yml
-version: "3"
+version: "3.7"
 services:
-  gotify:
-    container_name: gotify
-    image: gotify/server
+  radarr:
+    container_name: radarr
+    image: cr.hotio.dev/hotio/radarr
     ports:
-      - 1245:80
+      - 7878:7878
     environment:
       - PUID=1000
       - PGID=1000
       - UMASK=002
       - TZ=Europe/Stockholm
-      - GOTIFY_DEFAULTUSER_NAME=admin
-      - GOTIFY_DEFAULTUSER_PASS=admin
     volumes:
-      - "./data:/app/data"
+      - ./config:/config
+      - /srv/data:/data
     restart: unless-stopped
+
+networks:
+  default:
+    name: boulder
 ```
 
-Save and exit. Now run:
+Save and exit, start it with:
 
 ```sh
-cd /srv/gotify && sudo docker compose up -d
+cd /srv/radarr && sudo docker compose up -d
 ```
 
-Go to Web UI at `[local ip]:1245` and log in with the default credentials `admin, admin`, then go to `USERS → CREATE USER` and make your actual user. Finish up by deleting the default one.
+Now visit Radarr's web-ui at `[local ip]:7878` and configure it to your liking. 
 
-Now go to NGINX Proxy Manager and make a Proxy Host Entry with SSL and websocket support, make sure that you can access Gotify on this adress before continuing.
+### NGINX proxy Manager
 
-### Part 2: Jellyseer
+Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in Prowlarr.
 
-We will have Gotify send us a notification whenever a user makes a media request or if there is an issue in the request process. To start, visit Gotify and go to `APPS → CREATE APPLICATION`. Create a new application for Jellyseerr and take note of the token.
+### Fail2Ban
 
-Jellyseerr have native Gotify integration, as such we can simply enable it in the settings. Go to `Settings → Notifications → Gotify`, enable the agent and enter your URL and application token. Next, choose what kind of notifications you want and save.
-
-### Part 3: Watchtower
-
-We will have Gotify notify us whenever Watchtower updated a Docker image. Just like with Jellyseer it has native integration, as such we can just follow the [official](https://containrrr.dev/watchtower/notifications/) documentation.
-
-To start, visit Gotify and go to `APPS → CREATE APPLICATION`. Create a new application for Watchtower and take note of the token. Next, let us edit Watchtowers `docker-compose.yml` file:
+First make a `.local` file:
 
 ```sh
-sudo nano /srv/watchtower/docker-compose.yml
+sudo nano /etc/fail2ban/jail.d/radarr.local
 ```
 
-Add the following lines to the `environment` list:
+Paste:
 
-```yml
-- WATCHTOWER_NOTIFICATIONS=gotify
-- WATCHTOWER_NOTIFICATION_GOTIFY_URL=[your Gotify URL]
-- WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN=[your token]
-- WATCHTOWER_NOTIFICATIONS_LEVEL=info
-- WATCHTOWER_NO_STARTUP_MESSAGE=true
+```
+[radarr]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = radarr
+maxretry = 3
+bantime = -1
+findtime = 86400
+logpath = /srv/radarr/config/logs/radarr.txt
+action = iptables-allports[name=radarr, chain=DOCKER-USER]
+	 gotify
 ```
 
-While you're at it, add Gotify to the `command` list. Save, exit and restart the container to apply the new settings.
-
-### Part 4: Fail2Ban
-
-We will have Gotify notify us whenever an IP was banned and give us some more information about their attempts prior to said ban. To start, visit Gotify and go to `APPS → CREATE APPLICATION`. Create a new application for Fail2Ban and take note of the token.
-
-Next we will create the `action.d` file that will trigger the message, run:
+Save and exit. Now make a `.conf` file:
 
 ```sh
-sudo nano /etc/fail2ban/action.d/gotify.conf
+sudo nano /etc/fail2ban/filter.d/radarr.conf
 ```
 
-Paste the following, using your own URL and token:
+Paste the following:
 
 ```
 [Definition]
-actionban = curl "https://gotify.domain.tld/message?token=your_token_here" -F title="[Fail2Ban] <name>" -F message="Banned IP: <ip> Details: `grep '<ip>' <logpath>`" -F "priority=5"
+failregex = .*\|Warn\|Auth\|Auth-Failure ip <ADDR>
 ```
 
-Save and exit. Now add the `gotify` action to your jails like so:
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/radarr/config/logs/radarr.txt /etc/fail2ban/filter.d/radarr.conf --print-all-matched
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status radarr
+```
+
+### Homarr
+
+--------------------
+
+</p>
+</details>
+
+## Series with Sonarr
+
+[Sonarr](https://sonarr.tv/) is a a series collection manager. It allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library.
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+### Docker
+
+We will be using [hotio's](https://hotio.dev/containers/sonarr/) Docker image, start by making the directory structure:
+
+```sh
+sudo mkdir -p /srv/sonarr/config
+```
+
+Make a `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/sonarr/docker-compose.yml
+```
+
+Paste the following:
+
+```yml
+version: "3.7"
+services:
+  sonarr:
+    container_name: sonarr
+    image: cr.hotio.dev/hotio/sonarr
+    ports:
+      - 8989:8989
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - ./config:/config
+      - /srv/data:/data
+    restart: unless-stopped
+
+networks:
+  default:
+    name: boulder
+```
+
+Save and exit, start it with:
+
+```sh
+cd /srv/sonarr && sudo docker compose up -d
+```
+
+Now visit Sonarr's web-ui at `[local ip]:8989` and configure it. 
+
+### NGINX Proxy Manager
+
+Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in Prowlarr.
+
+### Fail2ban
+
+First make a `.local` file:
 
 ```sh
 sudo nano /etc/fail2ban/jail.d/sonarr.local
 ```
+
+Paste:
 
 ```
 [sonarr]
@@ -2336,23 +2213,359 @@ action = iptables-allports[name=sonarr, chain=DOCKER-USER]
 	 gotify
 ```
 
->NOTE: The indentation for actions are important, they should both share the same indentation depth.
+Save and exit. Now make a `.conf` file:
 
-Finish up by restarting Fail2Ban:
+```sh
+sudo nano /etc/fail2ban/filter.d/sonarr.conf
+```
+
+Paste the following:
+
+```
+[Definition]
+failregex = .*\|Warn\|Auth\|Auth-Failure ip <ADDR>
+```
+
+Restart Fail2Ban to apply the new settings:
 
 ```sh
 sudo systemctl restart fail2ban
 ```
 
-### Part 5: Finishing up
+You can test your filter by first using the wrong credentials and then match the log with your filter:
 
-By default all notifications will use Gotify's own icon. To add a little flair, upload your own icons by clicking on the little upload icon to the left of the `Name` field.
+```
+fail2ban-regex /srv/sonarr/config/logs/sonarr.txt /etc/fail2ban/filter.d/sonarr.conf --print-all-matched
+```
 
-![Gotify screenshot](https://github.com/Stylback/home-server/blob/main/media/gotify_screenshot.png?raw=true)
+You can also check the status of the jail with:
 
-Gotify have an excellent android app which makes it significantly easier to keep track of notifications. You can find more information [here](https://github.com/gotify/android).
+```sh
+sudo fail2ban-client status sonarr
+```
 
-Finally, don't forget to add Gotify to Homarr and protect it with a Fail2Ban filter.
+### Homarr
+
+--------------------
+
+</p>
+</details>
+
+## Subtitles with Bazarr
+
+[Bazarr](https://www.bazarr.media/) is a subtitle downloader and manager, it integrates natively with Radarr and Sonnar.
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+### Docker
+
+We will be using [hotio's](https://hotio.dev/containers/bazarr/) Docker image, get started by making the directory structure:
+
+```sh
+sudo mkdir -p /srv/bazarr/config
+```
+
+Now make a `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/bazarr/docker-compose.yml
+```
+
+Paste the following:
+
+```yml                              
+version: "3.7"
+services:
+  bazarr:
+    container_name: bazarr
+    image: cr.hotio.dev/hotio/bazarr
+    ports:
+      - 6767:6767
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - ./config:/config
+      - /srv/data:/data
+    restart: unless-stopped
+
+networks:
+  default:
+    name: boulder
+```
+
+Save and exit, start it with:
+
+```sh
+cd /srv/bazarr && sudo docker compose up -d
+```
+
+Now visit Bazarr's web-ui at `[local ip]:6767`. Start by making a language profile and add subtitle providers, then connect to Radarr and Sonarr. 
+
+### NGINX proxy Manager
+
+When you know everything works as intended, finish up by creating a Proxy Host entry in NGINX and adding the app to Homarr. For security, remember to add an authentication method.
+
+--------------------
+
+</p>
+</details>
+
+## Request shows and movies with Jellyseerr
+
+[Jellyseerr](https://hub.docker.com/r/fallenbagel/jellyseerr) is a request manager for Jellyfin. It allows us and our users to discover and request shows and movies.
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+### Docker
+
+Start by making the directory structure:
+
+```sh
+sudo mkdir -p /srv/jellyseerr/config
+```
+
+Make a `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/jellyseerr/docker-compose.yml
+```
+
+Paste the following:
+
+```yml                              
+version: "3"
+services:
+    jellyseerr:
+       container_name: jellyseerr
+       image: fallenbagel/jellyseerr:latest
+       ports:
+            - 5055:5055
+       environment:
+            - PUID=1000
+            - PGID=1000
+            - UMASK=002
+            - TZ=Europe/Stockholm
+       volumes:
+            - ./config:/app/config
+            - /srv/data:/data
+       restart: unless-stopped
+
+networks:
+  default:
+    name: boulder
+```
+
+Save and exit, start it with:
+
+```sh
+cd /srv/jellyseerr && sudo docker compose up -d
+```
+
+Now visit Jellyseerr's web-ui at `[local ip]:5055`. Log in using your Jellyfin account and follow the start-up guide.
+
+### NGINX Proxy Manager
+
+Finish up by creating a Proxy Host entry in NGINX
+
+### Homarr
+
+adding the app to Homarr.
+
+### Gotify
+
+We will have Gotify send us a notification whenever a user makes a media request or if there is an issue in the request process. To start, visit Gotify and go to `APPS → CREATE APPLICATION`. Create a new application for Jellyseerr and take note of the token.
+
+Jellyseerr have native Gotify integration, as such we can simply enable it in the settings. Go to `Settings → Notifications → Gotify`, enable the agent and enter your URL and application token. Next, choose what kind of notifications you want and save.
+
+### Fail2Ban
+
+First you need to enable proxy support in Jellyseerr. Navigate to `Settings → Enable Proxy Support`, enable it and restart Jellyseerr. Now make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/jellyseerr.local
+```
+
+Paste:
+
+```
+[jellyseerr]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = jellyseerr
+maxretry = 3
+bantime = -1
+findtime = 86400
+logpath = /srv/jellyseerr/config/logs/overseerr.log
+action = iptables-allports[name=jellyseerr, chain=DOCKER-USER]
+	 gotify
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/jellyseerr.conf
+```
+
+We will use a modified version of the official [Overseerr](https://docs.overseerr.dev/extending-overseerr/fail2ban) Fail2Ban-filter, paste the following:
+
+```
+[Definition]
+failregex = .*\[info\]\[Auth\]\: Failed login attempt.*"ip":"<ADDR>"
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/jellyseerr/config/logs/overseerr.log /etc/fail2ban/filter.d/jellyseerr.conf --print-all-matched
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status jellyseerr
+```
+
+--------------------
+
+</p>
+</details>
+
+## Music with Lidarr
+
+[Lidarr](https://lidarr.audio/) is a music collection manager. It allows us to keep our collection up-to-date and uniform, it also helps us discover new content based on our existing library.
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+### Docker
+
+We will be using [hotio's](https://hotio.dev/containers/lidarr/) docker image, start by making the directory structure:
+
+```sh
+sudo mkdir -p /srv/lidarr/config
+```
+
+Make a docker-compose.yml file:
+
+```sh
+sudo nano /srv/lidarr/docker-compose.yml
+```
+
+Paste the following:
+
+```yml
+version: "3.7"
+services:
+  sonarr:
+    container_name: sonarr
+    image: cr.hotio.dev/hotio/lidarr
+    ports:
+      - 8686:8686
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - ./config:/config
+      - /srv/data:/data
+    restart: unless-stopped
+
+networks:
+  default:
+    name: boulder
+```
+
+Save and exit, start it with:
+
+```sh
+cd /srv/lidarr && sudo docker compose up -d
+```
+
+Now visit lidarr's web-ui at `[local ip]:8686` and configure it. 
+
+### NGINX proxy Manager
+
+Finish up by creating a Proxy Host entry in NGINX, adding the app to Homarr and integrating the app in prowlarr.
+
+### Fail2Ban
+
+First make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/lidarr.local
+```
+
+Paste:
+
+```
+[lidarr]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = lidarr
+maxretry = 3
+bantime = -1
+findtime = 86400
+logpath = /srv/lidarr/config/logs/Lidarr.txt
+action = iptables-allports[name=lidarr, chain=DOCKER-USER]
+	 gotify
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/lidarr.conf
+```
+
+Paste the following:
+
+```
+[Definition]
+failregex = .*\|Warn\|Auth\|Auth-Failure ip <ADDR>
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/lidarr/config/logs/Lidarr.txt /etc/fail2ban/filter.d/lidarr.conf --print-all-matched
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status lidarr
+```
+
+### Homarr
 
 --------------------
 
@@ -2411,9 +2624,9 @@ I have now resorted to running it on the server itself and it's able to stop con
 - Any image used is my own and are subject to All Rights Reserved.
 - Everything else in this project is licensed under the terms of the [MIT license](https://mit-license.org/).
 
-## TO-DO
+## To-Do
 
-This section contains my TO-DO list.
+This section contains my To-Do list.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -2424,10 +2637,8 @@ This section contains my TO-DO list.
 | ------------- | ------------- | ------------- |
 | [Static Web Server](https://sws.joseluisq.net/) | A static webpage server, will also implement [Image hotlink protection](https://www.smarthomebeginner.com/image-hotlink-protection-nginx/) and [Umami](https://github.com/umami-software/umami). | Working on html/css-website to serve. |
 | Data backup solution | Regular backups with [Restic](https://restic.net/) or [Borgmatic](https://torsion.org/borgmatic/). | Will try to snag an extra SSD during a sale to use as a dedicated backup drive. |
-| Fail2Ban-filter | Make Fail2Ban REGEX-filters for services where possible. | Mostly done, figuring out the last few services. |
 | DoS/DDoS protection | Implement DoS/DDoS protection for NGINX | Researching. |
 | Security audit | Check HTTP Security headers, do some port knocking. | Not yet started. |
-| Streamline Fail2Ban documentation | There is a lot of repetition in the Fail2Ban section, will try to streamline it for a better reading experience. | Not yet started, must first complete the last few REGEX-filters. |
 | Implement qflood | qflood support was broken on a recent qBittorrent version, have yet to implement it. | Waiting on qBittorrent to push a fix. |
 | Implement [Password pusher](https://github.com/pglombardo/PasswordPusher) | Easy way to share passwords securily. | Not yet started. |
 | New hardware photos | Take new photos for the hardware section to include the fan upgrade. | Waiting on next hardware upgrade. |
