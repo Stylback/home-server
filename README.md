@@ -131,7 +131,7 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Protect with Fail2Ban](#protect-with-fail2ban-11)
   - [Integrate with Homarr](#integrate-with-homarr-10)
   - [Integrate with Watchtower](#integrate-with-watchtower-11)
-- [PlanarAlly](#planarally)
+- [Vitrual tabletop with PlanarAlly](#vitrual-tabletop-with-planarally)
   - [Docker setup](#docker-setup-13)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-10)
   - [Protect with Fail2Ban](#protect-with-fail2ban-12)
@@ -1043,7 +1043,7 @@ Save and visit `ddns.domain.tld` to make sure everything works as intended.
 
 ### Protect with Fail2Ban
 
-First identify Nginx's proxy-host_access.log for ddns-updater:
+First identify Nginx's `proxy-host_access.log` for ddns-updater:
 
 ```sh
 grep -rnw '/srv/nginx/data/logs' -e 'ddns-updater'
@@ -1250,7 +1250,7 @@ Save and visit `nginx.domain.tld`, you should be greeted with a log-in page. Now
 
 ### Protect with Fail2Ban
 
-First identify Nginx's proxy-host_access.log for Nginx Proxy Manager:
+First identify Nginx's `proxy-host_access.log` for Nginx Proxy Manager:
 
 ```sh
 grep -rnw '/srv/nginx/data/logs' -e 'nginx.'
@@ -1531,7 +1531,7 @@ Icon URL:               https://raw.githubusercontent.com/Sonarr/Sonarr/develop/
 Service URL:            http://x.x.x.x:1245
 On Click URL:           https://gotify.domain.tld
 Service type:           Other
-Category:               Network
+Category:               Other
 API key:                xxxxxxxx
 ```
 
@@ -1619,7 +1619,24 @@ cd /srv/homarr && sudo docker compose up -d
 
 ### Add to Nginx proxy Manager
 
-Go to Nginx Proxy Manager and make a new Proxy Host Entry:
+Go to Nginx Proxy Manager and make a new Access List:
+
+```
+DETAILS
+Name:                   Homarr
+Satisfy Any:            Yes
+Pass Auth to Host:      No
+
+AUTHORIZATION
+Username:               pick_a_username
+Password:               pick_a_password
+
+ACCESS
+Allow:                  -
+Deny:                   all
+```
+
+Next, make a new Proxy Host Entry:
 
 ```
 DETAILS
@@ -1630,7 +1647,7 @@ Forward Port:           7575
 Cache Assets:           Yes
 Block Common Expolits:  Yes
 Websocket Support:      No
-Access List:            Pubicly Accessible
+Access List:            Homarr
 
 SSL
 SSL Certificate:        Request a New SSL Certificate
@@ -1644,7 +1661,7 @@ Save and visit `dashboard.domain.tld` to make sure everything works as intended.
 
 ### Protect with Fail2Ban
 
-First identify Nginx's proxy-host_access.log for Homarr:
+First identify Nginx's `proxy-host_access.log` for Homarr:
 
 ```sh
 grep -rnw '/srv/nginx/data/logs' -e 'homarr'
@@ -2952,7 +2969,7 @@ Save and visit `bazarr.domain.tld` to make sure everything works as intended.
 
 ### Protect with Fail2Ban
 
-First identify Nginx's proxy-host_access.log for bazarr:
+First identify Nginx's `proxy-host_access.log` for Bazarr:
 
 ```sh
 grep -rnw '/srv/nginx/data/logs' -e 'bazarr'
@@ -3427,11 +3444,9 @@ cd /srv/watchtower && sudo docker compose up -d --build
 </p>
 </details>
 
-## PlanarAlly
+## Vitrual tabletop with PlanarAlly
 
 [PlanarAlly](https://www.planarally.io/) is a virtual tabletop tool for games like Dungeons & Dragons.
-
->_NOTE: This section is under construction_
 
 <details><summary>Click to expand</summary>
 <p>
@@ -3531,11 +3546,28 @@ Save and exit. Build the image:
 cd /srv/planarally && sudo docker compose up -d
 ```
 
-Now visit PlanarAlly's web-ui at `[local ip]:8010` and make a user. For security you should change `allow_signups = true` to `allow_signups = false` after creating all relevant users. If you don't, anyone who visits the service can access it by simply creating a user themselves.
+Now visit PlanarAlly's web-ui at `[local ip]:8010` and make a user.
 
 ### Add to Nginx proxy Manager
 
-Go to Nginx Proxy Manager and make a new Proxy Host Entry:
+Go to Nginx Proxy Manager and make a new Access List:
+
+```
+DETAILS
+Name:                   PlanarAlly
+Satisfy Any:            Yes
+Pass Auth to Host:      No
+
+AUTHORIZATION
+Username:               pick_a_username
+Password:               pick_a_password
+
+ACCESS
+Allow:                  -
+Deny:                   all
+```
+
+Next, make a new Proxy Host Entry:
 
 ```
 DETAILS
@@ -3545,8 +3577,8 @@ Forward Hostname / IP:  planarally
 Forward Port:           8010
 Cache Assets:           Yes
 Block Common Expolits:  Yes
-Websocket Support:      No
-Access List:            Pubicly Accessible
+Websocket Support:      Yes
+Access List:            PlanarAlly
 
 SSL
 SSL Certificate:        Request a New SSL Certificate
@@ -3560,11 +3592,81 @@ Save and visit `planar.domain.tld` to make sure everything works as intended.
 
 ### Protect with Fail2Ban
 
-Coming soon!
+First identify Nginx's `proxy-host_access.log` for PlanarAlly:
+
+```sh
+grep -rnw '/srv/nginx/data/logs' -e 'planar'
+```
+
+In my case it was `proxy-host-12_access.log`. Now make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/planarally.local
+```
+
+Paste:
+
+```
+[planarally]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = planarally
+maxretry = 3
+bantime = -1
+findtime = 86400
+logpath = /srv/nginx/data/logs/proxy-host-12_access.log
+action = iptables-allports[name=planarally, chain=DOCKER-USER]
+	 gotify
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/planarally.conf
+```
+
+Paste the following:
+
+```
+[Definition]
+failregex = .*- - 401 - GET https .*\[Client <ADDR>\]
+```
+
+Restart Fail2Ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match the log with your filter:
+
+```
+fail2ban-regex /srv/nginx/data/logs/proxy-host-12_access.log /etc/fail2ban/filter.d/planarally.conf --print-all-matched
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status planarally
+```
 
 ### Integrate with Homarr
 
-Coming soon!
+Go to Homarr and click `Add a service`:
+
+```
+Service name:           PlanarAlly
+Icon URL:               https://www.planarally.io/logos/pa-logo-background.svg
+Service URL:            http://x.x.x.x:8010
+On Click URL:           https://planar.domain.tld
+Service type:           Other
+Category:               Other
+```
+
+Click `Save service`, then go to `Settings → Save a copy → Confirm` to save the state of your dashboard.
 
 ### Integrate with Watchtower
 

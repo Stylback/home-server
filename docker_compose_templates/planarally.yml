@@ -1,0 +1,24 @@
+version: "3"
+services:
+  planarally:
+      container_name: planarally
+      image: kruptein/planarally:latest
+      ports:
+          - 8010:8000
+      environment:
+          - PUID=1000
+          - PGID=1000
+          - UMASK=002
+          - TZ=Europe/Stockholm
+      volumes:
+          - ./data:/planarally/data/
+          - ./assets:/planarally/static/assets/
+          - type: bind
+            source: ./server_config.cfg
+            target: /planarally/server_config.cfg
+            read_only: true
+      restart: unless-stopped
+
+networks:
+  default:
+    name: boulder
