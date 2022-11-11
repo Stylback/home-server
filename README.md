@@ -212,7 +212,7 @@ Or a yearly power consumption of: $0.286*365 \approx 104 \textrm{ kWh/Year}$
 
 ### Case and fan
 
-The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes; discreet and affordable with some room for expandability. I wasn't fully satisfied with the noise level of the included rear-mounted 120mm fan, as such I replaced it with a [Noctua NF-A12X25 ULN](https://noctua.at/en/products/fan/nf-a12x25-uln).
+The [Kolink Satellite](https://kolink.eu/Home/case-1/mini-itx-2/satellite.html) ticked all my boxes; discreet and affordable with some room for expandability. I wasn't fully satisfied with the noise level of the included rear-mounted 120mm fan so I replaced it with a [Noctua NF-A12X25 ULN](https://noctua.at/en/products/fan/nf-a12x25-uln).
 
 ### System memory (RAM)
 
@@ -1398,7 +1398,6 @@ services:
       - GOTIFY_DEFAULTUSER_PASS=admin
     volumes:
       - ./data:/app/data
-    entrypoint: sh -c "/app/gotify-app 2>&1 | tee /app/data/gotify.log"
     restart: unless-stopped
 
 networks:
@@ -3451,7 +3450,7 @@ Make a docker-compose.yml file:
 sudo nano /srv/planarally/docker-compose.yml
 ```
 
-Paste the following:
+Paste:
 
 ```yml
 version: "3"
@@ -3469,6 +3468,10 @@ services:
       volumes:
           - ./data:/planarally/data/
           - ./assets:/planarally/static/assets/
+          - type: bind
+            source: ./server_config.cfg
+            target: /planarally/server_config.cfg
+            read_only: true
       restart: unless-stopped
 
 networks:
@@ -3482,13 +3485,53 @@ Save and exit. Configure directory access:
 cd /srv/planarally && sudo chown -R 9000 assets && sudo chown -R 9000 data
 ```
 
-Build the image:
+Make the `server_config.cfg` file:
+
+```sh
+sudo nano /srv/planarally/server_config.cfg
+```
+
+Full options can be found [here](https://github.com/Kruptein/PlanarAlly/blob/dev/Dockerfiles/server_config_docker.cfg), now paste:
+
+```
+[Webserver]
+host = 0.0.0.0
+port = 8000
+# socket = /tmp/planarally.sock
+ssl = false
+ssl_fullchain = cert/fullchain.pem
+ssl_privkey = cert/privkey.pem
+# cors_allowed_origins = *
+max_upload_size_in_bytes = 10_485_760
+
+[General]
+save_file = data/planar.sqlite
+#assets_directory = 
+#public_name = 
+max_log_size_in_bytes = 2000
+max_log_backups = 5
+allow_signups = true
+enable_export = false
+
+[APIserver]
+# The API server is an administration server on which some API calls can be made.
+enabled = false
+host = 127.0.0.1
+port = 8001
+# socket = /tmp/planarally.sock
+ssl = false
+ssl_fullchain = cert/fullchain.pem
+ssl_privkey = cert/privkey.pem
+# cors_allowed_origins = *
+```
+
+Save and exit. Build the image:
 
 ```sh
 cd /srv/planarally && sudo docker compose up -d
 ```
 
-Now visit PlanarAlly's web-ui at `[local ip]:8010` and make a user.
+Now visit PlanarAlly's web-ui at `[local ip]:8010` and make a user. For security you should change `allow_signups = true` to `allow_signups = false` after creating all relevant users. If you don't, anyone who visits the service can access it by simply creating a user themselves.
 
 ### Add to Nginx proxy Manager
 
