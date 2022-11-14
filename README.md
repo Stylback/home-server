@@ -137,10 +137,16 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Protect with Fail2Ban](#protect-with-fail2ban-12)
   - [Integrate with Homarr](#integrate-with-homarr-11)
   - [Integrate with Watchtower](#integrate-with-watchtower-12)
+- [Secure password sharing with PasswordPusher](#secure-password-sharing-with-passwordpusher)
+  - [Docker setup](#docker-setup-14)
+  - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-11)
+  - [Authentication](#authentication)
+  - [Integrate with Watchtower](#integrate-with-watchtower-13)
 - [Issues and solutions](#issues-and-solutions)
   - [Motherboard](#motherboard)
   - [ddns-updater](#ddns-updater)
-  - [Containerized Fail2Ban](#containerized-fail2ban)
+  - [Fail2Ban](#fail2ban)
+  - [PasswordPusher](#passwordpusher)
 - [License and usage](#license-and-usage)
 
 --------------------
@@ -3455,11 +3461,13 @@ cd /srv/watchtower && sudo docker compose up -d --build
 
 ### Docker setup
 
+First make the directory structure:
+
 ```sh
 sudo mkdir /srv/planarally/{assets,data}
 ```
 
-Make a docker-compose.yml file:
+Make a `docker-compose.yml` file:
 
 ```sh
 sudo nano /srv/planarally/docker-compose.yml
@@ -3526,7 +3534,7 @@ save_file = data/planar.sqlite
 max_log_size_in_bytes = 2000
 max_log_backups = 5
 allow_signups = true
-enable_export = false
+enable_export = true
 
 [APIserver]
 # The API server is an administration server on which some API calls can be made.
@@ -3694,6 +3702,122 @@ cd /srv/watchtower && sudo docker compose up -d --build
 </p>
 </details>
 
+## Secure password sharing with PasswordPusher
+
+[PasswordPusher](https://github.com/pglombardo/PasswordPusher) is a simple and secure way to share a password online.
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+### Docker setup
+
+Make the directory structure:
+
+```sh
+sudo mkdir /srv/passwordpusher
+```
+
+Visit PasswordPushers [helper tool](https://pwpush.com/pages/generate_key) and take note of your custom `PWPUSH_MASTER_KEY` encryption key. Next, make a `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/passwordpusher/docker-compose.yml
+```
+
+Paste:
+
+```yml
+version: "2.1"
+services:
+  passwordpusher:
+      container_name: passwordpusher
+      image: pglombardo/pwpush-ephemeral:release
+      ports:
+          - 5100:5100
+      environment:
+          - PUID=1000
+          - PGID=1000
+          - UMASK=002
+          - TZ=Europe/Stockholm
+          - PWPUSH_MASTER_KEY=xxxxxx
+          - PWP__EXPIRE_AFTER_VIEWS_DEFAULT=3
+          - PWP__ENABLE_DELETABLE_PUSHES=true
+          - PWP__RETRIEVAL_STEP_DEFAULT=true
+          - PWP__BRAND__TITLE=PasswordPusher
+          - PWP__BRAND__TAGLINE=
+          - PWP__BRAND__SHOW_FOOTER_MENU=false
+          - PWP__THROTTLING__DAILY=100
+      restart: unless-stopped
+
+networks:
+  default:
+    name: boulder
+```
+
+Save and exit, start it with:
+
+```sh
+cd /srv/passwordpusher && sudo docker compose up -d
+```
+
+Now you can visit PasswordPushers web-ui at `[local ip]:5100`.
+
+### Add to Nginx proxy Manager
+
+Make a new Proxy Host Entry:
+
+```
+DETAILS
+Domain names:           push.domain.tld
+Scheme:                 http
+Forward Hostname / IP:  passwordpusher
+Forward Port:           5100
+Cache Assets:           Yes
+Block Common Expolits:  Yes
+Websocket Support:      No
+Access List:            Publicly Accessible
+
+SSL
+SSL Certificate:        Request a New SSL Certificate
+Force SSL:              Yes
+HSTS Enabled:           Yes
+HTTP/2 Support:         No
+HSTS Subdomains:        No
+```
+
+Save and visit `push.domain.tld` to make sure everything works as intended.
+
+### Authentication
+
+Please see the PasswordPusher section under [issues and solutions](#issues-and-solutions).
+
+### Integrate with Watchtower
+
+To automatically update the docker image we need to add it to Watchtower, run:
+
+```sh
+sudo nano /srv/watchtower/docker-compose.yml
+```
+
+Add the container name like so:
+
+```yml
+    ...
+    command: watchtower [other containers] passwordpusher
+```
+
+Save and exit. To apply the settings we need to rebuild the Watchtower image:
+
+```sh
+cd /srv/watchtower && sudo docker compose up -d --build
+```
+
+--------------------
+
+</p>
+</details>
+
 ## Issues and solutions
 
 Sometimes things doesn't go as planned, here are some of the lessons I've learned.
@@ -3727,13 +3851,21 @@ My initial idea was to manually add subdomains in Njallas dashboard and then use
 
 This only works as I have all my services on the same local network, if I for example also had a VPS off-site I would not be able to update both my its and my local servers DNS-record with this method.
 
-### Containerized Fail2Ban
+### Fail2Ban
 
-> __TL;DR:__ Containarized Fail2Ban didn't work so I've switched to running it directly on the OS.
+> __TL;DR:__ Docker version of Fail2Ban didn't work so I've switched to running it directly on the OS.
 
 I initially tried to run Fail2Ban in a docker container to streamline deployment. I managed to get the filter and jail working but not banning. Fail2Ban would correctly detect authentication fails and "ban" the associated IP address. However this "ban" would in reality not result in denied connections and the client could continue with authentication attempts. There seemed to be no clear way to propagate the banned addresses up the IP-tables chain and block connections.
 
-I have now resorted to running it on the server itself and it's able to stop connections from banned IP addresses to _most_ of my services, some services such as Homarr does not log authentication attempts and as such Fail2Ban has nothing tangible to go on.
+I have now resorted to running it on the server itself and it works like a charm. For services that have built-in support for logging authentication attempts I have Fail2Ban listen on its logs, for those that don't I use NGINX basic HTTP authentication and have Fail2Ban listen in on NGINXs logs.
+
+### PasswordPusher
+
+> __TL;DR:__ Authentication requires an SMTP server so I've resorted to just enable/disable the site via Nginx when needed.
+
+By default, anyone who visits `passwordpusher.domain.tld` can create a new password push. My initial plan was to implement some form of authentication for this page, ensuring that only authenticated users could create new pushes. Going through the [configuration options](https://github.com/pglombardo/PasswordPusher/blob/master/Configuration.md#enabling-logins) I learned that this is possible only with an SMTP server.
+
+As I don't have an SMTP server I instead tried Nginx HTTP authentication but I had to abandon that idea as it would also force authentication for the password pushes, defeating the purpose of the service. I now just disable the proxy host for PasswordPusher when not in use and enable it for a couple of days while a password is being shared.
 
 --------------------
 
