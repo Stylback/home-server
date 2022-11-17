@@ -42,9 +42,9 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Generate and use SSH-keys](#generate-and-use-ssh-keys)
   - [Security enhancements](#security-enhancements)
   - [Remote SSH access](#remote-ssh-access)
-- [Perimeter security with Fail2Ban](#perimeter-security-with-fail2ban)
+- [Perimeter security with Fail2ban](#perimeter-security-with-fail2ban)
   - [Inital setup](#inital-setup)
-  - [Useful Fail2Ban commands](#useful-fail2ban-commands)
+  - [Useful Fail2ban commands](#useful-fail2ban-commands)
   - [Integrate with Gotify](#integrate-with-gotify)
 - [Application containers with Docker](#application-containers-with-docker)
   - [Initial setup](#initial-setup)
@@ -55,26 +55,26 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
 - [Dynamic DNS with ddns-updater](#dynamic-dns-with-ddns-updater)
   - [Docker setup](#docker-setup-1)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager)
-  - [Protect with Fail2Ban](#protect-with-fail2ban)
+  - [Protect with Fail2ban](#protect-with-fail2ban)
   - [Integrate with Homarr](#integrate-with-homarr)
   - [Integrate with Watchtower](#integrate-with-watchtower)
 - [Nginx Proxy Manager](#nginx-proxy-manager)
   - [Aquire a domain](#aquire-a-domain)
   - [Docker setup](#docker-setup-2)
-  - [Protect with Fail2Ban](#protect-with-fail2ban-1)
+  - [Protect with Fail2ban](#protect-with-fail2ban-1)
   - [Integrate with Homarr](#integrate-with-homarr-1)
   - [Integrate with Watchtower](#integrate-with-watchtower-1)
 - [Notifications with Gotify](#notifications-with-gotify)
   - [Docker setup](#docker-setup-3)
   - [Customization](#customization)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-1)
-  - [Protect with Fail2Ban](#protect-with-fail2ban-2)
+  - [Protect with Fail2ban](#protect-with-fail2ban-2)
   - [Integrate with Homarr](#integrate-with-homarr-2)
   - [Integrate with Watchtower](#integrate-with-watchtower-2)
 - [Dashboard with Homarr](#dashboard-with-homarr)
   - [Docker setup](#docker-setup-4)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-2)
-  - [Protect with Fail2Ban](#protect-with-fail2ban-3)
+  - [Protect with Fail2ban](#protect-with-fail2ban-3)
   - [Integrate with Watchtower](#integrate-with-watchtower-3)
 - [Multimedia streaming with Jellyfin](#multimedia-streaming-with-jellyfin)
   - [Consistent directories](#consistent-directories)
@@ -83,7 +83,7 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Hardware acceleration](#hardware-acceleration)
   - [Customization](#customization-1)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-3)
-  - [Protect with Fail2Ban](#protect-with-fail2ban-4)
+  - [Protect with Fail2ban](#protect-with-fail2ban-4)
   - [Integrate with Homarr](#integrate-with-homarr-3)
   - [Integrate with Watchtower](#integrate-with-watchtower-4)
 - [Torrenting with qflood](#torrenting-with-qflood)
@@ -91,50 +91,50 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Docker setup](#docker-setup-6)
   - [qBittorrent settings](#qbittorrent-settings)
   - [Flood settings](#flood-settings)
-  - [Protect with Fail2Ban](#protect-with-fail2ban-5)
+  - [Protect with Fail2ban](#protect-with-fail2ban-5)
   - [Integrate with Homarr](#integrate-with-homarr-4)
   - [Integrate with Watchtower](#integrate-with-watchtower-5)
 - [Indexers with Prowlarr](#indexers-with-prowlarr)
   - [Docker setup](#docker-setup-7)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-4)
-  - [Protect with Fail2Ban](#protect-with-fail2ban-6)
+  - [Protect with Fail2ban](#protect-with-fail2ban-6)
   - [Integrate with Homarr](#integrate-with-homarr-5)
   - [Integrate with Watchtower](#integrate-with-watchtower-6)
 - [Movies with Radarr](#movies-with-radarr)
   - [Docker setup](#docker-setup-8)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-5)
-  - [Protect with Fail2Ban](#protect-with-fail2ban-7)
+  - [Protect with Fail2ban](#protect-with-fail2ban-7)
   - [Integrate with Homarr](#integrate-with-homarr-6)
   - [Integrate with Watchtower](#integrate-with-watchtower-7)
 - [TV-shows with Sonarr](#tv-shows-with-sonarr)
   - [Docker setup](#docker-setup-9)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-6)
-  - [Protect with Fail2Ban](#protect-with-fail2ban-8)
+  - [Protect with Fail2ban](#protect-with-fail2ban-8)
   - [Integrate with Homarr](#integrate-with-homarr-7)
   - [Integrate with Watchtower](#integrate-with-watchtower-8)
 - [Subtitles with Bazarr](#subtitles-with-bazarr)
   - [Docker setup](#docker-setup-10)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-7)
-  - [Protect with Fail2Ban](#protect-with-fail2ban-9)
+  - [Protect with Fail2ban](#protect-with-fail2ban-9)
   - [Integrate with Homarr](#integrate-with-homarr-8)
   - [Integrate with Watchtower](#integrate-with-watchtower-9)
 - [Request media with Jellyseerr](#request-media-with-jellyseerr)
   - [Docker setup](#docker-setup-11)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-8)
-  - [Protect with Fail2Ban](#protect-with-fail2ban-10)
+  - [Protect with Fail2ban](#protect-with-fail2ban-10)
   - [Integrate with Homarr](#integrate-with-homarr-9)
   - [Integrate with Watchtower](#integrate-with-watchtower-10)
   - [Integrate with Gotify](#integrate-with-gotify-2)
 - [Music with Lidarr](#music-with-lidarr)
   - [Docker setup](#docker-setup-12)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-9)
-  - [Protect with Fail2Ban](#protect-with-fail2ban-11)
+  - [Protect with Fail2ban](#protect-with-fail2ban-11)
   - [Integrate with Homarr](#integrate-with-homarr-10)
   - [Integrate with Watchtower](#integrate-with-watchtower-11)
 - [Vitrual tabletop with PlanarAlly](#vitrual-tabletop-with-planarally)
   - [Docker setup](#docker-setup-13)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-10)
-  - [Protect with Fail2Ban](#protect-with-fail2ban-12)
+  - [Protect with Fail2ban](#protect-with-fail2ban-12)
   - [Integrate with Homarr](#integrate-with-homarr-11)
   - [Integrate with Watchtower](#integrate-with-watchtower-12)
 - [Secure password sharing with PasswordPusher](#secure-password-sharing-with-passwordpusher)
@@ -142,10 +142,16 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-11)
   - [Authentication](#authentication)
   - [Integrate with Watchtower](#integrate-with-watchtower-13)
+- [Notes with Joplin](#notes-with-joplin)
+  - [Docker setup](#docker-setup-15)
+  - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-12)
+  - [Configuration](#configuration)
+  - [Integrate with Homarr](#integrate-with-homarr-12)
+  - [Integrate with Watchtower](#integrate-with-watchtower-14)
 - [Issues and solutions](#issues-and-solutions)
   - [Motherboard](#motherboard)
   - [ddns-updater](#ddns-updater)
-  - [Fail2Ban](#fail2ban)
+  - [Fail2ban](#fail2ban)
   - [PasswordPusher](#passwordpusher)
 - [License and usage](#license-and-usage)
 
@@ -607,9 +613,9 @@ sudo systemctl restart ssh
 </p>
 </details>
 
-## Perimeter security with Fail2Ban
+## Perimeter security with Fail2ban
 
-[Fail2Ban](https://github.com/fail2ban/fail2ban) is a service that can watch log files and take action, such as banning IP-addresses that have multiple failed log-in attempts.
+[Fail2ban](https://github.com/fail2ban/fail2ban) is a service that can watch log files and take action, such as banning IP-addresses that have multiple failed log-in attempts.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -618,27 +624,27 @@ sudo systemctl restart ssh
 
 ### Inital setup
 
-We want to detect and ban malicious behaviour towards our internet-exposed services, such as attempts to brute-force a password or DoS/DDoS attacks. For each service we will define a jail and filter, we will then have Fail2Ban watch the logs of that service and ban IPs that match said filter.
+We want to detect and ban malicious behaviour towards our internet-exposed services, such as attempts to brute-force a password or DoS/DDoS attacks. For each service we will define a jail and filter, we will then have Fail2ban watch the logs of that service and ban IPs that match said filter.
 
-In contrast to our other services we will not be using Fail2Ban in a Docker container (_curious why? see_ [_here_](#issues-and-solutions) _for my experience_), we will instead install it directly on the OS. To get started, run:
+In contrast to our other services we will not be using Fail2ban in a Docker container (_curious why? see_ [_here_](#issues-and-solutions) _for my experience_), we will instead install it directly on the OS. To get started, run:
 
 ```sh
 sudo apt update && sudo apt install fail2ban
 ```
 
-Start Fail2Ban with:
+Start Fail2ban with:
 
 ```sh
 sudo fail2ban-client start
 ```
 
-Make Fail2Ban run on start with:
+Make Fail2ban run on start with:
 
 ```sh
 sudo systemctl enable fail2ban
 ```
 
-### Useful Fail2Ban commands
+### Useful Fail2ban commands
 
 Unban yourself with:
 
@@ -668,7 +674,7 @@ fail2ban-regex [path to logfile] [path to filter] --print-all-matched
 
 >NOTE: At this point you might not yet have [Gotify](#notifications-with-gotify) set up. If that's the case, skip this section for now.
 
-We will have Gotify notify us whenever an IP was banned and give us some more information about their attempts prior to said ban. To start, visit Gotify and go to `APPS → CREATE APPLICATION`. Create a new application for Fail2Ban and take note of the token.
+We will have Gotify notify us whenever an IP was banned and give us some more information about their attempts prior to said ban. To start, visit Gotify and go to `APPS → CREATE APPLICATION`. Create a new application for Fail2ban and take note of the token.
 
 Next we will create the `action.d` file that will trigger the message, run:
 
@@ -680,7 +686,7 @@ Paste the following, using your own URL and token:
 
 ```
 [Definition]
-actionban = curl "https://gotify.domain.tld/message?token=your_token_here" -F title="[Fail2Ban] <name>" -F message="Banned IP: <ip> Details: `grep '<ip>' <logpath>`" -F "priority=5"
+actionban = curl "https://gotify.domain.tld/message?token=your_token_here" -F title="[Fail2ban] <name>" -F message="Banned IP: <ip> Details: `grep '<ip>' <logpath>`" -F "priority=5"
 ```
 
 Save and exit. Now add the `gotify` action to your jails like so:
@@ -707,7 +713,7 @@ action = iptables-allports[name=sonarr, chain=DOCKER-USER]
 
 >NOTE: The indentation for actions are important, they should both share the same indentation depth.
 
-Finish up by restarting Fail2Ban:
+Finish up by restarting Fail2ban:
 
 ```sh
 sudo systemctl restart fail2ban
@@ -1047,7 +1053,7 @@ HSTS Subdomains:        No
 
 Save and visit `ddns.domain.tld` to make sure everything works as intended.
 
-### Protect with Fail2Ban
+### Protect with Fail2ban
 
 First identify Nginx's `proxy-host_access.log` for ddns-updater:
 
@@ -1092,7 +1098,7 @@ Paste the following:
 failregex = .*- - 401 - GET https .*\[Client <ADDR>\]
 ```
 
-Restart Fail2Ban to apply the new settings:
+Restart Fail2ban to apply the new settings:
 
 ```sh
 sudo systemctl restart fail2ban
@@ -1254,7 +1260,7 @@ HSTS Subdomains:        No
 
 Save and visit `nginx.domain.tld`, you should be greeted with a log-in page. Now go to `NPM → Settings → Default site →  Edit` and change it from `Congratulations Page` to `404 page`.
 
-### Protect with Fail2Ban
+### Protect with Fail2ban
 
 First identify Nginx's `proxy-host_access.log` for Nginx Proxy Manager:
 
@@ -1299,7 +1305,7 @@ Paste the following:
 failregex = .*401 401 - POST.*\[Client <ADDR>\]
 ```
 
-Restart Fail2Ban to apply the new settings:
+Restart Fail2ban to apply the new settings:
 
 ```sh
 sudo systemctl restart fail2ban
@@ -1450,7 +1456,7 @@ HSTS Subdomains:        No
 
 Save and visit `gotify.domain.tld` to make sure everything works as intended.
 
-### Protect with Fail2Ban
+### Protect with Fail2ban
 
 By default Gotify lets Docker handle its logs, to make it write to a file we need to add an entrypoint to the `docker-compose.yml` file like so:
 
@@ -1507,7 +1513,7 @@ Paste the following:
 failregex = ^.*\| 401 \|.*\| <ADDR> \|
 ```
 
-Restart Fail2Ban to apply the new settings:
+Restart Fail2ban to apply the new settings:
 
 ```sh
 sudo systemctl restart fail2ban
@@ -1665,7 +1671,7 @@ HSTS Subdomains:        No
 
 Save and visit `dashboard.domain.tld` to make sure everything works as intended.
 
-### Protect with Fail2Ban
+### Protect with Fail2ban
 
 First identify Nginx's `proxy-host_access.log` for Homarr:
 
@@ -1710,7 +1716,7 @@ Paste the following:
 failregex = .*- 401 401 - POST https .*\[Client <ADDR>\]
 ```
 
-Restart Fail2Ban to apply the new settings:
+Restart Fail2ban to apply the new settings:
 
 ```sh
 sudo systemctl restart fail2ban
@@ -1961,7 +1967,7 @@ HSTS Subdomains:        No
 
 Save and visit `stream.domain.tld` to make sure everything works as intended.
 
-### Protect with Fail2Ban
+### Protect with Fail2ban
 
 First make a `.local` file:
 
@@ -1999,7 +2005,7 @@ Paste:
 failregex = ^.*Authentication request for .* has been denied \(IP: "<ADDR>"\)\.
 ```
 
-Restart Fail2Ban to apply the new settings:
+Restart Fail2ban to apply the new settings:
 
 ```sh
 sudo systemctl restart fail2ban
@@ -2236,7 +2242,7 @@ Now go to `Tools → Options → Web UI → Use alternative Web UI`, enable it a
 
 A recent version of qBittorrent broke Flood support, I will revisit this section when the issue has been resolved.
 
-### Protect with Fail2Ban
+### Protect with Fail2ban
 
 First disable qbittorrents own ban-action by going to `Options → Web UI → Ban client after consecutive failures` and set it to `0`. Next, make a `.local` file:
 
@@ -2275,7 +2281,7 @@ Paste the following:
 failregex = \(W\).*WebAPI login failure. Reason: invalid credentials.*::ffff:<ADDR>
 ```
 
-Restart Fail2Ban to apply the new settings:
+Restart Fail2ban to apply the new settings:
 
 ```sh
 sudo systemctl restart fail2ban
@@ -2416,7 +2422,7 @@ HSTS Subdomains:        No
 
 Save and visit `prowlarr.domain.tld` to make sure everything works as intended.
 
-### Protect with Fail2Ban
+### Protect with Fail2ban
 
 First make a `.local` file:
 
@@ -2455,7 +2461,7 @@ Paste the following:
 failregex = .*\|Warn\|Auth\|Auth-Failure ip <ADDR>
 ```
 
-Restart Fail2Ban to apply the new settings:
+Restart Fail2ban to apply the new settings:
 
 ```sh
 sudo systemctl restart fail2ban
@@ -2596,7 +2602,7 @@ HSTS Subdomains:        No
 
 Save and visit `radarr.domain.tld` to make sure everything works as intended.
 
-### Protect with Fail2Ban
+### Protect with Fail2ban
 
 First make a `.local` file:
 
@@ -2635,7 +2641,7 @@ Paste the following:
 failregex = .*\|Warn\|Auth\|Auth-Failure ip <ADDR>
 ```
 
-Restart Fail2Ban to apply the new settings:
+Restart Fail2ban to apply the new settings:
 
 ```sh
 sudo systemctl restart fail2ban
@@ -2776,7 +2782,7 @@ HSTS Subdomains:        No
 
 Save and visit `sonarr.domain.tld` to make sure everything works as intended.
 
-### Protect with Fail2Ban
+### Protect with Fail2ban
 
 First make a `.local` file:
 
@@ -2815,7 +2821,7 @@ Paste the following:
 failregex = .*\|Warn\|Auth\|Auth-Failure ip <ADDR>
 ```
 
-Restart Fail2Ban to apply the new settings:
+Restart Fail2ban to apply the new settings:
 
 ```sh
 sudo systemctl restart fail2ban
@@ -2973,7 +2979,7 @@ HSTS Subdomains:        No
 
 Save and visit `bazarr.domain.tld` to make sure everything works as intended.
 
-### Protect with Fail2Ban
+### Protect with Fail2ban
 
 First identify Nginx's `proxy-host_access.log` for Bazarr:
 
@@ -3018,7 +3024,7 @@ Paste the following:
 failregex = .*- - 401 - GET https .*\[Client <ADDR>\]
 ```
 
-Restart Fail2Ban to apply the new settings:
+Restart Fail2ban to apply the new settings:
 
 ```sh
 sudo systemctl restart fail2ban
@@ -3159,7 +3165,7 @@ HSTS Subdomains:        No
 
 Save and visit `request.domain.tld` to make sure everything works as intended.
 
-### Protect with Fail2Ban
+### Protect with Fail2ban
 
 First you need to enable proxy support in Jellyseerr. Navigate to `Settings → Enable Proxy Support`, enable it and rebuild the container:
 
@@ -3204,7 +3210,7 @@ Paste the following:
 failregex = .*\[info\]\[Auth\]\: Failed login attempt.*"ip":"<ADDR>"
 ```
 
-Restart Fail2Ban to apply the new settings:
+Restart Fail2ban to apply the new settings:
 
 ```sh
 sudo systemctl restart fail2ban
@@ -3351,7 +3357,7 @@ HSTS Subdomains:        No
 
 Save and visit `lidarr.domain.tld` to make sure everything works as intended.
 
-### Protect with Fail2Ban
+### Protect with Fail2ban
 
 First make a `.local` file:
 
@@ -3390,7 +3396,7 @@ Paste the following:
 failregex = .*\|Warn\|Auth\|Auth-Failure ip <ADDR>
 ```
 
-Restart Fail2Ban to apply the new settings:
+Restart Fail2ban to apply the new settings:
 
 ```sh
 sudo systemctl restart fail2ban
@@ -3598,7 +3604,7 @@ HSTS Subdomains:        No
 
 Save and visit `planar.domain.tld` to make sure everything works as intended.
 
-### Protect with Fail2Ban
+### Protect with Fail2ban
 
 First identify Nginx's `proxy-host_access.log` for PlanarAlly:
 
@@ -3643,7 +3649,7 @@ Paste the following:
 failregex = .*- - 401 - GET https .*\[Client <ADDR>\]
 ```
 
-Restart Fail2Ban to apply the new settings:
+Restart Fail2ban to apply the new settings:
 
 ```sh
 sudo systemctl restart fail2ban
@@ -3818,6 +3824,168 @@ cd /srv/watchtower && sudo docker compose up -d --build
 </p>
 </details>
 
+## Notes with Joplin
+
+[Joplin](https://joplinapp.org) is a note taking application with extensive features such as markdown support, cross-device synchronisation and end-to-end encryption.
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+### Docker setup
+
+We will use the official [Joplin server image](https://hub.docker.com/r/joplin/server). Start by making the directory structure:
+
+```sh
+sudo mkdir /srv/joplin
+```
+
+Make the `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/joplin/docker-compose.yml
+```
+
+Paste this modified [docker compose template](https://github.com/laurent22/joplin/blob/dev/docker-compose.server.yml):
+
+```yml
+version: "3"
+services:
+    joplin:
+        container_name: joplin
+        image: joplin/server:latest
+        ports:
+            - 22300:22300
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - UMASK=002
+            - TZ=Europe/Stockholm
+            - APP_PORT=22300
+            - APP_BASE_URL=http://joplin.domain.tld
+            - DB_CLIENT=pg
+            - POSTGRES_PASSWORD=joplin
+            - POSTGRES_DATABASE=joplin
+            - POSTGRES_USER=joplin
+            - POSTGRES_PORT=5432
+            - POSTGRES_HOST=joplin-db
+        restart: unless-stopped
+        depends_on:
+            - joplin-db
+
+    joplin-db:
+        container_name: joplin-db
+        image: postgres:15
+        ports:
+            - 5432:5432
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - UMASK=002
+            - TZ=Europe/Stockholm
+            - POSTGRES_PASSWORD=joplin
+            - POSTGRES_USER=joplin
+            - POSTGRES_DB=joplin
+        volumes:
+            - ./data/postgres:/var/lib/postgresql/data
+        restart: unless-stopped
+
+networks:
+  default:
+    name: boulder
+
+```
+
+Save and exit, run:
+
+```sh
+cd /srv/joplin && sudo docker compose up -d
+```
+
+Before you can access Joplin's admin dashboard you'll have to add a Nginx proxy host, if you try to access it directly on `localhost:22300` you will be met with an error: `Invalid origin: http://x.x.x.x:22300`.
+
+### Add to Nginx proxy Manager
+
+Make a new Proxy Host Entry:
+
+```
+DETAILS
+Domain names:           joplin.domain.tld
+Scheme:                 http
+Forward Hostname / IP:  joplin
+Forward Port:           22300
+Cache Assets:           Yes
+Block Common Expolits:  Yes
+Websocket Support:      No
+Access List:            Publicly Accessible
+
+SSL
+SSL Certificate:        Request a New SSL Certificate
+Force SSL:              Yes
+HSTS Enabled:           Yes
+HTTP/2 Support:         No
+HSTS Subdomains:        No
+```
+
+Save and visit `joplin.domain.tld` to make sure everything works as intended.
+
+### Configuration
+
+Visit the admin dashboard at `https://joplin.domain.tld` and log in with default credentials:
+
+```
+Username: admin@localhost
+Password: admin
+```
+
+Start off by going to `Admin → Users → Admin` and change the admin password, then create a user for yourself. Next, download the [client](https://joplinapp.org/help/#installation) on your desktop and/or mobile device.
+
+On your client, go to `Tools → options → Synchronisation` and choose `Joplin server` from the dropdown menu. Fill out the rest of the forms with your credentials, take care to enter the full URL as so: `https://joplin.domain.tld`. Press the `Check synchronisation configuarion` to make sure everything works before applying the settings.
+
+Next, go to `Tools → options → Encryption` and enable end-to-end encryption. Finally, go to `Tools → options → Note` and disable `Save geo-location with notes`.
+
+### Integrate with Homarr
+
+Go to Homarr and click `Add a service`:
+
+```
+Service name:           Joplin
+Icon URL:               https://raw.githubusercontent.com/laurent22/joplin/dev/Assets/LinuxIcons/256x256.png
+Service URL:            https://joplin.domain.tld
+On Click URL:           https://joplin.domain.tld
+Service type:           Other
+Category:               Other
+```
+
+Click `Save service`, then go to `Settings → Save a copy → Confirm` to save the state of your dashboard.
+
+### Integrate with Watchtower
+
+To automatically update the docker image we need to add it to Watchtower, run:
+
+```sh
+sudo nano /srv/watchtower/docker-compose.yml
+```
+
+Add the container name like so:
+
+```yml
+    ...
+    command: watchtower [other containers] joplin joplin-db
+```
+
+Save and exit. To apply the settings we need to rebuild the Watchtower image:
+
+```sh
+cd /srv/watchtower && sudo docker compose up -d --build
+```
+
+--------------------
+
+</p>
+</details>
+
 ## Issues and solutions
 
 Sometimes things doesn't go as planned, here are some of the lessons I've learned.
@@ -3851,13 +4019,13 @@ My initial idea was to manually add subdomains in Njallas dashboard and then use
 
 This only works as I have all my services on the same local network, if I for example also had a VPS off-site I would not be able to update both my its and my local servers DNS-record with this method.
 
-### Fail2Ban
+### Fail2ban
 
-> __TL;DR:__ Docker version of Fail2Ban didn't work so I've switched to running it directly on the OS.
+> __TL;DR:__ Docker version of Fail2ban didn't work so I've switched to running it directly on the OS.
 
-I initially tried to run Fail2Ban in a docker container to streamline deployment. I managed to get the filter and jail working but not banning. Fail2Ban would correctly detect authentication fails and "ban" the associated IP address. However this "ban" would in reality not result in denied connections and the client could continue with authentication attempts. There seemed to be no clear way to propagate the banned addresses up the IP-tables chain and block connections.
+I initially tried to run Fail2ban in a docker container to streamline deployment. I managed to get the filter and jail working but not banning. Fail2ban would correctly detect authentication fails and "ban" the associated IP address. However this "ban" would in reality not result in denied connections and the client could continue with authentication attempts. There seemed to be no clear way to propagate the banned addresses up the IP-tables chain and block connections.
 
-I have now resorted to running it on the server itself and it works like a charm. For services that have built-in support for logging authentication attempts I have Fail2Ban listen on its logs, for those that don't I use NGINX basic HTTP authentication and have Fail2Ban listen in on NGINXs logs.
+I have now resorted to running it on the server itself and it works like a charm. For services that have built-in support for logging authentication attempts I have Fail2ban listen on its logs, for those that don't I use NGINX basic HTTP authentication and have Fail2ban listen in on NGINXs logs.
 
 ### PasswordPusher
 
@@ -3866,6 +4034,8 @@ I have now resorted to running it on the server itself and it works like a charm
 By default, anyone who visits `passwordpusher.domain.tld` can create a new password push. My initial plan was to implement some form of authentication for this page, ensuring that only authenticated users could create new pushes. Going through the [configuration options](https://github.com/pglombardo/PasswordPusher/blob/master/Configuration.md#enabling-logins) I learned that this is possible only with an SMTP server.
 
 As I don't have an SMTP server I instead tried Nginx HTTP authentication but I had to abandon that idea as it would also force authentication for the password pushes, defeating the purpose of the service. I now just disable the proxy host for PasswordPusher when not in use and enable it for a couple of days while a password is being shared.
+
+I have submitted a [feature request](https://github.com/pglombardo/PasswordPusher/issues/474#issue-1447962464) to PasswordPusher for the option to use default credentials similiar to that of Gotify.
 
 --------------------
 
