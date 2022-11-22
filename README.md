@@ -148,6 +148,13 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Configuration](#configuration)
   - [Integrate with Homarr](#integrate-with-homarr-12)
   - [Integrate with Watchtower](#integrate-with-watchtower-14)
+- [RSS feeds with FreshRSS](#rss-feeds-with-freshrss)
+  - [Docker setup](#docker-setup-16)
+    - [Clients](#clients)
+    - [Fetch full articles](#fetch-full-articles)
+  - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-13)
+  - [Integrate with Homarr](#integrate-with-homarr-13)
+  - [Integrate with Watchtower](#integrate-with-watchtower-15)
 - [Issues and solutions](#issues-and-solutions)
   - [Motherboard](#motherboard)
   - [ddns-updater](#ddns-updater)
@@ -3826,7 +3833,7 @@ cd /srv/watchtower && sudo docker compose up -d --build
 
 ## Notes with Joplin
 
-[Joplin](https://joplinapp.org) is a note taking application with extensive features such as markdown support, cross-device synchronisation and end-to-end encryption.
+[Joplin](https://joplinapp.org) is a note-taking application with extensive features such as markdown support, cross-device synchronisation and end-to-end encryption.
 
 <details><summary>Click to expand</summary>
 <p>
@@ -3968,11 +3975,151 @@ To automatically update the docker image we need to add it to Watchtower, run:
 sudo nano /srv/watchtower/docker-compose.yml
 ```
 
-Add the container name like so:
+Add the container names like so:
 
 ```yml
     ...
     command: watchtower [other containers] joplin joplin-db
+```
+
+Save and exit. To apply the settings we need to rebuild the Watchtower image:
+
+```sh
+cd /srv/watchtower && sudo docker compose up -d --build
+```
+
+--------------------
+
+</p>
+</details>
+
+## RSS feeds with FreshRSS
+
+[FreshRSS](https://freshrss.org/) is a self hosted feed aggregator with support for both RSS feeds and web scraping. In addition, FreshRSS's API is supported by many third party clients, making it accessible no matter what device you use.
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+### Docker setup
+
+We will use the [official Docker image](https://github.com/FreshRSS/FreshRSS/tree/edge/Docker), start by making the directory structure:
+
+```sh
+sudo mkdir /srv/freshrss
+```
+
+Then make the `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/freshrss/docker-compose.yml
+```
+
+Paste:
+
+```yml
+version: "2.4"
+services:
+  freshrss:
+    container_name: freshrss
+      image: freshrss/freshrss
+      ports:
+        - 8088:80
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - UMASK=002
+        - TZ=Europe/Stockholm
+        - CRON_MIN=0,30
+      volumes:
+        - ./data:/var/www/FreshRSS/data
+        - ./extensions:/var/www/FreshRSS/extensions
+      restart: unless-stopped
+      logging:
+        options:
+          max-size: 10m
+
+networks:
+  default:
+    name: boulder
+```
+
+Save and exit, start it with:
+
+```sh
+cd /srv/freshrss && sudo docker compose up -d
+```
+
+Visit `x.x.x.x:8088` and follow the installation guide.
+
+#### Clients
+
+To access our feed outside of the web UI we need a third-party client with FreshRSS support, we also need to enable API access. Go to `Configure → Authentication → Allow API access` and enable it, then go to `Configure → Profile → API Management` and enter an API password.
+
+Next, download one of the [third-party clients](https://github.com/FreshRSS/FreshRSS/blob/edge/README.md#apis--native-apps) and log in using your username and API password.
+
+#### Fetch full articles
+
+Some feeds will not serve you the full article by default, instead often asking you to visit the full site after the first paragraph. If you don't like this type of interaction you can instead opt for the `Article CSS selector` tool. 
+
+To start, visit the feed that serves you truncated articles, right click anywhere on the page and choose `Inspect`. In the menu, try to identify the HTML/CSS-class that contains the article. Common classes are `article`, `article_section` and `article-body`. When you have identified the class, click on the options icon next to the feed and go to `Manage -> Article CSS selector on original website`. Paste the classname in the box starting with a dot like so: `.article_section`. Press the little eye next to the box to get a preview.
+
+You can extend this to exclude certain classes as well, such as a comment section at the end of an article. Just add the relevant class to the `CSS selector of the elements to remove` option.
+
+### Add to Nginx proxy Manager
+
+Make a new Proxy Host Entry:
+
+```
+DETAILS
+Domain names:           rss.domain.tld
+Scheme:                 http
+Forward Hostname / IP:  freshrss
+Forward Port:           80
+Cache Assets:           Yes
+Block Common Expolits:  Yes
+Websocket Support:      No
+Access List:            Publicly Accessible
+
+SSL
+SSL Certificate:        Request a New SSL Certificate
+Force SSL:              Yes
+HSTS Enabled:           Yes
+HTTP/2 Support:         No
+HSTS Subdomains:        No
+```
+
+Save and visit `rss.domain.tld` to make sure everything works as intended.
+
+### Integrate with Homarr
+
+Go to Homarr and click `Add a service`:
+
+```
+Service name:           FreshRSS
+Icon URL:               https://raw.githubusercontent.com/FreshRSS/FreshRSS/18a4ade32f01fe615674efc864eb01ca826ce65e/p/themes/icons/icon.svg
+Service URL:            http://x.x.x.x:8088
+On Click URL:           https://rss.domain.tld
+Service type:           Other
+Category:               Media
+```
+
+Click `Save service`, then go to `Settings → Save a copy → Confirm` to save the state of your dashboard.
+
+### Integrate with Watchtower
+
+To automatically update the docker image we need to add it to Watchtower, run:
+
+```sh
+sudo nano /srv/watchtower/docker-compose.yml
+```
+
+Add the container name like so:
+
+```yml
+    ...
+    command: watchtower [other containers] freshrss
 ```
 
 Save and exit. To apply the settings we need to rebuild the Watchtower image:
