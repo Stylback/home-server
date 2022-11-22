@@ -160,6 +160,7 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [ddns-updater](#ddns-updater)
   - [Fail2ban](#fail2ban)
   - [PasswordPusher](#passwordpusher)
+  - [Nginx Proxy Manager stream](#nginx-proxy-manager-stream)
 - [License and usage](#license-and-usage)
 
 --------------------
@@ -406,7 +407,13 @@ timedatectl
 
 ### Remove Ubuntu Pro messages
 
-Canonical sometimes promote their [Ubuntu Pro](https://ubuntu.com/pro) service when you run `apt upgrade`. If you don't want these messages to appear, first remove the message templates:
+Canonical sometimes promote their [Ubuntu Pro](https://ubuntu.com/pro) service when you run `apt upgrade`. If you don't want these messages to appear, first run:
+
+```sh
+pro config set apt_news=false
+```
+
+Then remove the message templates:
 
 ```sh
 sudo rm /var/lib/ubuntu-advantage/messages/*.tmpl
@@ -4063,7 +4070,7 @@ Next, download one of the [third-party clients](https://github.com/FreshRSS/Fres
 
 Some feeds will not serve you the full article by default, instead often asking you to visit the full site after the first paragraph. If you don't like this type of interaction you can instead opt for the `Article CSS selector` tool. 
 
-To start, visit the feed that serves you truncated articles, right click anywhere on the page and choose `Inspect`. In the menu, try to identify the HTML/CSS-class that contains the article. Common classes are `article`, `article_section` and `article-body`. When you have identified the class, click on the options icon next to the feed and go to `Manage -> Article CSS selector on original website`. Paste the classname in the box starting with a dot like so: `.article_section`. Press the little eye next to the box to get a preview.
+To start, visit the feed that serves you truncated articles, right click anywhere on the page and choose `Inspect`. In the menu, try to identify the HTML/CSS-class that contains the article. Common classes are `article`, `article_section` and `article-body`. When you have identified the class, click on the options icon next to the feed and go to `Manage → Article CSS selector on original website`. Paste the classname in the box starting with a dot like so: `.article_section`. Press the little eye next to the box to get a preview.
 
 You can extend this to exclude certain classes as well, such as a comment section at the end of an article. Just add the relevant class to the `CSS selector of the elements to remove` option.
 
@@ -4183,6 +4190,28 @@ By default, anyone who visits `passwordpusher.domain.tld` can create a new passw
 As I don't have an SMTP server I instead tried Nginx HTTP authentication but I had to abandon that idea as it would also force authentication for the password pushes, defeating the purpose of the service. I now just disable the proxy host for PasswordPusher when not in use and enable it for a couple of days while a password is being shared.
 
 I have submitted a [feature request](https://github.com/pglombardo/PasswordPusher/issues/474#issue-1447962464) to PasswordPusher for the option to use default credentials similiar to that of Gotify.
+
+### Nginx Proxy Manager stream
+
+> __TL;DR:__ Lack of `proxy_protocol` support masks the real IP-address of SSH-authentication attempts made through a proxy stream.
+
+Events connected to SSH, such as authorization attempts and sudo commands, will be logged in the servers `/var/log/auth.log`. For example, a successful connection can look something like this:
+
+```
+Nov 22 xx:xx:xx host sshd[xxxx]: Accepted publickey for xxxx from 123.123.123.123 port xxxx
+```
+
+Of importance is that the IP-address of the attempt is logged. As such, we can have Fail2ban monitor the log and ban anyone spamming authentication attempts.
+
+However, SSH connections made through a Nginx Proxy Manager stream will use the internal IP-address of the Nginx docker container., which will show up in the logs like so:
+
+```
+Nov 22 xx:xx:xx host sshd[xxxx]: Invalid user xxxx from 172.30.1.1 port xxxx
+```
+
+As the internal IP-address is logged instead of the origin we cannot ban the malicious actor. This is due to the lack of `proxy_protocol` support, which is used by Nginx to pass along the origin IP-address.
+
+This has been reported to the Nginx Proxy Manager developers ([#1114](https://github.com/NginxProxyManager/nginx-proxy-manager/issues/1114), [#1882](https://github.com/NginxProxyManager/nginx-proxy-manager/pull/1882)) and is expected to be fixed in version 3. Untill then, the best thing you can do is to disable password authentication for SSH and instead use key-exchange.
 
 --------------------
 
