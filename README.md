@@ -155,6 +155,15 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-13)
   - [Integrate with Homarr](#integrate-with-homarr-13)
   - [Integrate with Watchtower](#integrate-with-watchtower-15)
+- [Ebooks with Calibre-Web](#ebooks-with-calibre-web)
+  - [Make a Calibre database](#make-a-calibre-database)
+  - [Docker setup](#docker-setup-17)
+    - [Enable uploads](#enable-uploads)
+  - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-14)
+  - [Enable Kobo integration](#enable-kobo-integration)
+  - [Protect with Fail2ban](#protect-with-fail2ban-13)
+  - [Integrate with Homarr](#integrate-with-homarr-14)
+  - [Integrate with Watchtower](#integrate-with-watchtower-16)
 - [Issues and solutions](#issues-and-solutions)
   - [Motherboard](#motherboard)
   - [ddns-updater](#ddns-updater)
@@ -1788,7 +1797,7 @@ cd /srv/watchtower && sudo docker compose up -d --build
 Before we set up Jellyfin we will make a clear and consistent directory-structure following TRaSH Guides [Hardlinks and Instant Moves](https://trash-guides.info/Hardlinks/Hardlinks-and-Instant-Moves/). We can create the whole structure with this one command:
 
 ```sh
-sudo mkdir -p /srv/data/{torrents/{movies,music,tv},media/{movies,music,tv}}
+sudo mkdir -p /srv/data/{torrents/{books,movies,music,tv},media/{books,movies,music,tv}}
 ```
 
 Now configure directory permissions with:
@@ -1799,13 +1808,13 @@ sudo chown -R $USER:$USER /srv/data && sudo chmod -R a=,a+rX,u+w,g+w /srv/data
 
 ### Docker setup
 
-We will be using [Hotios Jellyfin image](https://hotio.dev/containers/jellyfin/). Start by creating a directory:
+We will be using [Hotios Jellyfin image](https://hotio.dev/containers/jellyfin/). Start by creating the directory:
 
 ```sh
-sudo mkdir -p /srv/jellyfin/{config,cache}
+sudo mkdir /srv/jellyfin
 ```
 
-Then make a docker compose file:
+Then make a `docker-compose.yml` file:
 
 ```sh
 sudo nano /srv/jellyfin/docker-compose.yml
@@ -2004,6 +2013,7 @@ bantime = -1
 findtime = 86400
 logpath = /srv/jellyfin/config/log/*.log
 action = iptables-allports[name=jellyfin, chain=DOCKER-USER]
+         gotify
 ```
 
 Save and exit. Now make a `.conf` file:
@@ -4140,6 +4150,213 @@ cd /srv/watchtower && sudo docker compose up -d --build
 </p>
 </details>
 
+## Ebooks with Calibre-Web
+
+[Calibre-Web](https://github.com/janeczku/calibre-web) is an eBook library manager. It supports uploading and downloading eBooks, keeps track of reading progress and can sync with supported devices such as Kobo eReaders.
+
+<details><summary>Click to expand</summary>
+<p>
+
+--------------------
+
+### Make a Calibre database
+
+Before we can start with Calibre-Web we need to aquire a Calibre database-file. You could download such a file online, but it's generally safer and easier to make one yourself. Download and install the regular [desktop version of Calibre](https://calibre-ebook.com/download) and complete the initial setup, a `metadata.db` file will be made as a part of this. Navigate to the folder containing the file (*by default  `/'Calibre Library'`*) and copy it to your server with:
+
+```sh
+rsync metadata.db [server ssh alias]:/srv/data/media/books 
+```
+
+When you're done you can simply uninstall the Calibre desktop application.
+
+### Docker setup
+
+We will be using the [LinuxServer.io image](https://github.com/linuxserver/docker-calibre-web). To get started, make the directory structure:
+
+```sh
+sudo mkdir /srv/calibre
+```
+
+Then make the `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/calibre/docker-compose.yml
+```
+
+```yml
+version: "2.1"
+services:
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre-web
+    ports:
+      - 8083:8083
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+      - DOCKER_MODS=linuxserver/mods:universal-calibre # Enables ebook conversion
+    volumes:
+      - ./config:/config
+      - /srv/data/media/books:/books
+    restart: unless-stopped
+
+networks:
+  default:
+    name: boulder
+```
+
+Save and exit, start it with:
+
+```sh
+cd /srv/calibre && sudo docker compose up -d
+```
+
+Visit the web-ui at `localhost:8083` and log in using the default credentials:
+
+```
+Username: admin
+Password: admin123
+```
+
+On the initial setup screen, enter `/books` as your Calibre library location. Your next priority should be to change the credentials of the admin user to something safe.
+
+#### Enable uploads
+
+The ability to upload books to the server is not enabled by default. To enable it, go to `Admin → Edit Basic Configuration → Feature Configuration → Enable Uploads`, check it and save. You then also have to enable it on a per-user basis.
+
+### Add to Nginx proxy Manager
+
+Make a new Proxy Host Entry:
+
+```
+DETAILS
+Domain names:           calibre.domain.tld
+Scheme:                 http
+Forward Hostname / IP:  calibre-web
+Forward Port:           8083
+Cache Assets:           Yes
+Block Common Expolits:  Yes
+Websocket Support:      No
+Access List:            Publicly Accessible
+
+SSL
+SSL Certificate:        Request a New SSL Certificate
+Force SSL:              Yes
+HSTS Enabled:           Yes
+HTTP/2 Support:         No
+HSTS Subdomains:        No
+```
+
+Save and visit `calibre.domain.tld` to make sure everything works as intended.
+
+### Enable Kobo integration
+
+If you have an eReader from Kobo you can modify it to sync with Calibre-Web, keeping your library and reading progress synced across devices.
+
+First, go to `Admin → Edit Basic Configuration → Feature Configuration → Enable Kobo sync` , check it and save. Next, make a sync-link by going to `Admin → Users → Your user → Kobo Sync Token → Create/View`
+
+Now connect your Kobo eReader to your computer and navigate to its `Kobo eReader.conf` file under `.kobo/Kobo`. Nano into it and find the line `api_endpoint=https://storeapi.kobo.com` under the `[OneStoreServices]` group (*if it does not exist, make it*). Replace `https://storeapi.kobo.com` with the sync token you made earlier: `api_endpoint=[your kobo sync token]`. Save and exit. Unplug your eReader.
+
+### Protect with Fail2ban
+
+First make a `.local` file:
+
+```sh
+sudo nano /etc/fail2ban/jail.d/calibre.local
+```
+
+Paste:
+
+```
+[calibre]
+
+backend = auto
+enabled = true
+port = 80,443
+protocol = tcp
+filter = calibre
+maxretry = 3
+bantime = -1
+findtime = 86400
+logpath = /srv/calibre/config/calibre-web.log
+action = iptables-allports[name=calibre, chain=DOCKER-USER]
+         gotify
+```
+
+Save and exit. Now make a `.conf` file:
+
+```sh
+sudo nano /etc/fail2ban/filter.d/calibre.conf
+```
+
+Paste:
+
+```
+[Definition]
+failregex = ^.*WARN.* Login failed for user.* IP-address: <ADDR>
+```
+
+Restart Fail2ban to apply the new settings:
+
+```sh
+sudo systemctl restart fail2ban
+```
+
+You can test your filter by first using the wrong credentials and then match a log with your filter:
+
+```
+fail2ban-regex /srv/calibre/config/calibre-web.log /etc/fail2ban/filter.d/calibre.conf --print-all-matched
+```
+
+You can also check the status of the jail with:
+
+```sh
+sudo fail2ban-client status calibre
+```
+
+### Integrate with Homarr
+
+Go to Homarr and click `Add a service`:
+
+```
+Service name:           Calibre-Web
+Icon URL:               https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Calibre_logo_3.png/600px-Calibre_logo_3.png
+Service URL:            http://x.x.x.x:8083
+On Click URL:           https://calibre.domain.tld
+Service type:           Other
+Category:               Media
+```
+
+Click `Save service`, then go to `Settings → Save a copy → Confirm` to save the state of your dashboard.
+
+### Integrate with Watchtower
+
+To automatically update the docker image we need to add it to Watchtower, run:
+
+```sh
+sudo nano /srv/watchtower/docker-compose.yml
+```
+
+Add the container name like so:
+
+```yml
+    ...
+    command: watchtower [other containers] calibre-web
+```
+
+Save and exit. To apply the settings we need to rebuild the Watchtower image:
+
+```sh
+cd /srv/watchtower && sudo docker compose up -d --build
+```
+
+--------------------
+
+</p>
+</details>
+
 ## Issues and solutions
 
 Sometimes things doesn't go as planned, here are some of the lessons I've learned.
@@ -4195,7 +4412,7 @@ I have submitted a [feature request](https://github.com/pglombardo/PasswordPushe
 
 > __TL;DR:__ Lack of `proxy_protocol` support masks the real IP-address of SSH-authentication attempts made through a proxy stream.
 
-Events connected to SSH, such as authorization attempts and sudo commands, will be logged in the servers `/var/log/auth.log`. For example, a successful connection can look something like this:
+Events connected to SSH, such as authentication attempts and sudo commands, will be logged in the servers `/var/log/auth.log`. For example, a successful connection can look something like this:
 
 ```
 Nov 22 xx:xx:xx host sshd[xxxx]: Accepted publickey for xxxx from 123.123.123.123 port xxxx
@@ -4203,7 +4420,7 @@ Nov 22 xx:xx:xx host sshd[xxxx]: Accepted publickey for xxxx from 123.123.123.12
 
 Of importance is that the IP-address of the attempt is logged. As such, we can have Fail2ban monitor the log and ban anyone spamming authentication attempts.
 
-However, SSH connections made through a Nginx Proxy Manager stream will use the internal IP-address of the Nginx docker container., which will show up in the logs like so:
+However, SSH connections made through a Nginx Proxy Manager stream will use the internal IP-address of the Nginx docker container, which will show up in the logs like so:
 
 ```
 Nov 22 xx:xx:xx host sshd[xxxx]: Invalid user xxxx from 172.30.1.1 port xxxx
