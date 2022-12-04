@@ -1,10 +1,11 @@
 version: "2.1"
 services:
-  calibre-web:
-    image: lscr.io/linuxserver/calibre-web:latest
-    container_name: calibre-web
+  calibre:
+    image: lscr.io/linuxserver/calibre:latest
+    container_name: calibre
     ports:
-      - 8083:8083
+      - 6080:8080
+      - 6081:8081
     environment:
       - PUID=1000
       - PGID=1000
@@ -12,6 +13,7 @@ services:
       - TZ=Europe/Stockholm
     volumes:
       - ./config:/config
+      - /srv/data/media/books:/books
       - /srv/calibre/library:/library
     restart: unless-stopped
 

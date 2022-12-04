@@ -137,38 +137,32 @@ Got feedback or suggestions? I would love to hear it, please create an [issue](h
   - [Protect with Fail2ban](#protect-with-fail2ban-12)
   - [Integrate with Homarr](#integrate-with-homarr-11)
   - [Integrate with Watchtower](#integrate-with-watchtower-12)
-- [Secure password sharing with PasswordPusher](#secure-password-sharing-with-passwordpusher)
+- [Notes with Joplin](#notes-with-joplin)
   - [Docker setup](#docker-setup-14)
   - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-11)
-  - [Authentication](#authentication)
-  - [Integrate with Watchtower](#integrate-with-watchtower-13)
-- [Notes with Joplin](#notes-with-joplin)
-  - [Docker setup](#docker-setup-15)
-  - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-12)
   - [Configuration](#configuration)
   - [Integrate with Homarr](#integrate-with-homarr-12)
-  - [Integrate with Watchtower](#integrate-with-watchtower-14)
+  - [Integrate with Watchtower](#integrate-with-watchtower-13)
 - [RSS feeds with FreshRSS](#rss-feeds-with-freshrss)
-  - [Docker setup](#docker-setup-16)
+  - [Docker setup](#docker-setup-15)
     - [Clients](#clients)
     - [Fetch full articles](#fetch-full-articles)
-  - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-13)
+  - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-12)
   - [Integrate with Homarr](#integrate-with-homarr-13)
-  - [Integrate with Watchtower](#integrate-with-watchtower-15)
-- [Ebooks with Calibre-Web](#ebooks-with-calibre-web)
-  - [Make a Calibre database](#make-a-calibre-database)
-  - [Docker setup](#docker-setup-17)
-    - [Enable uploads](#enable-uploads)
-  - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-14)
+  - [Integrate with Watchtower](#integrate-with-watchtower-14)
+- [Ebooks with Calibre and Calibre-Web](#ebooks-with-calibre-and-calibre-web)
+  - [Calibre](#calibre)
+  - [Calibre-Web](#calibre-web)
+  - [Enable uploads](#enable-uploads)
   - [Enable Kobo integration](#enable-kobo-integration)
+  - [Add to Nginx proxy Manager](#add-to-nginx-proxy-manager-13)
   - [Protect with Fail2ban](#protect-with-fail2ban-13)
   - [Integrate with Homarr](#integrate-with-homarr-14)
-  - [Integrate with Watchtower](#integrate-with-watchtower-16)
+  - [Integrate with Watchtower](#integrate-with-watchtower-15)
 - [Issues and solutions](#issues-and-solutions)
   - [Motherboard](#motherboard)
   - [ddns-updater](#ddns-updater)
   - [Fail2ban](#fail2ban)
-  - [PasswordPusher](#passwordpusher)
   - [Nginx Proxy Manager stream](#nginx-proxy-manager-stream)
 - [License and usage](#license-and-usage)
 
@@ -3732,122 +3726,6 @@ cd /srv/watchtower && sudo docker compose up -d --build
 </p>
 </details>
 
-## Secure password sharing with PasswordPusher
-
-[PasswordPusher](https://github.com/pglombardo/PasswordPusher) is a simple and secure way to share a password online.
-
-<details><summary>Click to expand</summary>
-<p>
-
---------------------
-
-### Docker setup
-
-Make the directory structure:
-
-```sh
-sudo mkdir /srv/passwordpusher
-```
-
-Visit PasswordPushers [helper tool](https://pwpush.com/pages/generate_key) and take note of your custom `PWPUSH_MASTER_KEY` encryption key. Next, make a `docker-compose.yml` file:
-
-```sh
-sudo nano /srv/passwordpusher/docker-compose.yml
-```
-
-Paste:
-
-```yml
-version: "2.1"
-services:
-  passwordpusher:
-      container_name: passwordpusher
-      image: pglombardo/pwpush-ephemeral:release
-      ports:
-          - 5100:5100
-      environment:
-          - PUID=1000
-          - PGID=1000
-          - UMASK=002
-          - TZ=Europe/Stockholm
-          - PWPUSH_MASTER_KEY=xxxxxx
-          - PWP__EXPIRE_AFTER_VIEWS_DEFAULT=3
-          - PWP__ENABLE_DELETABLE_PUSHES=true
-          - PWP__RETRIEVAL_STEP_DEFAULT=true
-          - PWP__BRAND__TITLE=PasswordPusher
-          - PWP__BRAND__TAGLINE=
-          - PWP__BRAND__SHOW_FOOTER_MENU=false
-          - PWP__THROTTLING__DAILY=100
-      restart: unless-stopped
-
-networks:
-  default:
-    name: boulder
-```
-
-Save and exit, start it with:
-
-```sh
-cd /srv/passwordpusher && sudo docker compose up -d
-```
-
-Now you can visit PasswordPushers web-ui at `[local ip]:5100`.
-
-### Add to Nginx proxy Manager
-
-Make a new Proxy Host Entry:
-
-```
-DETAILS
-Domain names:           push.domain.tld
-Scheme:                 http
-Forward Hostname / IP:  passwordpusher
-Forward Port:           5100
-Cache Assets:           Yes
-Block Common Expolits:  Yes
-Websocket Support:      No
-Access List:            Publicly Accessible
-
-SSL
-SSL Certificate:        Request a New SSL Certificate
-Force SSL:              Yes
-HSTS Enabled:           Yes
-HTTP/2 Support:         No
-HSTS Subdomains:        No
-```
-
-Save and visit `push.domain.tld` to make sure everything works as intended.
-
-### Authentication
-
-Please see the PasswordPusher section under [issues and solutions](#issues-and-solutions).
-
-### Integrate with Watchtower
-
-To automatically update the docker image we need to add it to Watchtower, run:
-
-```sh
-sudo nano /srv/watchtower/docker-compose.yml
-```
-
-Add the container name like so:
-
-```yml
-    ...
-    command: watchtower [other containers] passwordpusher
-```
-
-Save and exit. To apply the settings we need to rebuild the Watchtower image:
-
-```sh
-cd /srv/watchtower && sudo docker compose up -d --build
-```
-
---------------------
-
-</p>
-</details>
-
 ## Notes with Joplin
 
 [Joplin](https://joplinapp.org) is a note-taking application with extensive features such as markdown support, cross-device synchronisation and end-to-end encryption.
@@ -4150,38 +4028,83 @@ cd /srv/watchtower && sudo docker compose up -d --build
 </p>
 </details>
 
-## Ebooks with Calibre-Web
+## Ebooks with Calibre and Calibre-Web
 
-[Calibre-Web](https://github.com/janeczku/calibre-web) is an eBook library manager. It supports uploading and downloading eBooks, keeps track of reading progress and can sync with supported devices such as Kobo eReaders.
+[Calibre](https://calibre-ebook.com/) is a tried-and-trusted eBook library manager. We will be using it in conjunction with [Calibre-Web](https://github.com/janeczku/calibre-web), which will allows us to sync our library with an eReader.
 
 <details><summary>Click to expand</summary>
 <p>
 
 --------------------
 
-### Make a Calibre database
+### Calibre
 
-Before we can start with Calibre-Web we need to aquire a Calibre database-file. You could download such a file online, but it's generally safer and easier to make one yourself. Download and install the regular [desktop version of Calibre](https://calibre-ebook.com/download) and complete the initial setup, a `metadata.db` file will be made as a part of this. Navigate to the folder containing the file (*by default  `/'Calibre Library'`*) and copy it to your server with:
-
-```sh
-rsync metadata.db [server ssh alias]:/srv/data/media/books 
-```
-
-When you're done you can simply uninstall the Calibre desktop application.
-
-### Docker setup
-
-We will be using the [LinuxServer.io image](https://github.com/linuxserver/docker-calibre-web). To get started, make the directory structure:
+We will be using the [LinuxServer.io image](https://github.com/linuxserver/docker-calibre). To get started, make the directory structure:
 
 ```sh
-sudo mkdir /srv/calibre
+sudo mkdir /srv/calibre/{calibre,calibre-web,library}
 ```
 
-Then make the `docker-compose.yml` file:
+Configure permissions for the common library:
+
+```sh
+sudo chown $USER:$USER /srv/calibre/library && sudo chmod a=,a+rX,u+w,g+w /srv/calibre/library
+```
+
+Now make the `docker-compose.yml` file:
+
+```sh
+sudo nano /srv/calibre/calibre/docker-compose.yml
+```
+
+```yml
+version: "2.1"
+services:
+  calibre:
+    image: lscr.io/linuxserver/calibre:latest
+    container_name: calibre
+    ports:
+      - 6080:8080
+      - 6081:8081
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - ./config:/config
+      - /srv/data/media/books:/books
+      - /srv/calibre/library:/library
+    restart: unless-stopped
+
+networks:
+  default:
+    name: boulder
+```
+
+Save and exit, start it with:
+
+```sh
+cd /srv/calibre/calibre && sudo docker compose up -d
+```
+
+Visit the webUI at `localhost:6080` and choose `/library` as the Calibre library folder. Now you can push your collection of eBooks to the server with:
+
+```sh
+cd /path/to/ebooks && scp -r * [server hostname]:/srv/data/media/books
+```
+
+When pushed, add them in Calibre by clicking on `Add Books`.
+
+### Calibre-Web
+
+We will be using the [LinuxServer.io image](https://github.com/linuxserver/docker-calibre-web). Make the `docker-compose.yml` file:
 
 ```sh
 sudo nano /srv/calibre/docker-compose.yml
 ```
+
+Paste:
 
 ```yml
 version: "2.1"
@@ -4196,10 +4119,9 @@ services:
       - PGID=1000
       - UMASK=002
       - TZ=Europe/Stockholm
-      - DOCKER_MODS=linuxserver/mods:universal-calibre # Enables ebook conversion
     volumes:
       - ./config:/config
-      - /srv/data/media/books:/books
+      - /srv/calibre/library:/library
     restart: unless-stopped
 
 networks:
@@ -4210,25 +4132,35 @@ networks:
 Save and exit, start it with:
 
 ```sh
-cd /srv/calibre && sudo docker compose up -d
+cd /srv/calibre/calibre-web && sudo docker compose up -d
 ```
 
-Visit the web-ui at `localhost:8083` and log in using the default credentials:
+Visit the webUI at `localhost:8083` and log in using the default credentials:
 
 ```
 Username: admin
 Password: admin123
 ```
 
-On the initial setup screen, enter `/books` as your Calibre library location. Your next priority should be to change the credentials of the admin user to something safe.
+On the initial setup screen, enter `/library` as your Calibre library location. Your next priority should be to change the credentials of the admin user to something safe.
 
-#### Enable uploads
+### Enable uploads
 
 The ability to upload books to the server is not enabled by default. To enable it, go to `Admin → Edit Basic Configuration → Feature Configuration → Enable Uploads`, check it and save. You then also have to enable it on a per-user basis.
 
+### Enable Kobo integration
+
+If you have an eReader from Kobo you can [modify it](https://github.com/janeczku/calibre-web/wiki/Kobo-Integration) to sync with Calibre-Web, keeping your library and reading progress synced across devices.
+
+First, go to `Admin → Edit Basic Configuration → Feature Configuration → Enable Kobo sync`, check it and save. Next, generate a sync token by going to `Admin → Users → Your user → Kobo Sync Token → Create/View`
+
+Now connect your Kobo eReader to your computer and navigate to its `Kobo eReader.conf` file under `.kobo/Kobo`. Open it and find the line `api_endpoint=https://storeapi.kobo.com` under the `[OneStoreServices]` group, replace `https://storeapi.kobo.com` with the sync token you made earlier like so: `api_endpoint=[your kobo sync token]`. Save and exit. Unplug your eReader.
+
+> NOTE: Your `api_endpoint` must use your servers local IP, not your domain. Kobo sync is currently not supported outside your local network as Calibre-Web automatically appends its port number to the sync adress. Futher more, your exposed port for the Calibre-Web container **must** be `8083`, anything else will be overwritten.
+
 ### Add to Nginx proxy Manager
 
-Make a new Proxy Host Entry:
+As we won't expose our Calibre instance to the web, we only need to make a Proxy Host entry for Calibre-Web:
 
 ```
 DETAILS
@@ -4251,17 +4183,9 @@ HSTS Subdomains:        No
 
 Save and visit `calibre.domain.tld` to make sure everything works as intended.
 
-### Enable Kobo integration
-
-If you have an eReader from Kobo you can modify it to sync with Calibre-Web, keeping your library and reading progress synced across devices.
-
-First, go to `Admin → Edit Basic Configuration → Feature Configuration → Enable Kobo sync` , check it and save. Next, make a sync-link by going to `Admin → Users → Your user → Kobo Sync Token → Create/View`
-
-Now connect your Kobo eReader to your computer and navigate to its `Kobo eReader.conf` file under `.kobo/Kobo`. Nano into it and find the line `api_endpoint=https://storeapi.kobo.com` under the `[OneStoreServices]` group (*if it does not exist, make it*). Replace `https://storeapi.kobo.com` with the sync token you made earlier: `api_endpoint=[your kobo sync token]`. Save and exit. Unplug your eReader.
-
 ### Protect with Fail2ban
 
-First make a `.local` file:
+As we won't expose our Calibre instance to the web, we only need to make a jail+filter pair for Calibre-Web. First make a `.local` file:
 
 ```sh
 sudo nano /etc/fail2ban/jail.d/calibre.local
@@ -4280,7 +4204,7 @@ filter = calibre
 maxretry = 3
 bantime = -1
 findtime = 86400
-logpath = /srv/calibre/config/calibre-web.log
+logpath = /srv/calibre/calibre-web/config/calibre-web.log
 action = iptables-allports[name=calibre, chain=DOCKER-USER]
          gotify
 ```
@@ -4304,10 +4228,10 @@ Restart Fail2ban to apply the new settings:
 sudo systemctl restart fail2ban
 ```
 
-You can test your filter by first using the wrong credentials and then match a log with your filter:
+You can test your filter by first using the wrong credentials and then match the log with your filter:
 
 ```
-fail2ban-regex /srv/calibre/config/calibre-web.log /etc/fail2ban/filter.d/calibre.conf --print-all-matched
+fail2ban-regex /srv/calibre/calibre-web/config/calibre-web.log /etc/fail2ban/filter.d/calibre.conf --print-all-matched
 ```
 
 You can also check the status of the jail with:
@@ -4321,6 +4245,17 @@ sudo fail2ban-client status calibre
 Go to Homarr and click `Add a service`:
 
 ```
+Service name:           Calibre
+Icon URL:               https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Calibre_logo_3.png/600px-Calibre_logo_3.png
+Service URL:            http://x.x.x.x:6080
+On Click URL:           http://x.x.x.x:6080
+Service type:           Other
+Category:               Media
+```
+
+Click `Save service`, then do the same for Calibre-Web:
+
+```
 Service name:           Calibre-Web
 Icon URL:               https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Calibre_logo_3.png/600px-Calibre_logo_3.png
 Service URL:            http://x.x.x.x:8083
@@ -4329,7 +4264,7 @@ Service type:           Other
 Category:               Media
 ```
 
-Click `Save service`, then go to `Settings → Save a copy → Confirm` to save the state of your dashboard.
+Save again and go to `Settings → Save a copy → Confirm` to save the state of the dashboard.
 
 ### Integrate with Watchtower
 
@@ -4343,7 +4278,7 @@ Add the container name like so:
 
 ```yml
     ...
-    command: watchtower [other containers] calibre-web
+    command: watchtower [other containers] calibre calibre-web
 ```
 
 Save and exit. To apply the settings we need to rebuild the Watchtower image:
@@ -4397,16 +4332,6 @@ This only works as I have all my services on the same local network, if I for ex
 I initially tried to run Fail2ban in a docker container to streamline deployment. I managed to get the filter and jail working but not banning. Fail2ban would correctly detect authentication fails and "ban" the associated IP address. However this "ban" would in reality not result in denied connections and the client could continue with authentication attempts. There seemed to be no clear way to propagate the banned addresses up the IP-tables chain and block connections.
 
 I have now resorted to running it on the server itself and it works like a charm. For services that have built-in support for logging authentication attempts I have Fail2ban listen on its logs, for those that don't I use NGINX basic HTTP authentication and have Fail2ban listen in on NGINXs logs.
-
-### PasswordPusher
-
-> __TL;DR:__ Authentication requires an SMTP server so I've resorted to just enable/disable the site via Nginx when needed.
-
-By default, anyone who visits `passwordpusher.domain.tld` can create a new password push. My initial plan was to implement some form of authentication for this page, ensuring that only authenticated users could create new pushes. Going through the [configuration options](https://github.com/pglombardo/PasswordPusher/blob/master/Configuration.md#enabling-logins) I learned that this is possible only with an SMTP server.
-
-As I don't have an SMTP server I instead tried Nginx HTTP authentication but I had to abandon that idea as it would also force authentication for the password pushes, defeating the purpose of the service. I now just disable the proxy host for PasswordPusher when not in use and enable it for a couple of days while a password is being shared.
-
-I have submitted a [feature request](https://github.com/pglombardo/PasswordPusher/issues/474#issue-1447962464) to PasswordPusher for the option to use default credentials similiar to that of Gotify.
 
 ### Nginx Proxy Manager stream
 
