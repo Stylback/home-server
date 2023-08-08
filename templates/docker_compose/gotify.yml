@@ -1,0 +1,22 @@
+version: "3"
+services:
+  gotify:
+    container_name: gotify
+    image: gotify/server
+    entrypoint: sh -c "/app/gotify-app 2>&1 | tee /app/data/gotify.log"
+    ports:
+      - 1245:80
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+      - GOTIFY_DEFAULTUSER_NAME=admin
+      - GOTIFY_DEFAULTUSER_PASS=admin
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+
+networks:
+  default:
+    name: <network-name>

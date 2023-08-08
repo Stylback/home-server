@@ -1,0 +1,20 @@
+version: "3"
+services:
+    jellyseerr:
+       container_name: jellyseerr
+       image: fallenbagel/jellyseerr:latest
+       ports:
+            - 5055:5055
+       environment:
+            - PUID=1000
+            - PGID=1000
+            - UMASK=002
+            - TZ=Europe/Stockholm
+       volumes:
+            - ./config:/app/config
+            - /library:/library
+       restart: unless-stopped
+
+networks:
+  default:
+    name: <network-name>

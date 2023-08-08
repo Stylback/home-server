@@ -1,0 +1,26 @@
+version: "2.4"
+services:
+  freshrss:
+    container_name: freshrss
+    image: freshrss/freshrss
+    ports:
+      - 8088:80
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+      - CRON_MIN=0,30
+    volumes:
+      - ./data:/var/www/FreshRSS/data
+      - ./extensions:/var/www/FreshRSS/extensions
+      - ./logs/log.conf:/etc/apache2/conf-enabled/log.conf
+      - ./logs/freshrss.log:/var/log/apache2/freshrss.log
+    restart: unless-stopped
+    logging:
+      options:
+        max-size: 10m
+
+networks:
+  default:
+    name: <network-name>

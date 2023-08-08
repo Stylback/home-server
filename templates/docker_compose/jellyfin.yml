@@ -1,0 +1,23 @@
+version: "3.7"
+services:
+  jellyfin:
+    container_name: jellyfin
+    image: cr.hotio.dev/hotio/jellyfin
+    ports:
+      - 8096:8096
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - ./config:/config
+      - ./cache:/cache
+      - /library/media:/media
+    devices:
+      - /dev/dri:/dev/dri
+    restart: unless-stopped
+
+networks:
+  default:
+    name: <netowrk-name>

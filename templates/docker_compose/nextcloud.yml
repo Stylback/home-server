@@ -1,0 +1,19 @@
+version: "2.1"
+services:
+  nextcloud:
+    image: lscr.io/linuxserver/nextcloud:latest
+    container_name: nextcloud
+    ports:
+      - 4433:443 # Token port for 443 as it's already bound
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Stockholm
+    volumes:
+      - ./config:/config
+      - /files/nextcloud:/data
+    restart: unless-stopped
+
+networks:
+  default:
+    name: <network-name>

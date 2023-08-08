@@ -1,0 +1,19 @@
+version: "3.7"
+services:
+  prowlarr:
+    container_name: prowlarr
+    image: cr.hotio.dev/hotio/prowlarr
+    ports:
+      - 9696:9696
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - ./config:/config
+    restart: unless-stopped
+
+networks:
+  default:
+    name: <network-name>
