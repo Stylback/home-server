@@ -134,6 +134,9 @@ Found a security vulnerability and would like to make a responsible disclosure? 
   - [Configure Nextcloud](#configure-nextcloud)
   - [Fail2ban integration](#fail2ban-integration-10)
   - [Further integrations](#further-integrations)
+- [Web Analytics with GoAccess](#web-analytics-with-goaccess)
+  - [Prerequisite](#prerequisite-6)
+  - [Setup](#setup-14)
 - [System snapshots and data backups](#system-snapshots-and-data-backups)
   - [System snapshots with Timeshift](#system-snapshots-with-timeshift)
     - [Useful commands](#useful-commands-1)
@@ -4307,6 +4310,157 @@ sudo fail2ban-client status nextcloud
 <p>
 
 Care should be taken before enabling automatic updates for Nextcloud/MariaDB via Watchtower. A new version might break the database structure and corrupt data, please ensure you have proper data backups.
+
+</p>
+</details>
+
+## Web Analytics with GoAccess
+
+[GoAccess](https://github.com/allinurl/goaccess) is a real-time web log analyzer.
+
+### Prerequisite
+
+<details><summary>Click to expand</summary>
+<p>
+
+We will be using GoAccess to analyze logs from Nginx Proxy Manager. To do this, first you will need to have your proxy hosts output to a common file. Go to the `Advanced` tab of each proxy host entry and add the following at the very top:
+
+```
+access_log /data/logs/access.log proxy;
+```
+
+</p>
+</details>
+
+### Setup
+
+<details><summary>Click to expand</summary>
+<p>
+
+Create the directory structure:
+
+```bash
+sudo mkdir -p /docker/goaccess/{config,report}
+```
+
+Create the `docker-compose.yml` file:
+
+```bash
+sudo nano /docker/goaccess/docker-compose.yml
+```
+
+Paste:
+
+```yml
+version: "3.7"
+
+services:
+
+  goaccess:
+    container_name: goaccess
+    image: allinurl/goaccess
+    ports:
+      - 7890:7890
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - ./config:/srv/config
+      - ./report:/srv/report
+      - /docker/nginx_proxy_manager/data/logs:/srv/logs
+    command:
+      - "--no-global-config"
+      - "--config-file=/srv/config/goaccess.conf"
+      - "--log-file=/srv/logs/access.log"
+      - "--geoip-database=/srv/config/dbip-country-lite.mmdb"
+
+  nginx:
+    container_name: goaccess-nginx
+    image: nginx:1.15-alpine
+    volumes:
+    - ./report:/usr/share/nginx/html
+    ports:
+    - 7891:80
+
+networks:
+  default:
+    name: <network-name>
+    external: true
+```
+
+Save and exit, create the config file:
+
+```bash
+sudo nano /docker/goaccess/config/goaccess.conf
+```
+
+Paste:
+
+```
+time-format %T
+date-format %d/%b/%Y
+log-format [%d:%t %~ %^] %^ %^ %s - %m %^ %v "%U" [Client %h] [Length %b] [Gzip %^] [Sent-to %^] "%u" "%R"
+output /srv/report/index.html
+real-time-html true
+```
+
+Finally, to get geolocation from IP-addresses you'll need to download and unzip the [free DB-IP Lite database](https://db-ip.com/db/download/ip-to-country-lite):
+
+```
+cd /docker/goaccess/config && wget https://download.db-ip.com/free/dbip-country-lite-2023-08.mmdb.gz && gzip -d *.mmdb.gz && mv *.mmdb.gz dbip-country-lite.mmdb
+```
+
+Replacing `2023-08` with current year-month. A new database is published monthly, to avoid having to re-do this process manually each month we will automate it with a script and cronjob. Start by creating the script under `/usr/local/bin`:
+
+```bash
+sudo nano /usr/local/bin/fetch_geodb.sh
+```
+
+Paste:
+
+```bash
+#!/bin/bash
+
+CURR_DATE=$(date +%Y-%m)
+DB_URL="https://download.db-ip.com/free/dbip-country-lite-"${CURR_DATE}".mmdb.gz"
+DB_DIR="/docker/goaccess/config"
+
+cd ${DB_DIR} && wget ${DB_URL} && gzip -d *.mmdb.gz && mv *.mmdb dbip-country-lite.mmdb
+```
+
+Save and exit. Make it executable:
+
+```bash
+sudo chmod +x /usr/local/bin/fetch_geodb.sh
+```
+
+Test it to make sure it works:
+
+```bash
+sudo /usr/local/bin/fetch_geodb.sh
+```
+
+Which should produce the file `dbip-country-lite.mmdb` in `/docker/goaccess/config`. If it's there, open up your crontab:
+
+```bash
+sudo nano /etc/crontab
+```
+
+Add the following:
+
+```bash
+00 06   1 * *   root    /usr/local/bin/fetch_geodb.sh
+```
+
+Save and exit. The script will now run once at 06:00 at the start of every month. With everything in place, bring the container up:
+
+```bash
+cd /docker/goaccess && sudo docker compose up -d --build
+```
+
+Visit `<localhost>:7981`, you should be met by a dashboard.
 
 </p>
 </details>

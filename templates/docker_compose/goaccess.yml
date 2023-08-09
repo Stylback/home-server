@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+
+  goaccess:
+    container_name: goaccess
+    image: allinurl/goaccess
+    ports:
+      - 7890:7890
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - ./config:/srv/config
+      - ./report:/srv/report
+      - /docker/nginx_proxy_manager/data/logs:/srv/logs
+    command:
+      - "--no-global-config"
+      - "--config-file=/srv/config/goaccess.conf"
+      - "--log-file=/srv/logs/access.log"
+      - "--geoip-database=/srv/config/dbip-country-lite.mmdb"
+
+  nginx:
+    container_name: goaccess-nginx
+    image: nginx:1.15-alpine
+    volumes:
+    - ./report:/usr/share/nginx/html
+    ports:
+    - 7891:80
+
+networks:
+  default:
+    name: <network-name>
+    external: true
