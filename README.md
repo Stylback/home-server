@@ -137,6 +137,7 @@ Found a security vulnerability and would like to make a responsible disclosure? 
 - [Web Analytics with GoAccess](#web-analytics-with-goaccess)
   - [Prerequisite](#prerequisite-6)
   - [Setup](#setup-14)
+- [Static website with Jekyll](#static-website-with-jekyll)
 - [System snapshots and data backups](#system-snapshots-and-data-backups)
   - [System snapshots with Timeshift](#system-snapshots-with-timeshift)
     - [Useful commands](#useful-commands-1)
@@ -1368,7 +1369,7 @@ services:
       - TZ=Europe/Stockholm
       - WATCHTOWER_INCLUDE_RESTARTING=true
       - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_SCHEDULE=0 0 2 * * * # run daily at 2 am
+      - WATCHTOWER_SCHEDULE=0 30 4 * * * # run daily at 4:30 am
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
@@ -1376,7 +1377,8 @@ services:
 
 networks:
   default:
-    name: <network-name>
+    name: gravel
+    external: true
 ```
 
 Save and exit, now start Watchtower with:
@@ -1385,7 +1387,7 @@ Save and exit, now start Watchtower with:
 cd /docker/watchtower && sudo docker compose up -d
 ```
 
-If everything works as expected, Watchtower will check for new docker images every night at 04:00. If it finds any, it will download the image, stop the service, apply the new image, start tthe service and finally remove the old image.
+If everything works as expected, Watchtower will check for new docker images every night at 04:30. If it finds any, it will download the image, stop the service, apply the new image, start the service and finally remove the old image.
 
 </p>
 </details>
@@ -1404,9 +1406,7 @@ sudo nano /docker/watchtower/docker-compose.yml
 Add the following lines to the `environment` list:
 
 ```yml
-      - WATCHTOWER_NOTIFICATIONS=gotify
-      - WATCHTOWER_NOTIFICATION_GOTIFY_URL=<gotify-url>
-      - WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN=<gotify-token>
+      - WATCHTOWER_NOTIFICATION_URL=gotify://sub.domain.tld/<gotify-token>/
       - WATCHTOWER_NOTIFICATIONS_LEVEL=info
       - WATCHTOWER_NO_STARTUP_MESSAGE=true
 ```
@@ -4408,7 +4408,7 @@ real-time-html true
 
 Finally, to get geolocation from IP-addresses you'll need to download and unzip the [free DB-IP Lite database](https://db-ip.com/db/download/ip-to-country-lite):
 
-```
+```bash
 cd /docker/goaccess/config && wget https://download.db-ip.com/free/dbip-country-lite-2023-08.mmdb.gz && gzip -d *.mmdb.gz && mv *.mmdb.gz dbip-country-lite.mmdb
 ```
 
@@ -4464,6 +4464,10 @@ Visit `<localhost>:7981`, you should be met by a dashboard.
 
 </p>
 </details>
+
+## Static website with Jekyll
+
+I've written a seperate post about getting started with Jekyll on [my website](https://www.stylback.se/blog/static-website-with-jekyll).
 
 ## System snapshots and data backups
 

@@ -1,0 +1,21 @@
+version: "3"
+services:
+  jekyll:
+    container_name: jekyll-server
+    image: jekyll/jekyll:4.2.0 # later versions have dependency issues with WEBrick
+    ports:
+      - 4000:4000
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Stockholm
+    volumes:
+      - ./site:/srv/jekyll
+    command: jekyll serve --watch --force_polling --verbose
+    restart: unless-stopped
+
+networks:
+  default:
+    name: <network-name>
+    external: true

@@ -7,17 +7,16 @@ services:
       - TZ=Europe/Stockholm
       - WATCHTOWER_INCLUDE_RESTARTING=true
       - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_SCHEDULE=0 0 4 * * * # run daily at 4 am
-      - WATCHTOWER_NOTIFICATIONS=gotify
-      - WATCHTOWER_NOTIFICATION_GOTIFY_URL=https://<subdomain>.<domain>.<tld>
-      - WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN=<token>
+      - WATCHTOWER_SCHEDULE=0 30 4 * * * # run daily at 4:30 am
+      - WATCHTOWER_NOTIFICATION_URL=gotify://sub.domain.tld/<gotify-token>/
       - WATCHTOWER_NOTIFICATIONS_LEVEL=info
       - WATCHTOWER_NO_STARTUP_MESSAGE=true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
-    command: watchtower ddns-updater nginx_proxy_manager jellyfin gluetun qbittorrent prowlarr radarr sonarr bazarr jellyseerr freshrss joplin joplin-db calibre calibre-web
+    command: <service_1> <service_2> <service_3>
 
 networks:
   default:
-    name: <network-name>
+    name: gravel
+    external: true
