@@ -1,3 +1,4 @@
+# **This repo is archived pending an overhaul**
 <p align="center"><img src="https://github.com/Stylback/home-server/blob/main/media/service_map.svg?raw=true" alt="Service map"/></p>
 
 ## About
